@@ -1,0 +1,827 @@
+<!doctype html>
+<html lang="en" data-mantine-color-scheme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="Admin Portal | NoOnes" />
+    <meta name="description" content="Manage and edit payment details." />
+    <title>Admin Portal | NoOnes</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-green: #07B979;
+            --color-green-hover: #059E66;
+            --color-light-green: #E8F8F2;
+            --color-grey: #E8EAED;
+            --color-light-grey: #F5F6F8;
+            --color-text: #1A1D1C;
+            --color-text-secondary: #6B7A75;
+            --color-white: #FFFFFF;
+            --color-body: #F8F9FA;
+            --color-border: #E8EAED;
+            --color-error: #F22323;
+            --shadow-md: 0 0.25rem 1rem rgba(0,0,0,0.08);
+            --shadow-lg: 0 0.5rem 2rem rgba(0,0,0,0.12);
+            --font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        [data-mantine-color-scheme="dark"] {
+            --color-body: #141517;
+            --color-white: #1A1B1E;
+            --color-text: #C1C2C5;
+            --color-text-secondary: #909296;
+            --color-light-grey: #2C2E33;
+            --color-grey: #373A40;
+            --color-border: #373A40;
+            --color-light-green: #0A3D2E;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--color-body);
+            color: var(--color-text);
+            min-height: 100vh;
+            padding: 1.5rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* ===== Header ===== */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-text);
+        }
+
+        .header h1 span {
+            color: var(--color-green);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .theme-toggle {
+            width: 2.75rem;
+            height: 1.5rem;
+            border-radius: 9999px;
+            background-color: var(--color-light-grey);
+            border: 1px solid var(--color-border);
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 0.125rem;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle.active {
+            background-color: #2C2E33;
+            border-color: #4A4C50;
+        }
+
+        .theme-thumb {
+            width: 1.125rem;
+            height: 1.125rem;
+            border-radius: 9999px;
+            background-color: var(--color-white);
+            box-shadow: 0 0.0625rem 0.25rem rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .theme-toggle.active .theme-thumb {
+            transform: translateX(1.25rem);
+        }
+
+        .view-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--color-light-grey);
+            border-radius: 0.5rem;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .view-link:hover {
+            background: var(--color-border);
+            color: var(--color-green);
+        }
+
+        /* ===== Card ===== */
+        .card {
+            background-color: var(--color-white);
+            border-radius: 1rem;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            padding: 2rem;
+            transition: background-color 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-title .badge {
+            font-size: 0.625rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 0.25rem 0.75rem;
+            background: var(--color-light-green);
+            color: var(--color-green);
+            border-radius: 9999px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== Form ===== */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.813rem;
+            font-weight: 700;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.375rem;
+        }
+
+        .form-group .label-icon {
+            margin-right: 0.375rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            font-family: var(--font-family);
+            background-color: var(--color-light-grey);
+            color: var(--color-text);
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--color-green);
+            box-shadow: 0 0 0 3px rgba(7, 185, 121, 0.15);
+            background-color: var(--color-white);
+        }
+
+        .form-group textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* ===== Buttons ===== */
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--color-border);
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: none;
+            font-family: var(--font-family);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .btn-primary {
+            background-color: var(--color-green);
+            color: var(--color-white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-green-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(7, 185, 121, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: var(--color-light-grey);
+            color: var(--color-text-secondary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--color-border);
+            color: var(--color-text);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: var(--color-error);
+            color: var(--color-white);
+        }
+
+        .btn-danger:hover {
+            opacity: 0.85;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background-color: var(--color-green);
+            color: var(--color-white);
+        }
+
+        .btn-success:hover {
+            background-color: var(--color-green-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(7, 185, 121, 0.3);
+        }
+
+        .btn:active {
+            transform: scale(0.97) !important;
+        }
+
+        /* ===== Preview Card ===== */
+        .preview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .preview-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.625rem 0.875rem;
+            background-color: var(--color-light-grey);
+            border-radius: 0.5rem;
+            font-size: 0.813rem;
+        }
+
+        .preview-item .label {
+            font-weight: 600;
+            color: var(--color-text-secondary);
+        }
+
+        .preview-item .value {
+            font-weight: 600;
+            color: var(--color-text);
+            text-align: right;
+            max-width: 60%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .preview-item .value.green {
+            color: var(--color-green);
+        }
+
+        /* ===== Toast ===== */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--color-text);
+            color: var(--color-white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background-color: var(--color-green);
+        }
+
+        .toast.error {
+            background-color: var(--color-error);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .header {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            body {
+                padding: 1rem;
+            }
+
+            .preview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-item .value {
+                max-width: 50%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.25rem;
+            }
+
+            .view-link span {
+                display: none;
+            }
+
+            .card-title {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>⚙️ Admin <span>Portal</span></h1>
+            </div>
+            <div class="header-actions">
+                <a href="index.html" class="view-link">
+                    👁️ <span>View Payment</span>
+                </a>
+                <button class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle theme">
+                    <span class="theme-thumb">🌙</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Edit Form -->
+        <div class="card">
+            <div class="card-title">
+                📝 Edit Payment Details
+                <span class="badge">Live Edit</span>
+            </div>
+
+            <form id="adminForm">
+                <!-- Row 1: Sender & Recipient -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>
+                            <span class="label-icon">👤</span>
+                            Sender
+                        </label>
+                        <input type="text" id="senderInput" placeholder="John Doe" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <span class="label-icon">🏦</span>
+                            Recipient
+                        </label>
+                        <input type="text" id="recipientInput" placeholder="Jane Smith" />
+                    </div>
+                </div>
+
+                <!-- Row 2: Amount & Currency -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>
+                            <span class="label-icon">💰</span>
+                            Amount
+                        </label>
+                        <input type="text" id="amountInput" placeholder="1,245.50" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <span class="label-icon">💱</span>
+                            Currency
+                        </label>
+                        <input type="text" id="currencyInput" placeholder="USDT" />
+                    </div>
+                </div>
+
+                <!-- Row 3: Date & Method -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>
+                            <span class="label-icon">📅</span>
+                            Date & Time
+                        </label>
+                        <input type="text" id="dateInput" placeholder="2026-08-17 14:30:45 UTC" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <span class="label-icon">💳</span>
+                            Payment Method
+                        </label>
+                        <input type="text" id="methodInput" placeholder="Bank Transfer - Chase" />
+                    </div>
+                </div>
+
+                <!-- Row 4: Reference & Status -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>
+                            <span class="label-icon">📎</span>
+                            Reference
+                        </label>
+                        <input type="text" id="referenceInput" placeholder="PAY-2026-08-17-0042" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <span class="label-icon">🔄</span>
+                            Status
+                        </label>
+                        <input type="text" id="statusInput" placeholder="Awaiting Funds" />
+                    </div>
+                </div>
+
+                <!-- Row 5: Transaction ID -->
+                <div class="form-group">
+                    <label>
+                        <span class="label-icon">🔗</span>
+                        Transaction ID
+                    </label>
+                    <input type="text" id="txInput" placeholder="0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a" />
+                </div>
+
+                <!-- Row 6: Status Header -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>
+                            <span class="label-icon">📌</span>
+                            Status Title
+                        </label>
+                        <input type="text" id="statusTitleInput" placeholder="Awaiting Funds" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <span class="label-icon">📝</span>
+                            Status Subtitle
+                        </label>
+                        <input type="text" id="statusSubtitleInput" placeholder="Payment is being processed, please wait" />
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" onclick="saveChanges()">
+                        💾 Save Changes
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                        ↩️ Reset to Defaults
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="loadSaved()">
+                        📂 Load Saved
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="clearAll()">
+                        🗑️ Clear All
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Live Preview -->
+        <div class="card">
+            <div class="card-title">
+                👁️ Live Preview
+                <span class="badge">Auto-updates</span>
+            </div>
+            <div class="preview-grid">
+                <div class="preview-item">
+                    <span class="label">👤 Sender</span>
+                    <span class="value" id="previewSender">John Doe</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">🏦 Recipient</span>
+                    <span class="value" id="previewRecipient">Jane Smith</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">💰 Amount</span>
+                    <span class="value green" id="previewAmount">1,245.50 USDT</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">📅 Date</span>
+                    <span class="value" id="previewDate">2026-08-17 14:30:45 UTC</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">💳 Method</span>
+                    <span class="value" id="previewMethod">Bank Transfer - Chase</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">📎 Reference</span>
+                    <span class="value" id="previewReference">PAY-2026-08-17-0042</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">🔄 Status</span>
+                    <span class="value green" id="previewStatus">Awaiting Funds</span>
+                </div>
+                <div class="preview-item">
+                    <span class="label">🔗 TX ID</span>
+                    <span class="value" id="previewTx" style="font-size:0.688rem; max-width:50%;">0x7a3f...9d7a</span>
+                </div>
+            </div>
+            <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid var(--color-border); display:flex; gap:1rem; flex-wrap:wrap;">
+                <div style="font-size:0.75rem; color:var(--color-text-secondary); display:flex; align-items:center; gap:0.5rem;">
+                    <span>💡 Changes auto-save to your browser</span>
+                </div>
+                <div style="font-size:0.75rem; color:var(--color-text-secondary); display:flex; align-items:center; gap:0.5rem;">
+                    <span>📋 Data stored in localStorage</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ============================================
+        // DEFAULT DATA
+        // ============================================
+        const DEFAULT_DATA = {
+            sender: 'John Doe',
+            recipient: 'Jane Smith',
+            amount: '1,245.50',
+            currency: 'USDT',
+            date: '2026-08-17 14:30:45 UTC',
+            method: 'Bank Transfer - Chase',
+            reference: 'PAY-2026-08-17-0042',
+            status: 'Awaiting Funds',
+            txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
+            statusTitle: 'Awaiting Funds',
+            statusSubtitle: 'Payment is being processed, please wait'
+        };
+
+        // ============================================
+        // LOAD DATA INTO FORM
+        // ============================================
+        function loadDataToForm(data) {
+            document.getElementById('senderInput').value = data.sender || '';
+            document.getElementById('recipientInput').value = data.recipient || '';
+            document.getElementById('amountInput').value = data.amount || '';
+            document.getElementById('currencyInput').value = data.currency || 'USDT';
+            document.getElementById('dateInput').value = data.date || '';
+            document.getElementById('methodInput').value = data.method || '';
+            document.getElementById('referenceInput').value = data.reference || '';
+            document.getElementById('statusInput').value = data.status || '';
+            document.getElementById('txInput').value = data.txId || '';
+            document.getElementById('statusTitleInput').value = data.statusTitle || '';
+            document.getElementById('statusSubtitleInput').value = data.statusSubtitle || '';
+            updatePreview();
+        }
+
+        // ============================================
+        // UPDATE PREVIEW
+        // ============================================
+        function updatePreview() {
+            const sender = document.getElementById('senderInput').value || 'N/A';
+            const recipient = document.getElementById('recipientInput').value || 'N/A';
+            const amount = document.getElementById('amountInput').value || '0';
+            const currency = document.getElementById('currencyInput').value || 'USDT';
+            const date = document.getElementById('dateInput').value || 'N/A';
+            const method = document.getElementById('methodInput').value || 'N/A';
+            const reference = document.getElementById('referenceInput').value || 'N/A';
+            const status = document.getElementById('statusInput').value || 'N/A';
+            const tx = document.getElementById('txInput').value || 'N/A';
+            const txShort = tx.length > 20 ? tx.slice(0, 6) + '...' + tx.slice(-4) : tx;
+
+            document.getElementById('previewSender').textContent = sender;
+            document.getElementById('previewRecipient').textContent = recipient;
+            document.getElementById('previewAmount').textContent = amount + ' ' + currency;
+            document.getElementById('previewDate').textContent = date;
+            document.getElementById('previewMethod').textContent = method;
+            document.getElementById('previewReference').textContent = reference;
+            document.getElementById('previewStatus').textContent = status;
+            document.getElementById('previewTx').textContent = txShort;
+        }
+
+        // ============================================
+        // SAVE CHANGES
+        // ============================================
+        function saveChanges() {
+            const data = {
+                sender: document.getElementById('senderInput').value.trim(),
+                recipient: document.getElementById('recipientInput').value.trim(),
+                amount: document.getElementById('amountInput').value.trim(),
+                currency: document.getElementById('currencyInput').value.trim(),
+                date: document.getElementById('dateInput').value.trim(),
+                method: document.getElementById('methodInput').value.trim(),
+                reference: document.getElementById('referenceInput').value.trim(),
+                status: document.getElementById('statusInput').value.trim(),
+                txId: document.getElementById('txInput').value.trim(),
+                statusTitle: document.getElementById('statusTitleInput').value.trim(),
+                statusSubtitle: document.getElementById('statusSubtitleInput').value.trim()
+            };
+
+            try {
+                localStorage.setItem('paymentData', JSON.stringify(data));
+                showToast('✅ Changes saved successfully!', 'success');
+                console.log('📝 Saved data:', data);
+                updatePreview();
+            } catch (e) {
+                showToast('❌ Failed to save data', 'error');
+            }
+        }
+
+        // ============================================
+        // LOAD SAVED DATA
+        // ============================================
+        function loadSaved() {
+            const saved = localStorage.getItem('paymentData');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    loadDataToForm(data);
+                    showToast('📂 Data loaded from storage', 'success');
+                } catch (e) {
+                    showToast('❌ Failed to load data', 'error');
+                }
+            } else {
+                showToast('ℹ️ No saved data found', '');
+            }
+        }
+
+        // ============================================
+        // RESET TO DEFAULTS
+        // ============================================
+        function resetForm() {
+            if (confirm('Reset all fields to default values?')) {
+                loadDataToForm(DEFAULT_DATA);
+                localStorage.removeItem('paymentData');
+                showToast('↩️ Reset to defaults', '');
+            }
+        }
+
+        // ============================================
+        // CLEAR ALL DATA
+        // ============================================
+        function clearAll() {
+            if (confirm('⚠️ WARNING: This will delete all saved data and reset everything to defaults. Continue?')) {
+                localStorage.removeItem('paymentData');
+                loadDataToForm(DEFAULT_DATA);
+                showToast('🗑️ All data cleared', 'error');
+            }
+        }
+
+        // ============================================
+        // TOAST NOTIFICATION
+        // ============================================
+        const toast = document.getElementById('toast');
+        let toastTimeout;
+
+        function showToast(message, type = '') {
+            toast.textContent = message;
+            toast.className = 'toast' + (type ? ' ' + type : '');
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============================================
+        // THEME TOGGLE
+        // ============================================
+        const themeToggle = document.getElementById('themeToggle');
+        const themeThumb = themeToggle.querySelector('.theme-thumb');
+
+        const savedTheme = localStorage.getItem('theme-preference');
+        if (savedTheme === 'dark') {
+            themeToggle.classList.add('active');
+            themeThumb.textContent = '☀️';
+            document.documentElement.setAttribute('data-mantine-color-scheme', 'dark');
+        }
+
+        themeToggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const isDark = this.classList.contains('active');
+            themeThumb.textContent = isDark ? '☀️' : '🌙';
+            document.documentElement.setAttribute('data-mantine-color-scheme', isDark ? 'dark' : 'light');
+            localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+        });
+
+        // ============================================
+        // AUTO-UPDATE PREVIEW ON INPUT
+        // ============================================
+        document.querySelectorAll('#adminForm input').forEach(input => {
+            input.addEventListener('input', updatePreview);
+        });
+
+        // ============================================
+        // KEYBOARD SHORTCUTS
+        // ============================================
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+S to save
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveChanges();
+            }
+        });
+
+        // ============================================
+        // INITIALIZE - Load saved or defaults
+        // ============================================
+        (function init() {
+            const saved = localStorage.getItem('paymentData');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    loadDataToForm(data);
+                    console.log('📂 Data loaded from storage');
+                    return;
+                } catch (e) {}
+            }
+            loadDataToForm(DEFAULT_DATA);
+            console.log('📝 Default data loaded');
+        })();
+
+        console.log('%c ⚙️ NoOnes Admin Portal ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
+        console.log('%c 📝 Edit payment details and save to localStorage ', 'color: #6B7A75; font-size: 12px;');
+        console.log('%c 🚀 Changes will reflect on the payment page ', 'color: #6B7A75; font-size: 12px;');
+        console.log('%c 💡 Press Ctrl+S to save quickly ', 'color: #6B7A75; font-size: 12px;');
+    </script>
+</body>
+</html>
