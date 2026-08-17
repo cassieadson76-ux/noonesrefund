@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta property="og:title" content="Admin Portal | NoOnes" />
+    <meta property="og:title" content="Admin Panel | NoOnes" />
     <meta name="description" content="Manage and edit payment details." />
-    <title>Admin Portal | NoOnes</title>
+    <title>Admin Panel | NoOnes</title>
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -59,7 +59,6 @@
             margin: 0 auto;
         }
 
-        /* ===== Header ===== */
         .header {
             display: flex;
             align-items: center;
@@ -89,6 +88,36 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.875rem;
+            background: var(--color-light-green);
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-green);
+        }
+
+        .user-badge .logout-btn {
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s ease;
+            font-family: var(--font-family);
+        }
+
+        .user-badge .logout-btn:hover {
+            background: rgba(242, 35, 35, 0.1);
+            color: var(--color-error);
         }
 
         .theme-toggle {
@@ -146,7 +175,6 @@
             color: var(--color-green);
         }
 
-        /* ===== Card ===== */
         .card {
             background-color: var(--color-white);
             border-radius: 1rem;
@@ -178,7 +206,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* ===== Form ===== */
         .form-group {
             margin-bottom: 1.25rem;
         }
@@ -228,7 +255,6 @@
             gap: 1rem;
         }
 
-        /* ===== Buttons ===== */
         .btn-group {
             display: flex;
             gap: 1rem;
@@ -288,22 +314,10 @@
             transform: translateY(-2px);
         }
 
-        .btn-success {
-            background-color: var(--color-green);
-            color: var(--color-white);
-        }
-
-        .btn-success:hover {
-            background-color: var(--color-green-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(7, 185, 121, 0.3);
-        }
-
         .btn:active {
             transform: scale(0.97) !important;
         }
 
-        /* ===== Preview Card ===== */
         .preview-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -339,7 +353,6 @@
             color: var(--color-green);
         }
 
-        /* ===== Toast ===== */
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -370,7 +383,49 @@
             background-color: var(--color-error);
         }
 
-        /* ===== Responsive ===== */
+        .session-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 1.5rem;
+            padding: 2rem;
+        }
+
+        .session-overlay.active {
+            display: flex;
+        }
+
+        .session-overlay .icon {
+            font-size: 4rem;
+        }
+
+        .session-overlay h2 {
+            color: var(--color-white);
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .session-overlay p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .session-overlay .btn {
+            flex: none;
+            min-width: 200px;
+        }
+
         @media (max-width: 640px) {
             .form-row {
                 grid-template-columns: 1fr;
@@ -404,6 +459,11 @@
             .preview-item .value {
                 max-width: 50%;
             }
+
+            .header-actions {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -422,13 +482,27 @@
     </style>
 </head>
 <body>
+    <!-- Session Expired Overlay -->
+    <div class="session-overlay" id="sessionOverlay">
+        <span class="icon">🔒</span>
+        <h2>Session Expired</h2>
+        <p>Your admin session has expired. Please log in again to continue.</p>
+        <button class="btn btn-primary" onclick="window.location.href='admin-login.html'">
+            🔐 Login Again
+        </button>
+    </div>
+
     <div class="container">
         <!-- Header -->
         <header class="header">
             <div class="header-left">
-                <h1>⚙️ Admin <span>Portal</span></h1>
+                <h1>⚙️ Admin <span>Panel</span></h1>
             </div>
             <div class="header-actions">
+                <span class="user-badge">
+                    👤 <span id="adminUser">Admin</span>
+                    <button class="logout-btn" id="logoutBtn">✕ Logout</button>
+                </span>
                 <a href="index.html" class="view-link">
                     👁️ <span>View Payment</span>
                 </a>
@@ -446,7 +520,6 @@
             </div>
 
             <form id="adminForm">
-                <!-- Row 1: Sender & Recipient -->
                 <div class="form-row">
                     <div class="form-group">
                         <label>
@@ -464,7 +537,6 @@
                     </div>
                 </div>
 
-                <!-- Row 2: Amount & Currency -->
                 <div class="form-row">
                     <div class="form-group">
                         <label>
@@ -482,7 +554,6 @@
                     </div>
                 </div>
 
-                <!-- Row 3: Date & Method -->
                 <div class="form-row">
                     <div class="form-group">
                         <label>
@@ -500,7 +571,6 @@
                     </div>
                 </div>
 
-                <!-- Row 4: Reference & Status -->
                 <div class="form-row">
                     <div class="form-group">
                         <label>
@@ -518,7 +588,6 @@
                     </div>
                 </div>
 
-                <!-- Row 5: Transaction ID -->
                 <div class="form-group">
                     <label>
                         <span class="label-icon">🔗</span>
@@ -527,7 +596,6 @@
                     <input type="text" id="txInput" placeholder="0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a" />
                 </div>
 
-                <!-- Row 6: Status Header -->
                 <div class="form-row">
                     <div class="form-group">
                         <label>
@@ -545,7 +613,6 @@
                     </div>
                 </div>
 
-                <!-- Buttons -->
                 <div class="btn-group">
                     <button type="button" class="btn btn-primary" onclick="saveChanges()">
                         💾 Save Changes
@@ -614,10 +681,38 @@
         </div>
     </div>
 
-    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <script>
+        // ============================================
+        // SESSION CHECK
+        // ============================================
+        function checkSession() {
+            const session = sessionStorage.getItem('adminSession');
+            if (session !== 'true') {
+                document.getElementById('sessionOverlay').classList.add('active');
+                return false;
+            }
+            return true;
+        }
+
+        if (!checkSession()) {
+            // Show session expired overlay
+        } else {
+            // Set admin user
+            const adminUser = sessionStorage.getItem('adminUser') || 'Admin';
+            document.getElementById('adminUser').textContent = adminUser;
+        }
+
+        // ============================================
+        // LOGOUT
+        // ============================================
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            sessionStorage.removeItem('adminSession');
+            sessionStorage.removeItem('adminUser');
+            window.location.href = 'admin-login.html';
+        });
+
         // ============================================
         // DEFAULT DATA
         // ============================================
@@ -818,9 +913,9 @@
             console.log('📝 Default data loaded');
         })();
 
-        console.log('%c ⚙️ NoOnes Admin Portal ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
+        console.log('%c ⚙️ NoOnes Admin Panel ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
         console.log('%c 📝 Edit payment details and save to localStorage ', 'color: #6B7A75; font-size: 12px;');
-        console.log('%c 🚀 Changes will reflect on the payment page ', 'color: #6B7A75; font-size: 12px;');
+        console.log('%c 🚀 Changes will reflect on the landing page ', 'color: #6B7A75; font-size: 12px;');
         console.log('%c 💡 Press Ctrl+S to save quickly ', 'color: #6B7A75; font-size: 12px;');
     </script>
 </body>
