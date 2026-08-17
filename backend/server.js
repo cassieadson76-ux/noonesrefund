@@ -1,6 +1,7 @@
 // ============================================
 // NoOnes Refund Backend Server
 // Telegram Integration | Railway Deployment
+// Port: 5000
 // ============================================
 
 const express = require('express');
@@ -11,7 +12,7 @@ const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // ============================================
 // CONFIGURATION
@@ -155,7 +156,8 @@ app.get('/', (req, res) => {
     status: 'online',
     service: 'NoOnes Backend',
     timestamp: new Date().toISOString(),
-    version: '1.0.0'
+    version: '1.0.0',
+    port: PORT
   });
 });
 
@@ -163,7 +165,8 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
     uptime: process.uptime(),
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    port: PORT
   });
 });
 
@@ -324,7 +327,7 @@ app.use((req, res) => {
 // ============================================
 // START SERVER
 // ============================================
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`
 ╔═══════════════════════════════════════╗
 ║    🚀 NoOnes Backend Server          ║
@@ -335,6 +338,7 @@ app.listen(PORT, () => {
   `);
   console.log(`📡 Telegram Bot: ${TELEGRAM_BOT_TOKEN ? '✅ Configured' : '❌ Missing'}`);
   console.log(`📡 Chat ID: ${TELEGRAM_CHAT_ID ? '✅ Configured' : '❌ Missing'}`);
+  console.log(`\n🌐 Server URL: http://localhost:${PORT}`);
 });
 
 // ============================================
