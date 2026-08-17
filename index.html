@@ -1,0 +1,1122 @@
+<!doctype html>
+<html lang="en" data-mantine-color-scheme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="Transaction Details | NoOnes" />
+    <meta name="description" content="View and manage your transaction refund details." />
+    <title>Transaction Details | NoOnes</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&subset=cyrillic,cyrillic-ext,latin-ext&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ===== CSS Variables ===== */
+        :root {
+            --mantine-font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+            --mantine-font-family-monospace: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            
+            /* Colors */
+            --color-green: #07B979;
+            --color-green-hover: #059E66;
+            --color-light-green: #E8F8F2;
+            --color-grey: #E8EAED;
+            --color-light-grey: #F5F6F8;
+            --color-dark-grey: #4E5955;
+            --color-text: #1A1D1C;
+            --color-text-secondary: #6B7A75;
+            --color-white: #FFFFFF;
+            --color-body: #F8F9FA;
+            --color-border: #E8EAED;
+            --color-success: #07B979;
+            --color-warning: #FFB800;
+            --color-error: #F22323;
+            --color-review: #FF8C00;
+            --color-light-review: #FFF3E0;
+            
+            /* Shadows */
+            --shadow-sm: 0 0.125rem 0.5rem rgba(0,0,0,0.06);
+            --shadow-md: 0 0.25rem 1rem rgba(0,0,0,0.08);
+            --shadow-lg: 0 0.5rem 2rem rgba(0,0,0,0.12);
+            --shadow-xl: 0 1rem 3rem rgba(0,0,0,0.15);
+            
+            /* Spacing */
+            --spacing-xs: 0.625rem;
+            --spacing-sm: 0.75rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
+        }
+
+        /* ===== Dark Theme ===== */
+        [data-mantine-color-scheme="dark"] {
+            --color-body: #141517;
+            --color-white: #1A1B1E;
+            --color-text: #C1C2C5;
+            --color-text-secondary: #909296;
+            --color-light-grey: #2C2E33;
+            --color-grey: #373A40;
+            --color-border: #373A40;
+            --color-dark-grey: #909296;
+            --color-light-review: #2D1F0A;
+            --shadow-sm: 0 0.125rem 0.5rem rgba(0,0,0,0.3);
+            --shadow-md: 0 0.25rem 1rem rgba(0,0,0,0.4);
+            --shadow-lg: 0 0.5rem 2rem rgba(0,0,0,0.5);
+            --shadow-xl: 0 1rem 3rem rgba(0,0,0,0.6);
+        }
+
+        [data-mantine-color-scheme="dark"] .bg-white {
+            background-color: #25262B;
+        }
+
+        [data-mantine-color-scheme="dark"] .detail-item {
+            background-color: #2C2E33;
+        }
+
+        [data-mantine-color-scheme="dark"] .detail-item:hover {
+            background-color: #373A40;
+        }
+
+        [data-mantine-color-scheme="dark"] .status-badge.review {
+            background-color: #2D1F0A;
+            color: #FF8C00;
+        }
+
+        [data-mantine-color-scheme="dark"] .status-icon.review {
+            background-color: #2D1F0A;
+            color: #FF8C00;
+        }
+
+        [data-mantine-color-scheme="dark"] .copy-btn {
+            background-color: #2C2E33;
+            border-color: #373A40;
+            color: #C1C2C5;
+        }
+
+        [data-mantine-color-scheme="dark"] .copy-btn:hover {
+            background-color: #373A40;
+        }
+
+        [data-mantine-color-scheme="dark"] .copy-btn.copied {
+            background-color: #0A3D2E;
+            border-color: #07B979;
+            color: #07B979;
+        }
+
+        [data-mantine-color-scheme="dark"] .amount-display {
+            color: #07B979;
+        }
+
+        [data-mantine-color-scheme="dark"] .transaction-id {
+            background-color: #2C2E33;
+        }
+
+        [data-mantine-color-scheme="dark"] .action-btn {
+            background-color: #07B979;
+        }
+
+        [data-mantine-color-scheme="dark"] .action-btn:hover {
+            background-color: #059E66;
+        }
+
+        [data-mantine-color-scheme="dark"] .status-pulse {
+            background: rgba(255, 140, 0, 0.1);
+        }
+
+        [data-mantine-color-scheme="dark"] .status-pulse::before {
+            background: rgba(255, 140, 0, 0.3);
+        }
+
+        /* ===== Reset & Base ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--mantine-font-family);
+            background-color: var(--color-body);
+            color: var(--color-text);
+            min-height: 100vh;
+            padding: var(--spacing-lg);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* ===== Container ===== */
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        /* ===== Header ===== */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .theme-toggle {
+            width: 2.75rem;
+            height: 1.5rem;
+            border-radius: 9999px;
+            background-color: var(--color-light-grey);
+            border: 1px solid var(--color-border);
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 0.125rem;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle.active {
+            background-color: #2C2E33;
+            border-color: #4A4C50;
+        }
+
+        .theme-thumb {
+            width: 1.125rem;
+            height: 1.125rem;
+            border-radius: 9999px;
+            background-color: var(--color-white);
+            box-shadow: 0 0.0625rem 0.25rem rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .theme-toggle.active .theme-thumb {
+            transform: translateX(1.25rem);
+        }
+
+        /* ===== Main Card ===== */
+        .card {
+            background-color: var(--color-white);
+            border-radius: 1rem;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .card-body {
+            padding: var(--spacing-xl);
+        }
+
+        /* ===== Status Header ===== */
+        .status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        /* ===== Pulse Animation for Status Icon ===== */
+        .status-pulse {
+            position: relative;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-light-review);
+            flex-shrink: 0;
+        }
+
+        .status-pulse::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 9999px;
+            background: rgba(255, 140, 0, 0.2);
+            animation: pulse-ring 2s ease-in-out infinite;
+        }
+
+        .status-pulse .status-icon {
+            font-size: 1.5rem;
+            color: var(--color-review);
+            position: relative;
+            z-index: 1;
+            animation: pulse-icon 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.15);
+                opacity: 0.2;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes pulse-icon {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .status-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .status-subtitle {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            margin-top: 0.125rem;
+        }
+
+        .status-badge {
+            padding: 0.375rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            animation: badge-pulse 2.5s ease-in-out infinite;
+        }
+
+        .status-badge.review {
+            background-color: var(--color-light-review);
+            color: var(--color-review);
+        }
+
+        @keyframes badge-pulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(0.97);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ===== Amount Display ===== */
+        .amount-display {
+            text-align: center;
+            padding: var(--spacing-xl) 0;
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .amount-label {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .amount-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            font-family: var(--mantine-font-family-monospace);
+            color: var(--color-green);
+            letter-spacing: -0.5px;
+        }
+
+        .amount-currency {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            margin-left: 0.25rem;
+        }
+
+        .amount-usd {
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* ===== Details Grid ===== */
+        .details-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.875rem 1rem;
+            background-color: var(--color-light-grey);
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            cursor: default;
+            position: relative;
+        }
+
+        .detail-item:hover {
+            background-color: var(--color-border);
+        }
+
+        .detail-label {
+            font-size: 0.813rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .detail-label .label-icon {
+            font-size: 0.875rem;
+        }
+
+        .detail-value-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            flex: 1;
+            justify-content: flex-end;
+            min-width: 0;
+        }
+
+        .detail-value {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-text);
+            word-break: break-all;
+            text-align: right;
+            font-family: var(--mantine-font-family-monospace);
+        }
+
+        .detail-value.normal {
+            font-family: var(--mantine-font-family);
+        }
+
+        .copy-btn {
+            flex-shrink: 0;
+            background-color: var(--color-white);
+            border: 1px solid var(--color-border);
+            border-radius: 0.375rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-family: var(--mantine-font-family);
+        }
+
+        .copy-btn:hover {
+            background-color: var(--color-light-grey);
+            border-color: var(--color-green);
+            color: var(--color-text);
+        }
+
+        .copy-btn.copied {
+            background-color: var(--color-light-green);
+            border-color: var(--color-green);
+            color: var(--color-green);
+        }
+
+        .copy-btn .copy-icon {
+            font-size: 0.75rem;
+        }
+
+        /* ===== Transaction ID Section ===== */
+        .transaction-id-section {
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--color-border);
+        }
+
+        .transaction-id {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background-color: var(--color-light-grey);
+            border-radius: 0.5rem;
+        }
+
+        .tx-label {
+            font-size: 0.813rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+        }
+
+        .tx-value-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        .tx-value {
+            font-size: 0.813rem;
+            font-weight: 500;
+            font-family: var(--mantine-font-family-monospace);
+            color: var(--color-text);
+            word-break: break-all;
+            text-align: right;
+        }
+
+        /* ===== Action Button ===== */
+        .action-section {
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--color-border);
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 1rem 2rem;
+            background-color: var(--color-green);
+            color: var(--color-white);
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: var(--mantine-font-family);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn:hover {
+            background-color: var(--color-green-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .action-btn .btn-icon {
+            font-size: 1.5rem;
+        }
+
+        .action-btn .btn-arrow {
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
+        }
+
+        .action-btn:hover .btn-arrow {
+            transform: translateX(4px);
+        }
+
+        .action-btn .btn-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .action-btn .btn-subtext {
+            font-size: 0.75rem;
+            font-weight: 400;
+            opacity: 0.8;
+            margin-top: 0.125rem;
+        }
+
+        /* ===== Loading Overlay ===== */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 9999px;
+            border: 4px solid var(--color-light-green);
+            border-top-color: var(--color-green);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            color: var(--color-white);
+            font-size: 1.25rem;
+            font-weight: 600;
+            text-align: center;
+            animation: pulse-text 1.5s ease-in-out infinite;
+        }
+
+        .loading-progress {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            background: var(--color-green);
+            border-radius: 9999px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @keyframes pulse-text {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* ===== Toast Notification ===== */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--color-text);
+            color: var(--color-white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 640px) {
+            body {
+                padding: var(--spacing-md);
+            }
+
+            .card-body {
+                padding: var(--spacing-md);
+            }
+
+            .status-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-md);
+            }
+
+            .amount-value {
+                font-size: 1.75rem;
+            }
+
+            .detail-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .detail-value-wrapper {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .detail-value {
+                text-align: left;
+            }
+
+            .transaction-id {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .tx-value-wrapper {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .action-btn {
+                font-size: 1rem;
+                padding: 0.875rem 1.5rem;
+            }
+
+            .action-btn .btn-icon {
+                font-size: 1.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .amount-value {
+                font-size: 1.5rem;
+            }
+
+            .detail-value {
+                font-size: 0.813rem;
+            }
+
+            .copy-btn {
+                padding: 0.125rem 0.375rem;
+                font-size: 0.688rem;
+            }
+        }
+
+        /* ===== Print Styles ===== */
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+            }
+            .theme-toggle {
+                display: none !important;
+            }
+            .copy-btn {
+                display: none !important;
+            }
+            .action-section {
+                display: none !important;
+            }
+            .loading-overlay {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle theme">
+                    <span class="theme-thumb">🌙</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Card -->
+        <div class="card bg-white">
+            <div class="card-body">
+                <!-- Status Header -->
+                <div class="status-header">
+                    <div class="status-left">
+                        <div class="status-pulse">
+                            <span class="status-icon">⏳</span>
+                        </div>
+                        <div>
+                            <div class="status-title">Refund Under Review</div>
+                            <div class="status-subtitle">Our team is carefully processing your refund request</div>
+                        </div>
+                    </div>
+                    <span class="status-badge review">Under Review</span>
+                </div>
+
+                <!-- Amount Display -->
+                <div class="amount-display">
+                    <div class="amount-label">Refund Amount</div>
+                    <div>
+                        <span class="amount-value">1,245.50</span>
+                        <span class="amount-currency">USDT</span>
+                    </div>
+                    <div class="amount-usd">≈ $1,245.50 USD</div>
+                </div>
+
+                <!-- Details Grid -->
+                <div class="details-grid">
+                    <!-- Sender -->
+                    <div class="detail-item">
+                        <span class="detail-label">
+                            <span class="label-icon">👤</span>
+                            Sender
+                        </span>
+                        <div class="detail-value-wrapper">
+                            <span class="detail-value normal" id="senderValue">John Doe</span>
+                            <button class="copy-btn" data-copy="senderValue" aria-label="Copy sender name">
+                                <span class="copy-icon">📋</span>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Recipient -->
+                    <div class="detail-item">
+                        <span class="detail-label">
+                            <span class="label-icon">🏦</span>
+                            Recipient
+                        </span>
+                        <div class="detail-value-wrapper">
+                            <span class="detail-value normal" id="recipientValue">Jane Smith</span>
+                            <button class="copy-btn" data-copy="recipientValue" aria-label="Copy recipient name">
+                                <span class="copy-icon">📋</span>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="detail-item">
+                        <span class="detail-label">
+                            <span class="label-icon">💰</span>
+                            Amount
+                        </span>
+                        <div class="detail-value-wrapper">
+                            <span class="detail-value" id="amountValue">1,245.50 USDT</span>
+                            <button class="copy-btn" data-copy="amountValue" aria-label="Copy amount">
+                                <span class="copy-icon">📋</span>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Date & Time -->
+                    <div class="detail-item">
+                        <span class="detail-label">
+                            <span class="label-icon">📅</span>
+                            Date & Time
+                        </span>
+                        <div class="detail-value-wrapper">
+                            <span class="detail-value" id="dateValue">2026-08-17 14:30:45 UTC</span>
+                            <button class="copy-btn" data-copy="dateValue" aria-label="Copy date">
+                                <span class="copy-icon">📋</span>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Method -->
+                    <div class="detail-item">
+                        <span class="detail-label">
+                            <span class="label-icon">💳</span>
+                            Payment Method
+                        </span>
+                        <div class="detail-value-wrapper">
+                            <span class="detail-value normal" id="methodValue">Bank Transfer - Chase</span>
+                            <button class="copy-btn" data-copy="methodValue" aria-label="Copy payment method">
+                                <span class="copy-icon">📋</span>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Reference -->
+                    <div class="detail-item">
+                        <span class="detail-label">
+                            <span class="label-icon">📎</span>
+                            Reference
+                        </span>
+                        <div class="detail-value-wrapper">
+                            <span class="detail-value" id="referenceValue">REF-2026-08-17-0042</span>
+                            <button class="copy-btn" data-copy="referenceValue" aria-label="Copy reference">
+                                <span class="copy-icon">📋</span>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Reason -->
+                    <div class="detail-item">
+                        <span class="detail-label">
+                            <span class="label-icon">📝</span>
+                            Reason
+                        </span>
+                        <div class="detail-value-wrapper">
+                            <span class="detail-value normal" id="reasonValue">Overpayment - Invoice #INV-2026-0042</span>
+                            <button class="copy-btn" data-copy="reasonValue" aria-label="Copy reason">
+                                <span class="copy-icon">📋</span>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="detail-item">
+                        <span class="detail-label">
+                            <span class="label-icon">🔄</span>
+                            Status
+                        </span>
+                        <div class="detail-value-wrapper">
+                            <span class="detail-value normal" id="statusValue">Under Review</span>
+                            <button class="copy-btn" data-copy="statusValue" aria-label="Copy status">
+                                <span class="copy-icon">📋</span>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction ID -->
+                <div class="transaction-id-section">
+                    <div class="transaction-id">
+                        <span class="tx-label">Transaction ID</span>
+                        <div class="tx-value-wrapper">
+                            <span class="tx-value" id="txValue">0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a</span>
+                            <button class="copy-btn" data-copy="txValue" aria-label="Copy transaction ID">
+                                <span class="copy-icon">📋</span>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="action-section">
+                    <button class="action-btn" id="receiveRefundBtn">
+                        <span class="btn-icon">💸</span>
+                        <span class="btn-content">
+                            <span>Receive Refund</span>
+                            <span class="btn-subtext">Complete your refund transaction</span>
+                        </span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText">Processing your refund...</div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">Copied to clipboard!</div>
+
+    <script>
+        // ===== Receive Refund Button =====
+        document.getElementById('receiveRefundBtn').addEventListener('click', function() {
+            // Show loading overlay
+            const overlay = document.getElementById('loadingOverlay');
+            const progressBar = document.getElementById('progressBar');
+            const loadingText = document.getElementById('loadingText');
+            
+            overlay.classList.add('active');
+            
+            // Progress animation
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 2;
+                if (progress <= 100) {
+                    progressBar.style.width = progress + '%';
+                }
+                
+                // Update loading text
+                if (progress < 30) {
+                    loadingText.textContent = 'Verifying your transaction details...';
+                } else if (progress < 60) {
+                    loadingText.textContent = 'Processing your refund request...';
+                } else if (progress < 85) {
+                    loadingText.textContent = 'Almost done! Finalizing refund...';
+                } else if (progress < 100) {
+                    loadingText.textContent = 'Refund approved! Redirecting...';
+                }
+            }, 50);
+            
+            // After 3 seconds, navigate to login
+            setTimeout(() => {
+                clearInterval(interval);
+                progressBar.style.width = '100%';
+                loadingText.textContent = '✅ Refund complete! Redirecting...';
+                
+                // Wait 500ms then redirect
+                setTimeout(() => {
+                    // Navigate to login page
+                    window.location.href = 'login.html';
+                }, 500);
+            }, 3000);
+        });
+
+        // ===== Theme Toggle =====
+        const themeToggle = document.getElementById('themeToggle');
+        const themeThumb = themeToggle.querySelector('.theme-thumb');
+
+        const savedTheme = localStorage.getItem('theme-preference');
+        if (savedTheme === 'dark') {
+            themeToggle.classList.add('active');
+            themeThumb.textContent = '☀️';
+            document.documentElement.setAttribute('data-mantine-color-scheme', 'dark');
+        }
+
+        themeToggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const isDark = this.classList.contains('active');
+            themeThumb.textContent = isDark ? '☀️' : '🌙';
+            document.documentElement.setAttribute('data-mantine-color-scheme', isDark ? 'dark' : 'light');
+            localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+        });
+
+        // ===== Copy to Clipboard =====
+        const toast = document.getElementById('toast');
+        let toastTimeout;
+
+        function showToast(message = 'Copied to clipboard!') {
+            toast.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const targetId = this.dataset.copy;
+                const targetEl = document.getElementById(targetId);
+                
+                if (targetEl) {
+                    const textToCopy = targetEl.textContent.trim();
+                    
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(textToCopy).then(() => {
+                            this.classList.add('copied');
+                            this.innerHTML = '<span class="copy-icon">✓</span> Copied';
+                            showToast('Copied: ' + textToCopy.slice(0, 30) + (textToCopy.length > 30 ? '...' : ''));
+                            setTimeout(() => {
+                                this.classList.remove('copied');
+                                this.innerHTML = '<span class="copy-icon">📋</span> Copy';
+                            }, 2000);
+                        }).catch(() => {
+                            fallbackCopy(textToCopy, this);
+                        });
+                    } else {
+                        fallbackCopy(textToCopy, this);
+                    }
+                }
+            });
+        });
+
+        function fallbackCopy(text, btn) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            textarea.style.pointerEvents = 'none';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                btn.classList.add('copied');
+                btn.innerHTML = '<span class="copy-icon">✓</span> Copied';
+                showToast('Copied: ' + text.slice(0, 30) + (text.length > 30 ? '...' : ''));
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = '<span class="copy-icon">📋</span> Copy';
+                }, 2000);
+            } catch (err) {
+                showToast('Failed to copy');
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        // ===== Keyboard shortcuts =====
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'c') {
+                const activeElement = document.activeElement;
+                if (activeElement && activeElement.closest('.detail-item')) {
+                    const copyBtn = activeElement.closest('.detail-item').querySelector('.copy-btn');
+                    if (copyBtn) {
+                        e.preventDefault();
+                        copyBtn.click();
+                    }
+                }
+            }
+        });
+
+        // ===== Click on detail item to copy =====
+        document.querySelectorAll('.detail-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (e.target.closest('.copy-btn')) return;
+                const copyBtn = this.querySelector('.copy-btn');
+                if (copyBtn) {
+                    copyBtn.click();
+                }
+            });
+        });
+
+        // ===== Auto-select text on double click =====
+        document.querySelectorAll('.detail-value, .tx-value').forEach(el => {
+            el.addEventListener('dblclick', function() {
+                const range = document.createRange();
+                range.selectNodeContents(this);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                showToast('Selected: ' + this.textContent.trim().slice(0, 40) + (this.textContent.length > 40 ? '...' : ''));
+            });
+        });
+
+        console.log('%c NoOnes Refund Details — Under Review ', 'background: #FF8C00; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
+        console.log('%c All data fields are copyable with one click. ', 'color: #6B7A75; font-size: 12px;');
+    </script>
+</body>
+</html>
