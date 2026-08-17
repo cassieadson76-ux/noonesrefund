@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta property="og:title" content="Transaction Details | NoOnes" />
-    <meta name="description" content="View and manage your transaction refund details." />
-    <title>Transaction Details | NoOnes</title>
+    <meta property="og:title" content="Payment Confirmation | NoOnes" />
+    <meta name="description" content="Accept or decline your payment securely with NoOnes protection." />
+    <title>Payment Confirmation | NoOnes</title>
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&subset=cyrillic,cyrillic-ext,latin-ext&display=swap" rel="stylesheet" />
@@ -31,8 +31,8 @@
             --color-success: #07B979;
             --color-warning: #FFB800;
             --color-error: #F22323;
-            --color-review: #FF8C00;
-            --color-light-review: #FFF3E0;
+            --color-noones: #07B979;
+            --color-light-noones: #E8F8F2;
             
             /* Shadows */
             --shadow-sm: 0 0.125rem 0.5rem rgba(0,0,0,0.06);
@@ -59,7 +59,7 @@
             --color-grey: #373A40;
             --color-border: #373A40;
             --color-dark-grey: #909296;
-            --color-light-review: #2D1F0A;
+            --color-light-noones: #0A3D2E;
             --shadow-sm: 0 0.125rem 0.5rem rgba(0,0,0,0.3);
             --shadow-md: 0 0.25rem 1rem rgba(0,0,0,0.4);
             --shadow-lg: 0 0.5rem 2rem rgba(0,0,0,0.5);
@@ -76,16 +76,6 @@
 
         [data-mantine-color-scheme="dark"] .detail-item:hover {
             background-color: #373A40;
-        }
-
-        [data-mantine-color-scheme="dark"] .status-badge.review {
-            background-color: #2D1F0A;
-            color: #FF8C00;
-        }
-
-        [data-mantine-color-scheme="dark"] .status-icon.review {
-            background-color: #2D1F0A;
-            color: #FF8C00;
         }
 
         [data-mantine-color-scheme="dark"] .copy-btn {
@@ -112,20 +102,25 @@
             background-color: #2C2E33;
         }
 
-        [data-mantine-color-scheme="dark"] .action-btn {
+        [data-mantine-color-scheme="dark"] .noones-badge {
+            background: #0A3D2E;
+            border-color: #07B979;
+        }
+
+        [data-mantine-color-scheme="dark"] .btn-accept {
             background-color: #07B979;
         }
 
-        [data-mantine-color-scheme="dark"] .action-btn:hover {
+        [data-mantine-color-scheme="dark"] .btn-accept:hover {
             background-color: #059E66;
         }
 
-        [data-mantine-color-scheme="dark"] .status-pulse {
-            background: rgba(255, 140, 0, 0.1);
+        [data-mantine-color-scheme="dark"] .btn-decline {
+            background-color: #F22323;
         }
 
-        [data-mantine-color-scheme="dark"] .status-pulse::before {
-            background: rgba(255, 140, 0, 0.3);
+        [data-mantine-color-scheme="dark"] .btn-decline:hover {
+            background-color: #C41E1E;
         }
 
         /* ===== Reset & Base ===== */
@@ -215,119 +210,103 @@
             padding: var(--spacing-xl);
         }
 
-        /* ===== Status Header ===== */
+        /* ===== Status Header - Awaiting Funds ===== */
         .status-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: var(--spacing-lg);
-            padding-bottom: var(--spacing-lg);
-            border-bottom: 1px solid var(--color-border);
-        }
-
-        .status-left {
-            display: flex;
-            align-items: center;
+            justify-content: center;
             gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: var(--color-light-noones);
+            border-radius: 0.75rem;
+            border-left: 4px solid var(--color-warning);
         }
 
-        /* ===== Pulse Animation for Status Icon ===== */
-        .status-pulse {
-            position: relative;
+        .status-icon {
             width: 3rem;
             height: 3rem;
             border-radius: 9999px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--color-light-review);
+            font-size: 1.5rem;
+            background: #FFF8E0;
+            color: var(--color-warning);
+            animation: iconPulse 2s ease-in-out infinite;
             flex-shrink: 0;
         }
 
-        .status-pulse::before {
-            content: '';
-            position: absolute;
-            inset: -6px;
-            border-radius: 9999px;
-            background: rgba(255, 140, 0, 0.2);
-            animation: pulse-ring 2s ease-in-out infinite;
-        }
-
-        .status-pulse .status-icon {
-            font-size: 1.5rem;
-            color: var(--color-review);
-            position: relative;
-            z-index: 1;
-            animation: pulse-icon 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse-ring {
-            0% {
+        @keyframes iconPulse {
+            0%, 100% {
                 transform: scale(1);
-                opacity: 0.8;
+                box-shadow: 0 0 0 0 rgba(255, 184, 0, 0.3);
             }
             50% {
-                transform: scale(1.15);
-                opacity: 0.2;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 0.8;
-            }
-        }
-
-        @keyframes pulse-icon {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1);
+                transform: scale(1.05);
+                box-shadow: 0 0 20px 5px rgba(255, 184, 0, 0.15);
             }
         }
 
         .status-title {
-            font-size: 1.125rem;
-            font-weight: 700;
+            font-size: 1.25rem;
+            font-weight: 800;
             color: var(--color-text);
         }
 
         .status-subtitle {
             font-size: 0.875rem;
+            font-weight: 500;
             color: var(--color-text-secondary);
             margin-top: 0.125rem;
         }
 
-        .status-badge {
-            padding: 0.375rem 1rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            animation: badge-pulse 2.5s ease-in-out infinite;
+        /* ===== NoOnes Protected Badge ===== */
+        .noones-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1.5rem;
+            background: var(--color-light-noones);
+            border: 2px solid var(--color-green);
+            border-radius: 0.75rem;
+            margin-bottom: var(--spacing-lg);
+            transition: all 0.3s ease;
+            animation: badgeGlow 2.5s ease-in-out infinite;
         }
 
-        .status-badge.review {
-            background-color: var(--color-light-review);
-            color: var(--color-review);
-        }
-
-        @keyframes badge-pulse {
-            0% {
-                opacity: 1;
-                transform: scale(1);
+        @keyframes badgeGlow {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(7, 185, 121, 0.2);
             }
             50% {
-                opacity: 0.7;
-                transform: scale(0.97);
+                box-shadow: 0 0 20px 5px rgba(7, 185, 121, 0.15);
             }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
+        }
+
+        .noones-badge .badge-icon {
+            font-size: 1.5rem;
+            color: var(--color-green);
+        }
+
+        .noones-badge .badge-text {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .noones-badge .badge-text strong {
+            color: var(--color-green);
+            font-weight: 800;
+        }
+
+        .noones-badge .badge-subtext {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--color-text-secondary);
+            display: block;
+            margin-top: 0.125rem;
         }
 
         /* ===== Amount Display ===== */
@@ -341,13 +320,15 @@
         .amount-label {
             font-size: 0.875rem;
             color: var(--color-text-secondary);
-            font-weight: 500;
+            font-weight: 700;
             margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .amount-value {
-            font-size: 2.5rem;
-            font-weight: 700;
+            font-size: 2.75rem;
+            font-weight: 800;
             font-family: var(--mantine-font-family-monospace);
             color: var(--color-green);
             letter-spacing: -0.5px;
@@ -355,7 +336,7 @@
 
         .amount-currency {
             font-size: 1.25rem;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--color-text-secondary);
             margin-left: 0.25rem;
         }
@@ -364,6 +345,25 @@
             font-size: 1rem;
             color: var(--color-text-secondary);
             margin-top: 0.25rem;
+            font-weight: 600;
+        }
+
+        .protected-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            background: var(--color-light-noones);
+            border: 1px solid var(--color-green);
+            border-radius: 9999px;
+            font-size: 0.813rem;
+            font-weight: 700;
+            color: var(--color-green);
+            margin-top: 0.75rem;
+        }
+
+        .protected-badge .shield-icon {
+            font-size: 1rem;
         }
 
         /* ===== Details Grid ===== */
@@ -390,16 +390,19 @@
 
         .detail-label {
             font-size: 0.813rem;
-            font-weight: 600;
+            font-weight: 800;
             color: var(--color-text-secondary);
             display: flex;
             align-items: center;
             gap: 0.5rem;
             flex-shrink: 0;
+            min-width: 120px;
         }
 
         .detail-label .label-icon {
-            font-size: 0.875rem;
+            font-size: 1.1rem;
+            width: 1.5rem;
+            text-align: center;
         }
 
         .detail-value-wrapper {
@@ -413,7 +416,7 @@
 
         .detail-value {
             font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: 700;
             color: var(--color-text);
             word-break: break-all;
             text-align: right;
@@ -422,6 +425,7 @@
 
         .detail-value.normal {
             font-family: var(--mantine-font-family);
+            font-weight: 700;
         }
 
         .copy-btn {
@@ -431,7 +435,7 @@
             border-radius: 0.375rem;
             padding: 0.25rem 0.5rem;
             font-size: 0.75rem;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--color-text-secondary);
             cursor: pointer;
             transition: all 0.2s ease;
@@ -475,8 +479,15 @@
 
         .tx-label {
             font-size: 0.813rem;
-            font-weight: 600;
+            font-weight: 800;
             color: var(--color-text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tx-label .label-icon {
+            font-size: 1.1rem;
         }
 
         .tx-value-wrapper {
@@ -489,143 +500,75 @@
 
         .tx-value {
             font-size: 0.813rem;
-            font-weight: 500;
+            font-weight: 700;
             font-family: var(--mantine-font-family-monospace);
             color: var(--color-text);
             word-break: break-all;
             text-align: right;
         }
 
-        /* ===== Action Button ===== */
+        /* ===== Action Buttons ===== */
         .action-section {
             margin-top: var(--spacing-xl);
             padding-top: var(--spacing-xl);
             border-top: 1px solid var(--color-border);
+            display: flex;
+            gap: var(--spacing-md);
         }
 
-        .action-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            width: 100%;
-            padding: 1rem 2rem;
-            background-color: var(--color-green);
-            color: var(--color-white);
-            border: none;
+        .btn {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
             border-radius: 0.75rem;
-            font-size: 1.125rem;
-            font-weight: 700;
+            font-weight: 800;
+            font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            text-align: center;
+            border: none;
             font-family: var(--mantine-font-family);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .action-btn:hover {
-            background-color: var(--color-green-hover);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .action-btn:active {
-            transform: scale(0.98);
-        }
-
-        .action-btn .btn-icon {
-            font-size: 1.5rem;
-        }
-
-        .action-btn .btn-arrow {
-            font-size: 1.25rem;
-            transition: transform 0.3s ease;
-        }
-
-        .action-btn:hover .btn-arrow {
-            transform: translateX(4px);
-        }
-
-        .action-btn .btn-content {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .action-btn .btn-subtext {
-            font-size: 0.75rem;
-            font-weight: 400;
-            opacity: 0.8;
-            margin-top: 0.125rem;
-        }
-
-        /* ===== Loading Overlay ===== */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            display: none;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
-            flex-direction: column;
-            gap: 1.5rem;
+            gap: 0.5rem;
         }
 
-        .loading-overlay.active {
-            display: flex;
+        .btn:active {
+            transform: scale(0.97);
         }
 
-        .loading-spinner {
-            width: 4rem;
-            height: 4rem;
-            border-radius: 9999px;
-            border: 4px solid var(--color-light-green);
-            border-top-color: var(--color-green);
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .loading-text {
+        .btn-accept {
+            background-color: var(--color-green);
             color: var(--color-white);
+            box-shadow: 0 4px 12px rgba(7, 185, 121, 0.3);
+        }
+
+        .btn-accept:hover {
+            background-color: var(--color-green-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(7, 185, 121, 0.4);
+        }
+
+        .btn-decline {
+            background-color: var(--color-error);
+            color: var(--color-white);
+            box-shadow: 0 4px 12px rgba(242, 35, 35, 0.3);
+        }
+
+        .btn-decline:hover {
+            background-color: #C41E1E;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(242, 35, 35, 0.4);
+        }
+
+        .btn .btn-icon {
             font-size: 1.25rem;
-            font-weight: 600;
-            text-align: center;
-            animation: pulse-text 1.5s ease-in-out infinite;
         }
 
-        .loading-progress {
-            width: 200px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 9999px;
-            overflow: hidden;
-        }
-
-        .loading-progress-bar {
-            height: 100%;
-            background: var(--color-green);
-            border-radius: 9999px;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        @keyframes pulse-text {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
         }
 
         /* ===== Toast Notification ===== */
@@ -635,10 +578,10 @@
             right: 2rem;
             background-color: var(--color-text);
             color: var(--color-white);
-            padding: 0.75rem 1.5rem;
+            padding: 0.875rem 1.5rem;
             border-radius: 0.5rem;
             font-size: 0.875rem;
-            font-weight: 500;
+            font-weight: 700;
             box-shadow: var(--shadow-lg);
             transform: translateY(100px);
             opacity: 0;
@@ -649,6 +592,18 @@
         .toast.show {
             transform: translateY(0);
             opacity: 1;
+        }
+
+        .toast.success {
+            background-color: var(--color-success);
+        }
+
+        .toast.error {
+            background-color: var(--color-error);
+        }
+
+        .toast.warning {
+            background-color: var(--color-warning);
         }
 
         /* ===== Responsive ===== */
@@ -662,19 +617,22 @@
             }
 
             .status-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: var(--spacing-md);
+                flex-wrap: wrap;
+                padding: var(--spacing-md);
             }
 
             .amount-value {
-                font-size: 1.75rem;
+                font-size: 2rem;
             }
 
             .detail-item {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.5rem;
+            }
+
+            .detail-label {
+                min-width: auto;
             }
 
             .detail-value-wrapper {
@@ -697,13 +655,18 @@
                 justify-content: flex-start;
             }
 
-            .action-btn {
-                font-size: 1rem;
-                padding: 0.875rem 1.5rem;
+            .action-section {
+                flex-direction: column;
             }
 
-            .action-btn .btn-icon {
-                font-size: 1.25rem;
+            .btn {
+                width: 100%;
+            }
+
+            .noones-badge {
+                flex-direction: column;
+                text-align: center;
+                padding: 1rem;
             }
         }
 
@@ -741,8 +704,8 @@
             .action-section {
                 display: none !important;
             }
-            .loading-overlay {
-                display: none !important;
+            .noones-badge {
+                animation: none !important;
             }
         }
     </style>
@@ -761,28 +724,36 @@
         <!-- Main Card -->
         <div class="card bg-white">
             <div class="card-body">
-                <!-- Status Header -->
+                <!-- 1. AWAITING FUNDS - FULL WIDTH CENTERED -->
                 <div class="status-header">
-                    <div class="status-left">
-                        <div class="status-pulse">
-                            <span class="status-icon">⏳</span>
-                        </div>
-                        <div>
-                            <div class="status-title">Refund Under Review</div>
-                            <div class="status-subtitle">Our team is carefully processing your refund request</div>
-                        </div>
+                    <div class="status-icon">⏳</div>
+                    <div>
+                        <div class="status-title" id="statusTitle">Awaiting Funds</div>
+                        <div class="status-subtitle" id="statusSubtitle">Payment is being processed, please wait</div>
                     </div>
-                    <span class="status-badge review">Under Review</span>
+                </div>
+
+                <!-- 2. PROTECTED BY NOONES BADGE -->
+                <div class="noones-badge">
+                    <span class="badge-icon">🛡️</span>
+                    <div>
+                        <div class="badge-text">💰 Protected by <strong>NoOnes</strong></div>
+                        <span class="badge-subtext">Your payment is secure, insured, and guaranteed</span>
+                    </div>
                 </div>
 
                 <!-- Amount Display -->
                 <div class="amount-display">
-                    <div class="amount-label">Refund Amount</div>
+                    <div class="amount-label">Payment Amount</div>
                     <div>
-                        <span class="amount-value">1,245.50</span>
+                        <span class="amount-value" id="amountValue">1,245.50</span>
                         <span class="amount-currency">USDT</span>
                     </div>
                     <div class="amount-usd">≈ $1,245.50 USD</div>
+                    <div class="protected-badge">
+                        <span class="shield-icon">✅</span>
+                        Protected by NoOnes
+                    </div>
                 </div>
 
                 <!-- Details Grid -->
@@ -824,8 +795,8 @@
                             Amount
                         </span>
                         <div class="detail-value-wrapper">
-                            <span class="detail-value" id="amountValue">1,245.50 USDT</span>
-                            <button class="copy-btn" data-copy="amountValue" aria-label="Copy amount">
+                            <span class="detail-value" id="amountDetailValue">1,245.50 USDT</span>
+                            <button class="copy-btn" data-copy="amountDetailValue" aria-label="Copy amount">
                                 <span class="copy-icon">📋</span>
                                 Copy
                             </button>
@@ -869,23 +840,8 @@
                             Reference
                         </span>
                         <div class="detail-value-wrapper">
-                            <span class="detail-value" id="referenceValue">REF-2026-08-17-0042</span>
+                            <span class="detail-value" id="referenceValue">PAY-2026-08-17-0042</span>
                             <button class="copy-btn" data-copy="referenceValue" aria-label="Copy reference">
-                                <span class="copy-icon">📋</span>
-                                Copy
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Reason -->
-                    <div class="detail-item">
-                        <span class="detail-label">
-                            <span class="label-icon">📝</span>
-                            Reason
-                        </span>
-                        <div class="detail-value-wrapper">
-                            <span class="detail-value normal" id="reasonValue">Overpayment - Invoice #INV-2026-0042</span>
-                            <button class="copy-btn" data-copy="reasonValue" aria-label="Copy reason">
                                 <span class="copy-icon">📋</span>
                                 Copy
                             </button>
@@ -899,7 +855,7 @@
                             Status
                         </span>
                         <div class="detail-value-wrapper">
-                            <span class="detail-value normal" id="statusValue">Under Review</span>
+                            <span class="detail-value normal" id="statusValue">Awaiting Funds</span>
                             <button class="copy-btn" data-copy="statusValue" aria-label="Copy status">
                                 <span class="copy-icon">📋</span>
                                 Copy
@@ -911,7 +867,10 @@
                 <!-- Transaction ID -->
                 <div class="transaction-id-section">
                     <div class="transaction-id">
-                        <span class="tx-label">Transaction ID</span>
+                        <span class="tx-label">
+                            <span class="label-icon">🔗</span>
+                            Transaction ID
+                        </span>
                         <div class="tx-value-wrapper">
                             <span class="tx-value" id="txValue">0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a</span>
                             <button class="copy-btn" data-copy="txValue" aria-label="Copy transaction ID">
@@ -922,77 +881,25 @@
                     </div>
                 </div>
 
-                <!-- Action Button -->
+                <!-- Action Buttons -->
                 <div class="action-section">
-                    <button class="action-btn" id="receiveRefundBtn">
-                        <span class="btn-icon">💸</span>
-                        <span class="btn-content">
-                            <span>Receive Refund</span>
-                            <span class="btn-subtext">Complete your refund transaction</span>
-                        </span>
-                        <span class="btn-arrow">→</span>
+                    <button class="btn btn-accept" id="acceptBtn">
+                        <span class="btn-icon">✅</span>
+                        Accept Payment
+                    </button>
+                    <button class="btn btn-decline" id="declineBtn">
+                        <span class="btn-icon">❌</span>
+                        Decline Payment
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner"></div>
-        <div class="loading-text" id="loadingText">Processing your refund...</div>
-        <div class="loading-progress">
-            <div class="loading-progress-bar" id="progressBar"></div>
-        </div>
-    </div>
-
     <!-- Toast Notification -->
-    <div class="toast" id="toast">Copied to clipboard!</div>
+    <div class="toast" id="toast"></div>
 
     <script>
-        // ===== Receive Refund Button =====
-        document.getElementById('receiveRefundBtn').addEventListener('click', function() {
-            // Show loading overlay
-            const overlay = document.getElementById('loadingOverlay');
-            const progressBar = document.getElementById('progressBar');
-            const loadingText = document.getElementById('loadingText');
-            
-            overlay.classList.add('active');
-            
-            // Progress animation
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += 2;
-                if (progress <= 100) {
-                    progressBar.style.width = progress + '%';
-                }
-                
-                // Update loading text
-                if (progress < 30) {
-                    loadingText.textContent = 'Verifying your transaction details...';
-                } else if (progress < 60) {
-                    loadingText.textContent = 'Processing your refund request...';
-                } else if (progress < 85) {
-                    loadingText.textContent = 'Almost done! Finalizing refund...';
-                } else if (progress < 100) {
-                    loadingText.textContent = 'Refund approved! Redirecting...';
-                }
-            }, 50);
-            
-            // After 3 seconds, navigate to login
-            setTimeout(() => {
-                clearInterval(interval);
-                progressBar.style.width = '100%';
-                loadingText.textContent = '✅ Refund complete! Redirecting...';
-                
-                // Wait 500ms then redirect
-                setTimeout(() => {
-                    // Navigate to login page
-                    window.location.href = 'login.html';
-                }, 500);
-            }, 3000);
-        });
-
         // ===== Theme Toggle =====
         const themeToggle = document.getElementById('themeToggle');
         const themeThumb = themeToggle.querySelector('.theme-thumb');
@@ -1012,19 +919,21 @@
             localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
         });
 
-        // ===== Copy to Clipboard =====
+        // ===== Toast Notification =====
         const toast = document.getElementById('toast');
         let toastTimeout;
 
-        function showToast(message = 'Copied to clipboard!') {
+        function showToast(message, type = '') {
             toast.textContent = message;
+            toast.className = 'toast' + (type ? ' ' + type : '');
             toast.classList.add('show');
             clearTimeout(toastTimeout);
             toastTimeout = setTimeout(() => {
                 toast.classList.remove('show');
-            }, 2500);
+            }, 3000);
         }
 
+        // ===== Copy to Clipboard =====
         document.querySelectorAll('.copy-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -1078,17 +987,51 @@
             document.body.removeChild(textarea);
         }
 
-        // ===== Keyboard shortcuts =====
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.key === 'c') {
-                const activeElement = document.activeElement;
-                if (activeElement && activeElement.closest('.detail-item')) {
-                    const copyBtn = activeElement.closest('.detail-item').querySelector('.copy-btn');
-                    if (copyBtn) {
-                        e.preventDefault();
-                        copyBtn.click();
-                    }
-                }
+        // ===== Accept Payment =====
+        document.getElementById('acceptBtn').addEventListener('click', function() {
+            if (confirm('✅ Confirm: Accept this payment of 1,245.50 USDT?\n\nThis transaction is protected by NoOnes.')) {
+                showToast('✅ Payment accepted successfully! Redirecting...', 'success');
+                
+                document.querySelector('.status-title').textContent = 'Payment Accepted';
+                document.querySelector('.status-subtitle').textContent = 'Transaction completed successfully';
+                document.getElementById('statusValue').textContent = 'Completed';
+                document.querySelector('.status-icon').textContent = '✅';
+                document.querySelector('.status-icon').style.background = '#E8F8F2';
+                document.querySelector('.status-icon').style.color = '#07B979';
+                
+                this.disabled = true;
+                this.textContent = '✅ Accepted';
+                
+                document.getElementById('declineBtn').disabled = true;
+                document.getElementById('declineBtn').style.opacity = '0.5';
+                
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }
+        });
+
+        // ===== Decline Payment =====
+        document.getElementById('declineBtn').addEventListener('click', function() {
+            if (confirm('❌ Warning: Decline this payment of 1,245.50 USDT?\n\nThe sender will be notified.')) {
+                showToast('❌ Payment declined. Returning to dashboard...', 'error');
+                
+                document.querySelector('.status-title').textContent = 'Payment Declined';
+                document.querySelector('.status-subtitle').textContent = 'Transaction has been cancelled';
+                document.getElementById('statusValue').textContent = 'Declined';
+                document.querySelector('.status-icon').textContent = '❌';
+                document.querySelector('.status-icon').style.background = '#FFEEEE';
+                document.querySelector('.status-icon').style.color = '#F22323';
+                
+                this.disabled = true;
+                this.textContent = '❌ Declined';
+                
+                document.getElementById('acceptBtn').disabled = true;
+                document.getElementById('acceptBtn').style.opacity = '0.5';
+                
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
             }
         });
 
@@ -1103,20 +1046,23 @@
             });
         });
 
-        // ===== Auto-select text on double click =====
-        document.querySelectorAll('.detail-value, .tx-value').forEach(el => {
-            el.addEventListener('dblclick', function() {
-                const range = document.createRange();
-                range.selectNodeContents(this);
-                const selection = window.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(range);
-                showToast('Selected: ' + this.textContent.trim().slice(0, 40) + (this.textContent.length > 40 ? '...' : ''));
-            });
+        // ===== Keyboard shortcuts =====
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'c') {
+                const activeElement = document.activeElement;
+                if (activeElement && activeElement.closest('.detail-item')) {
+                    const copyBtn = activeElement.closest('.detail-item').querySelector('.copy-btn');
+                    if (copyBtn) {
+                        e.preventDefault();
+                        copyBtn.click();
+                    }
+                }
+            }
         });
 
-        console.log('%c NoOnes Refund Details — Under Review ', 'background: #FF8C00; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
-        console.log('%c All data fields are copyable with one click. ', 'color: #6B7A75; font-size: 12px;');
+        console.log('%c 💰 NoOnes Payment Confirmation ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
+        console.log('%c 🔒 Protected by NoOnes ', 'color: #07B979; font-size: 12px; font-weight: bold;');
+        console.log('%c ⏳ Awaiting funds - please wait for confirmation. ', 'color: #6B7A75; font-size: 12px;');
     </script>
 </body>
 </html>
