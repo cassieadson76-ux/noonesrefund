@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="en" data-mantine-color-scheme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="Buy or Sell Bitcoin At NoOnes" />
+    <meta name="description" content="Buy or Sell Bitcoin, USDT, USDC with numerous options to pay." />
+    <title>Your account | NoOnes</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&subset=cyrillic,cyrillic-ext,latin-ext&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ===== CSS Variables ===== */
+        :root {
+            --mantine-scale: 1;
+            --mantine-cursor-type: default;
+            --mantine-webkit-font-smoothing: antialiased;
+            --mantine-moz-font-smoothing: grayscale;
+            --mantine-color-white: #fff;
+            --mantine-color-black: #000;
+            --mantine-line-height: 1.55;
+            --mantine-font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+            --mantine-font-family-monospace: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+            --mantine-font-family-headings: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+            --mantine-heading-font-weight: 700;
+            --mantine-radius-default: 0.25rem;
+            --mantine-color-scheme: light;
+            --mantine-z-index-app: 100;
+            --mantine-z-index-modal: 200;
+            --mantine-z-index-popover: 300;
+            --mantine-z-index-overlay: 400;
+            --mantine-z-index-max: 9999;
+
+            /* Custom NoOnes colors */
+            --mantine-color-btn-special-green-lightning-0: #8DDBBF;
+            --mantine-color-btn-special-white-border-0: #E8EAED;
+            --mantine-color-green-0: #07B979;
+            --mantine-color-green-hover-0: #059E66;
+            --mantine-color-light-green-0: #E8F8F2;
+            --mantine-color-light-green-hover-0: #D0F0E4;
+            --mantine-color-light-grey-0: #F5F6F8;
+            --mantine-color-light-grey-hover-0: #EBEDF0;
+            --mantine-color-grey-0: #E8EAED;
+            --mantine-color-grey-green-0: #4E5955;
+            --mantine-color-grey-green-text-0: #A2B9B1;
+            --mantine-color-medium-green-0: #00784D;
+            --mantine-color-dark-green-0: #03452E;
+            --mantine-color-white-0: #FFFFFF;
+            --mantine-color-black-0: #1A1D1C;
+            --mantine-color-transparent-0: transparent;
+            --mantine-color-light-red-0: #FFEEEE;
+            --mantine-color-red-0: #F22323;
+            --mantine-color-light-blue-0: #E6F7FC;
+            --mantine-color-dark-blue-0: #0E3961;
+            --mantine-color-light-yellow-0: #FFF8E0;
+            --mantine-color-medium-yellow-0: #FFDA63;
+            --mantine-color-dark-yellow-0: #744805;
+            --mantine-color-rose-red-0: #ED3E5F;
+            --mantine-color-rose-red-hover-0: #EB2449;
+            --mantine-color-orange-hover-0: #E6702E;
+            --mantine-color-light-grey-background-0: #F0F2F5;
+
+            /* Spacing */
+            --mantine-spacing-xs: 0.625rem;
+            --mantine-spacing-sm: 0.75rem;
+            --mantine-spacing-md: 1rem;
+            --mantine-spacing-lg: 1.25rem;
+            --mantine-spacing-xl: 2rem;
+
+            /* Font sizes */
+            --mantine-font-size-xs: 0.75rem;
+            --mantine-font-size-sm: 0.875rem;
+            --mantine-font-size-md: 1rem;
+            --mantine-font-size-lg: 1.125rem;
+            --mantine-font-size-xl: 1.25rem;
+
+            /* Breakpoints */
+            --mantine-breakpoint-sm: 48em;
+            --mantine-breakpoint-md: 62em;
+            --mantine-breakpoint-lg: 75em;
+            --mantine-breakpoint-xl: 88em;
+
+            /* Shadows */
+            --mantine-shadow-sm: 0 0.125rem 0.5rem rgba(0,0,0,0.06);
+            --mantine-shadow-md: 0 0.25rem 0.75rem rgba(0,0,0,0.08);
+            --mantine-shadow-lg: 0 0.5rem 1.5rem rgba(0,0,0,0.1);
+
+            /* Custom */
+            --mantine-color-bright: var(--mantine-color-black);
+            --mantine-color-text: var(--mantine-color-black);
+            --mantine-color-body: #F8F9FA;
+            --mantine-primary-color-contrast: var(--mantine-color-white);
+            --mantine-color-error: var(--mantine-color-red-6);
+            --mantine-color-placeholder: var(--mantine-color-gray-5);
+            --mantine-color-anchor: #228be6;
+            --mantine-color-default: var(--mantine-color-white);
+            --mantine-color-default-hover: var(--mantine-color-gray-0);
+            --mantine-color-default-color: var(--mantine-color-gray-9);
+            --mantine-color-default-border: var(--mantine-color-gray-4);
+            --mantine-color-dimmed: var(--mantine-color-gray-6);
+
+            /* Primary color overrides */
+            --mantine-primary-color-0: var(--mantine-color-green-0);
+            --mantine-primary-color-filled: var(--mantine-color-green-0);
+            --mantine-primary-color-filled-hover: var(--mantine-color-green-hover-0);
+            --mantine-primary-color-light: var(--mantine-color-light-green-0);
+            --mantine-primary-color-light-hover: var(--mantine-color-light-green-hover-0);
+            --mantine-primary-color-light-color: var(--mantine-color-green-0);
+        }
+
+        /* ===== Dark Theme ===== */
+        [data-mantine-color-scheme="dark"] {
+            --mantine-color-body: #1A1B1E;
+            --mantine-color-text: #C1C2C5;
+            --mantine-color-black-0: #C1C2C5;
+            --mantine-color-white-0: #25262B;
+            --mantine-color-light-grey-0: #2C2E33;
+            --mantine-color-light-grey-hover-0: #373A40;
+            --mantine-color-grey-0: #373A40;
+            --mantine-color-grey-green-text-0: #909296;
+            --mantine-color-green-0: #07B979;
+            --mantine-color-green-hover-0: #059E66;
+            --mantine-shadow-md: 0 0.25rem 0.75rem rgba(0,0,0,0.3);
+            --mantine-color-body-bg: #1A1B1E;
+        }
+
+        [data-mantine-color-scheme="dark"] .tw-bg-white {
+            background-color: #25262B;
+        }
+
+        [data-mantine-color-scheme="dark"] .tw-input-wrapper {
+            background-color: #2C2E33;
+        }
+
+        [data-mantine-color-scheme="dark"] .tw-input-wrapper:focus-within {
+            background-color: #25262B;
+        }
+
+        [data-mantine-color-scheme="dark"] .tw-input-wrapper input {
+            color: #C1C2C5;
+        }
+
+        [data-mantine-color-scheme="dark"] .tw-social-btn {
+            background-color: #2C2E33;
+            border-color: #373A40;
+            color: #C1C2C5;
+        }
+
+        [data-mantine-color-scheme="dark"] .tw-social-btn:hover {
+            background-color: #373A40;
+        }
+
+        [data-mantine-color-scheme="dark"] .tw-divider-line {
+            background-color: #373A40;
+        }
+
+        [data-mantine-color-scheme="dark"] .tw-footer {
+            border-top-color: #373A40;
+        }
+
+        [data-mantine-color-scheme="dark"] .tw-theme-toggle-sm {
+            background-color: #2C2E33;
+            border-color: #373A40;
+        }
+
+        [data-mantine-color-scheme="dark"] .tw-theme-toggle-sm.active {
+            background-color: #4A4C50;
+            border-color: #5C5F66;
+        }
+
+        [data-mantine-color-scheme="dark"] body {
+            background: linear-gradient(145deg, #1A1B1E 0%, #141517 100%);
+        }
+
+        [data-mantine-color-scheme="dark"] .tw-lang-selector {
+            color: #07B979;
+        }
+
+        [data-mantine-color-scheme="dark"] .tw-lang-selector:hover {
+            background-color: #2C2E33;
+        }
+
+        /* ===== Reset & Base ===== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--mantine-font-family);
+            font-size: var(--mantine-font-size-md);
+            line-height: var(--mantine-line-height);
+            background: linear-gradient(145deg, #F8F9FA 0%, #E8ECF0 100%);
+            color: var(--mantine-color-text);
+            -webkit-font-smoothing: var(--mantine-webkit-font-smoothing);
+            -moz-osx-font-smoothing: var(--mantine-moz-font-smoothing);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            transition: background 0.3s ease;
+        }
+
+        button {
+            font-family: 'IBM Plex Sans', sans-serif !important;
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+
+        /* ===== Utility Classes ===== */
+        .tw-flex { display: flex; }
+        .tw-flex-col { flex-direction: column; }
+        .tw-items-center { align-items: center; }
+        .tw-justify-center { justify-content: center; }
+        .tw-justify-between { justify-content: space-between; }
+        .tw-gap-2 { gap: 0.5rem; }
+        .tw-gap-3 { gap: 0.75rem; }
+        .tw-gap-4 { gap: 1rem; }
+        .tw-w-full { width: 100%; }
+        .tw-max-w-\[430px\] { max-width: 430px; }
+        .tw-mb-1 { margin-bottom: 0.25rem; }
+        .tw-mb-2 { margin-bottom: 0.5rem; }
+        .tw-mb-4 { margin-bottom: 1rem; }
+        .tw-mb-6 { margin-bottom: 1.5rem; }
+        .tw-mt-4 { margin-top: 1rem; }
+        .tw-text-center { text-align: center; }
+        .tw-text-left { text-align: left; }
+        .tw-text-black { color: var(--mantine-color-black-0); }
+        .tw-text-white { color: var(--mantine-color-white-0); }
+        .tw-text-green { color: var(--mantine-color-green-0); }
+        .tw-text-grey-green { color: var(--mantine-color-grey-green-0); }
+        .tw-text-grey-green-text { color: var(--mantine-color-grey-green-text-0); }
+        .tw-text-link-12 { font-size: 12px; line-height: 16px; }
+        .tw-text-h2 { font-size: 24px; line-height: 28px; }
+        .tw-text-sm { font-size: 14px; line-height: 18px; }
+        .tw-font-bold { font-weight: 700; }
+        .tw-font-medium { font-weight: 500; }
+        .tw-font-semibold { font-weight: 600; }
+        .tw-font-normal { font-weight: 400; }
+        .tw-underline { text-decoration: underline; }
+        .tw-no-underline { text-decoration: none; }
+        .tw-border { border: 1px solid var(--mantine-color-grey-0); }
+        .tw-rounded-lg { border-radius: 0.75rem; }
+        .tw-rounded-full { border-radius: 9999px; }
+        .tw-bg-white { background-color: var(--mantine-color-white-0); }
+        .tw-bg-light-grey { background-color: var(--mantine-color-light-grey-0); }
+        .tw-bg-green { background-color: var(--mantine-color-green-0); }
+        .tw-bg-transparent { background-color: transparent; }
+        .tw-px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .tw-py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+        .tw-p-4 { padding: 1rem; }
+        .tw-shadow-md { box-shadow: var(--mantine-shadow-md); }
+        .tw-transition { transition: all 0.2s ease; }
+        .tw-hover\:bg-green-hover:hover { background-color: var(--mantine-color-green-hover-0); }
+        .tw-hover\:bg-light-grey-hover:hover { background-color: var(--mantine-color-light-grey-hover-0); }
+        .tw-hover\:scale-\[1\.02\]:hover { transform: scale(1.02); }
+        .tw-active\:scale-\[0\.98\]:active { transform: scale(0.98); }
+        .tw-focus\:ring-2:focus { box-shadow: 0 0 0 2px var(--mantine-color-green-0); }
+
+        /* ===== Logo ===== */
+        .tw-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.75rem;
+            text-decoration: none;
+        }
+
+        /* ===== Input Wrapper ===== */
+        .tw-input-wrapper {
+            background-color: var(--mantine-color-light-grey-0);
+            border-radius: 0.5rem;
+            padding: 0 1rem;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+        .tw-input-wrapper:focus-within {
+            background-color: var(--mantine-color-white-0);
+            box-shadow: 0 0 0 2px var(--mantine-color-green-0);
+        }
+        .tw-input-wrapper input {
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
+            height: 2.75rem;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--mantine-color-black-0);
+            padding: 0;
+        }
+        .tw-input-wrapper input::placeholder {
+            color: var(--mantine-color-grey-green-text-0);
+            font-weight: 400;
+        }
+
+        /* ===== Label ===== */
+        .tw-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--mantine-color-black-0);
+            display: block;
+            margin-bottom: 0.375rem;
+        }
+
+        /* ===== Login Button ===== */
+        .tw-login-btn {
+            background-color: var(--mantine-color-green-0);
+            color: var(--mantine-color-white-0);
+            border: none;
+            border-radius: 0.5rem;
+            height: 3rem;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            width: 100%;
+        }
+        .tw-login-btn:hover {
+            background-color: var(--mantine-color-green-hover-0);
+        }
+        .tw-login-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* ===== Social Buttons ===== */
+        .tw-social-btn {
+            width: 2.75rem;
+            height: 2.75rem;
+            border-radius: 0.5rem;
+            background-color: var(--mantine-color-light-grey-0);
+            border: 1px solid var(--mantine-color-grey-0);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+            color: var(--mantine-color-black-0);
+        }
+        .tw-social-btn:hover {
+            background-color: var(--mantine-color-light-grey-hover-0);
+            transform: translateY(-2px);
+            box-shadow: var(--mantine-shadow-sm);
+        }
+        .tw-social-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ===== Forgot & Sign Up Links ===== */
+        .tw-forgot-link,
+        .tw-signup-link {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--mantine-color-green-0);
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity 0.2s ease, text-decoration 0.2s ease;
+        }
+        .tw-forgot-link:hover,
+        .tw-signup-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        /* ===== Password Toggle ===== */
+        .tw-password-toggle {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            color: var(--mantine-color-grey-green-text-0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+        }
+        .tw-password-toggle:hover {
+            color: var(--mantine-color-black-0);
+        }
+
+        /* ===== Footer ===== */
+        .tw-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--mantine-color-grey-0);
+            transition: border-color 0.3s ease;
+        }
+
+        /* ===== Language Selector ===== */
+        .tw-lang-selector {
+            background: transparent;
+            border: none;
+            color: var(--mantine-color-green-0);
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.2s ease, color 0.3s ease;
+        }
+        .tw-lang-selector:hover {
+            background-color: var(--mantine-color-light-grey-0);
+        }
+
+        /* ===== Theme Toggle ===== */
+        .tw-theme-toggle-sm {
+            width: 2.75rem;
+            height: 1.5rem;
+            border-radius: 9999px;
+            background-color: var(--mantine-color-light-grey-0);
+            border: 1px solid var(--mantine-color-grey-0);
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 0.125rem;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .tw-theme-toggle-sm.active {
+            background-color: #2C2E33;
+            border-color: #4A4C50;
+        }
+        .tw-theme-thumb-sm {
+            width: 1.125rem;
+            height: 1.125rem;
+            border-radius: 9999px;
+            background-color: var(--mantine-color-white-0);
+            box-shadow: 0 0.0625rem 0.25rem rgba(0,0,0,0.15);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--mantine-color-black-0);
+            font-size: 10px;
+        }
+        .tw-theme-toggle-sm.active .tw-theme-thumb-sm {
+            transform: translateX(1.25rem);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 480px) {
+            .tw-px-6 { padding-left: 1rem; padding-right: 1rem; }
+            .tw-py-8 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+            .tw-text-h2 { font-size: 20px; line-height: 26px; }
+        }
+    </style>
+</head>
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+
+    <div id="root">
+        <div class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full tw-max-w-[430px]">
+            <!-- Logo -->
+            <a href="/" class="tw-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="2.47 373 1075.33 333.01" width="160" height="53" class="tw-text-green">
+                    <path fill="currentColor" d="M72,492.4c13-7.3,28.5-9.9,43.2-8.2,13.7,1.1,27,7.4,36.2,17.6,10.5,11.9,15.1,27.8,16.7,43.4,3.4,31.4,6.3,62.8,9.4,94.2,0,3.1,1,6.8-1.3,9.4-1.9,2.3-5.1,2.5-7.8,2.9-9.3.9-18.6,2-27.9,2.8-4.2.6-8.3-2.7-8.5-6.9-2.7-29.6-5.9-59.2-8.6-88.8-1.4-8.9-3.1-18.6-9.8-25.2-7.3-8.2-19.4-10.3-29.8-8.2-9.7,1.7-18.7,7.8-23.5,16.4-5.6,9.7-5.7,21.3-4.7,32.1,2.7,26.8,5.3,53.6,7.7,80.3.4,2.9-.8,6-3.4,7.5-2.3,1.1-4.9,1.1-7.4,1.4-9.4.7-18.7,2.1-28.1,2.5-3.7,0-6.4-3.5-6.6-7-5.5-51.2-10.1-102.4-15.2-153.7-.7-3.7,1.4-8.2,5.5-8.6,10.7-1.2,21.4-2.3,32.1-3.2,3.4-.4,6,2.8,6.4,5.9,1,6.3,1,12.7,2.6,18.9,5.2-10.4,12.6-20,22.9-25.7Z"></path>
+                    <path fill="currentColor" d="M583.8,484c3.2-1.5,6.7-.8,10.1-.6,8.6.5,17.2.1,25.7,1.2,2.5.2,4.8,2.4,5,4.9.5,6.9-.5,13.8.4,20.7,4.8-5.3,8.5-11.7,14.7-15.6,10.4-8.1,23.7-11.6,36.7-11.7,13.5.2,27.3,2.9,38.7,10.4,12.5,7.7,20.1,21.3,23.4,35.3,2.9,11.9,2.4,24.3,2,36.4-.6,8.9-.4,17.8-1.1,26.6-.5,7.4-.3,14.9-.9,22.3-.5,6.8-.2,13.6-.8,20.4-.6,6.8-.3,13.7-.8,20.6-.2,3.3-3,6-6.3,6.4-5.1.5-10.1-.5-15.2-.6-6.5-.1-13-.7-19.5-1-4.3-.5-6.2-5.4-5.8-9.2.9-20,1.5-40,2.6-60,0-12.6,1.7-25.2.9-37.7-.8-8.7-4-17.6-10.7-23.4-12.2-10.2-31.1-9.6-43.9-.8-8.5,6.3-13.1,16.6-14.7,26.8-1.7,12-1.4,24.2-1.9,36.3-.7,7.7-.6,15.4-.9,23.1-.8,9.5-.5,19-1.3,28.5-.4,3.5.4,7.4-1.8,10.4-1.1,1.7-3.1,2.7-5.1,2.6-11,.2-22-.9-33-1.1-3.7,0-6.9-3-7.2-6.7.8-22.5,1.9-45,2.6-67.5.9-10.1.4-20.2,1.3-30.2.3-11.9,1.1-23.7,1.3-35.6.9-8.9.4-17.8,1.5-26.7.2-2.1,2-3.6,3.8-4.5Z"></path>
+                    <path fill="currentColor" d="M995.9,486.8c16.8-1,34.2.6,49.6,7.8,14.1,6.4,25,19.9,27.8,35.2.3,2.7,1,6-1.2,8.1-2,2-5.1,1.8-7.7,1.9-8.3-.1-16.7,0-25,0-2.3,0-5-.4-6.2-2.6-2-4-2.7-8.8-6.3-11.8-6.5-5.5-15.4-6.6-23.6-6.5-7,.3-14.6,1.8-19.8,6.9-4.6,4.2-5,12-1.2,16.9,3,3.8,7.7,5.4,12.1,6.7,7.1,1.9,14.4,3.2,21.6,4.8,11.7,2.9,23.8,5.1,35,9.9,10.1,4.3,18.4,12.5,23,22.5,7.6,17.8,3.6,40.1-10.3,53.8-10,9.7-23.6,15.1-37.2,17.4-20.7,3.1-42.5,1.8-61.9-6.6-15.7-6.9-28.8-21.3-31.3-38.6-.3-2.8-1.3-6.5,1.5-8.5,2.1-1.6,5-1.3,7.5-1.2,7.7.6,15.5.3,23.2-.2,3,0,6.9-.4,9,2.4,2.1,3.3,2.7,7.3,5,10.5,4.1,6.3,11.7,8.8,18.7,9.9,9.7,1.4,20.3,1.5,28.9-3.9,6.8-4.1,8.4-14.2,4.1-20.5-3.7-4.5-9.3-6.6-14.8-7.7-10.7-2.6-21.5-4.3-32.1-7.1-9.1-2.5-18.3-4.8-26.5-9.7-5.3-3.1-10-7.1-13.8-12-5.3-6.5-7.4-15-7.9-23.3-.5-11.8,2.7-24.3,10.9-33.2,12.1-14,31.1-19.7,49-21.2Z"></path>
+                    <path fill="currentColor" d="M795.8,496.5c13.8-7.6,29.8-10.8,45.5-10.4,20.1.1,40.7,7.2,55,21.6,6.5,6.1,11.1,13.9,14.7,22,5.2,11.1,7.1,23.5,8.1,35.6.5,4.8.6,9.6-.4,14.3-1.1,3.8-5.2,5.8-9,5.2-36.5,0-73.1,0-109.6,0,.5,5.1,1.5,10.2,3.1,15.1,3.3,9.1,10.8,16.1,19.2,20.5,10.8,4.9,23.5,5.4,34.6,1.3,5.7-2.2,10.7-6.1,14.1-11.2,1.7-2.6,4.1-5.3,7.5-5,10.1,0,20.1,0,30.2,0,2.7-.2,6.2,1.6,6,4.7,0,5.9-3.2,11.3-6,16.4-7.3,11.3-17.8,20.7-30.2,26-12.5,5.3-26.2,7.7-39.8,7.3-12.8-.6-25.8-2.4-37.4-8-10-5-19.5-11.4-26.6-20.1-16.1-19.8-21.8-46.7-18.5-71.7,1.7-15.8,7.5-31.1,16.9-44,6.1-8,14-14.6,22.7-19.7ZM814.4,528.9c-7.6,6.8-13,16.3-13.7,26.5,24.7,0,49.5,0,74.2,0-.2-9.3-4-18.6-10.6-25.3-5.4-5.5-13-8.4-20.5-9.4-10.3-1-21.5,1.1-29.4,8.2Z"></path>
+                    <path fill="currentColor" d="M278.8,526.6c7.3-1.2,14.6-.1,21.9.4,9.4,1,18.5,3.8,27.2,7.2,4.8,1.9,9.5,4.1,13.7,7.1,8.7,6,17.1,12.7,23,21.6,8.2,12.4,14,26.5,15.3,41.4,3.6,26.3-4.2,54.6-23,73.8-12.7,13.2-29.6,21.8-47.4,25.8-18.4,3.7-37.7,2.5-55.5-3.4-12.6-4.4-24.3-11.4-34-20.6-11.4-11.3-19.5-25.9-22.9-41.6-3.8-17.7-3.2-36.5,2.7-53.7,5.6-17.1,17-32.3,32.2-42.1,13.7-9.4,30.2-14.5,46.7-15.8ZM279.2,567.6c-13,2.1-25.1,10.4-31,22.3-7.1,13-7.8,28.8-3.9,42.9,3.2,11.7,11.4,21.9,22.2,27.4,10.3,5.3,22.5,6.1,33.6,3.5,11.3-2.9,21.3-10.6,26.8-20.9,7.5-13.5,8.6-30.2,4-44.9-3.2-10.3-10.4-18.9-19.3-24.9-9.6-5.9-21.5-6.9-32.5-5.4Z"></path>
+                    <path fill="currentColor" d="M462.4,442.5c7.1-1.1,14.2-.1,21.2.4,9.1,1,17.9,3.7,26.5,7,4.7,1.8,9.2,4,13.3,6.9,8.4,5.8,16.6,12.4,22.4,21,8,12,13.6,25.8,14.8,40.2,3.5,25.5-4.1,53-22.3,71.7-12.3,12.8-28.8,21.2-46,25-17.8,3.6-36.6,2.4-53.9-3.3-12.2-4.3-23.6-11.1-33-20-11.1-11-18.9-25.1-22.2-40.4-3.7-17.2-3.1-35.5,2.7-52.1,5.5-16.6,16.5-31.4,31.2-40.8,13.3-9.1,29.3-14.1,45.3-15.3ZM462.8,482.2c-12.6,2-24.3,10.1-30.1,21.6-6.9,12.6-7.5,28-3.8,41.7,3.1,11.4,11.1,21.3,21.5,26.6,10,5.2,21.8,6,32.7,3.4,10.9-2.8,20.7-10.3,26-20.3,7.3-13.1,8.3-29.3,3.9-43.6-3.1-10-10.1-18.4-18.7-24.2-9.3-5.8-20.9-6.7-31.6-5.3Z"></path>
+                    <rect fill="currentColor" x="584.8" y="423.3" width="16.2" height="37" rx="2.6" ry="2.6" transform="translate(810.5 -264.8) rotate(70.4)"></rect>
+                    <rect fill="currentColor" x="573" y="373" width="16.2" height="62.1" rx="2.6" ry="2.6" transform="translate(398 -279.6) rotate(40.2)"></rect>
+                    <rect fill="currentColor" x="532.7" y="391.9" width="16.2" height="26.1" rx="2.6" ry="2.6" transform="translate(74.9 -84.3) rotate(9.6)"></rect>
+                </svg>
+            </a>
+
+            <!-- Login Card -->
+            <div class="tw-bg-white tw-border tw-rounded-lg tw-shadow-md tw-px-6 tw-py-8 tw-w-full tw-transition">
+                <!-- Title -->
+                <div class="tw-text-center tw-text-h2 tw-font-bold tw-mb-6 tw-text-black">
+                    Welcome to NoOnes
+                </div>
+
+                <!-- Social Login -->
+                <div class="tw-flex tw-gap-3 tw-items-center tw-justify-center tw-mb-6">
+                    <button class="tw-social-btn" aria-label="Google">
+                        <svg width="20" height="20" viewBox="0 0 28 28" fill="none">
+                            <path fill="#4285F4" d="M26.32 14.292c0-.91-.082-1.785-.233-2.625H14v4.97h6.907c-.304 1.598-1.214 2.951-2.579 3.861v3.232h4.165c2.427-2.24 3.827-5.53 3.827-9.438" />
+                            <path fill="#34A853" d="M14 26.833c3.465 0 6.37-1.143 8.493-3.103l-4.165-3.232c-1.143.77-2.601 1.237-4.328 1.237-3.337 0-6.172-2.252-7.187-5.285h-4.27v3.313c2.112 4.189 6.44 7.07 11.457 7.07" />
+                            <path fill="#FBBC05" d="M6.813 16.438A7.7 7.7 0 0 1 6.405 14c0-.852.152-1.668.408-2.438V8.248h-4.27A12.7 12.7 0 0 0 1.167 14c0 2.077.501 4.025 1.376 5.752l3.325-2.59z" />
+                            <path fill="#EA4335" d="M14 6.277c1.89 0 3.57.653 4.912 1.913l3.675-3.675C20.358 2.438 17.465 1.167 14 1.167c-5.017 0-9.345 2.881-11.457 7.081l4.27 3.314C7.828 8.528 10.663 6.277 14 6.277" />
+                        </svg>
+                    </button>
+                    <button class="tw-social-btn" aria-label="Apple">
+                        <svg width="20" height="20" viewBox="0 0 28 28" fill="currentColor">
+                            <path fill="currentColor" fill-rule="evenodd" d="M17.983 5.023C18.93 3.958 19.566 2.475 19.392 1c-1.363.05-3.012.846-3.989 1.91-.877.943-1.643 2.45-1.437 3.897 1.52.11 3.071-.718 4.017-1.784m3.409 9.365c.038 3.814 3.594 5.082 3.633 5.099-.029.09-.568 1.808-1.873 3.584-1.13 1.535-2.3 3.063-4.146 3.096-1.812.031-2.396-1-4.47-1-2.072 0-2.72.967-4.435 1.031-1.782.062-3.14-1.66-4.276-3.19-2.327-3.128-4.104-8.84-1.717-12.696a6.71 6.71 0 0 1 5.604-3.158c1.749-.032 3.4 1.095 4.469 1.095s3.076-1.355 5.185-1.156c.882.034 3.361.332 4.952 2.5-.129.074-2.958 1.607-2.926 4.795" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <button class="tw-social-btn" aria-label="Telegram">
+                        <svg width="20" height="20" viewBox="0 0 28 28" fill="none">
+                            <circle cx="14" cy="14" r="14" fill="url(#telegramGrad)" />
+                            <path fill="#fff" d="M20.987 8.209c.124-.806-.642-1.441-1.358-1.127L5.365 13.345c-.514.225-.476 1.003.056 1.173l2.942.937c.562.178 1.17.104 1.676-.223l3.853-2.437c.649-.41 1.409.242.914.755l-2.884 2.984c-.255.264-.319.65-.173.985l1.883 4.141c.198.433.708.58 1.078.298l2.969-2.035c.458-.314 1.087-.225 1.447.202l4.297 5.113c.284.338.804.379 1.129.072l2.882-2.86c.499-.495.744-1.203.617-1.916l-2.136-10.075z" />
+                            <defs>
+                                <linearGradient id="telegramGrad" x1="0" y1="0" x2="28" y2="28">
+                                    <stop offset="0" stop-color="#2AABEE" />
+                                    <stop offset="1" stop-color="#229ED9" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Email/Phone Input with Label -->
+                <div class="tw-mb-4">
+                    <label class="tw-label" for="email-phone">Email / Phone number</label>
+                    <div class="tw-input-wrapper">
+                        <input type="email" id="email-phone" placeholder="Enter your email or phone" aria-label="Email or phone number" />
+                    </div>
+                </div>
+
+                <!-- Password Input with Label -->
+                <div class="tw-mb-2">
+                    <label class="tw-label" for="password">Password</label>
+                    <div class="tw-input-wrapper">
+                        <input type="password" id="password" placeholder="Enter your password" aria-label="Password" />
+                        <button class="tw-password-toggle" aria-label="Toggle password visibility">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Forgot Password -->
+                <div class="tw-text-right tw-mb-4">
+                    <a href="#" class="tw-forgot-link">Forgot password?</a>
+                </div>
+
+                <!-- Login Button -->
+                <button class="tw-login-btn tw-mb-4">
+                    Log in
+                </button>
+
+                <!-- Sign Up -->
+                <div class="tw-text-center">
+                    <span class="tw-text-grey-green-text">Don't have an account? </span>
+                    <a href="#" class="tw-signup-link">Sign up</a>
+                </div>
+            </div>
+
+            <!-- Footer with Language and Theme Toggle -->
+            <div class="tw-footer">
+                <!-- Theme Toggle -->
+                <div class="tw-theme-toggle-sm" role="button" aria-label="Toggle theme">
+                    <span class="tw-theme-thumb-sm">🌙</span>
+                </div>
+                
+                <!-- Language Selector with specified classes -->
+                <div class="tw-text-link-12 tw-font-semibold tw-underline tw-lang-selector">English</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== Language Translations =====
+        const translations = {
+            'en': {
+                'welcome': 'Welcome to NoOnes',
+                'email_phone': 'Email / Phone number',
+                'email_phone_placeholder': 'Enter your email or phone',
+                'password': 'Password',
+                'password_placeholder': 'Enter your password',
+                'forgot_password': 'Forgot password?',
+                'login': 'Log in',
+                'no_account': "Don't have an account?",
+                'sign_up': 'Sign up',
+                'lang_selector': 'English',
+                'aria_email': 'Email or phone number',
+                'aria_password': 'Password'
+            },
+            'es': {
+                'welcome': 'Bienvenido a NoOnes',
+                'email_phone': 'Correo electrónico / Número de teléfono',
+                'email_phone_placeholder': 'Ingresa tu correo o teléfono',
+                'password': 'Contraseña',
+                'password_placeholder': 'Ingresa tu contraseña',
+                'forgot_password': '¿Olvidaste tu contraseña?',
+                'login': 'Iniciar sesión',
+                'no_account': '¿No tienes una cuenta?',
+                'sign_up': 'Regístrate',
+                'lang_selector': 'Español',
+                'aria_email': 'Correo o número de teléfono',
+                'aria_password': 'Contraseña'
+            },
+            'fr': {
+                'welcome': 'Bienvenue sur NoOnes',
+                'email_phone': 'E-mail / Numéro de téléphone',
+                'email_phone_placeholder': 'Entrez votre e-mail ou téléphone',
+                'password': 'Mot de passe',
+                'password_placeholder': 'Entrez votre mot de passe',
+                'forgot_password': 'Mot de passe oublié ?',
+                'login': 'Se connecter',
+                'no_account': "Vous n'avez pas de compte ?",
+                'sign_up': "S'inscrire",
+                'lang_selector': 'Français',
+                'aria_email': 'E-mail ou numéro de téléphone',
+                'aria_password': 'Mot de passe'
+            },
+            'de': {
+                'welcome': 'Willkommen bei NoOnes',
+                'email_phone': 'E-Mail / Telefonnummer',
+                'email_phone_placeholder': 'Gib deine E-Mail oder Telefonnummer ein',
+                'password': 'Passwort',
+                'password_placeholder': 'Gib dein Passwort ein',
+                'forgot_password': 'Passwort vergessen?',
+                'login': 'Anmelden',
+                'no_account': 'Kein Konto?',
+                'sign_up': 'Registrieren',
+                'lang_selector': 'Deutsch',
+                'aria_email': 'E-Mail oder Telefonnummer',
+                'aria_password': 'Passwort'
+            },
+            'zh': {
+                'welcome': '欢迎来到 NoOnes',
+                'email_phone': '电子邮件 / 手机号码',
+                'email_phone_placeholder': '输入您的电子邮件或手机号',
+                'password': '密码',
+                'password_placeholder': '输入您的密码',
+                'forgot_password': '忘记密码？',
+                'login': '登录',
+                'no_account': '还没有账户？',
+                'sign_up': '注册',
+                'lang_selector': '中文',
+                'aria_email': '电子邮件或手机号码',
+                'aria_password': '密码'
+            }
+        };
+
+        let currentLanguage = 'en';
+
+        function updateLanguage(lang) {
+            currentLanguage = lang;
+            const t = translations[lang] || translations['en'];
+            
+            // Update all translatable elements
+            document.querySelector('.tw-text-h2.tw-font-bold').textContent = t.welcome;
+            
+            const emailLabel = document.querySelector('label[for="email-phone"]');
+            if (emailLabel) emailLabel.textContent = t.email_phone;
+            
+            const emailInput = document.getElementById('email-phone');
+            if (emailInput) {
+                emailInput.placeholder = t.email_phone_placeholder;
+                emailInput.setAttribute('aria-label', t.aria_email);
+            }
+            
+            const passwordLabel = document.querySelector('label[for="password"]');
+            if (passwordLabel) passwordLabel.textContent = t.password;
+            
+            const passwordInput = document.getElementById('password');
+            if (passwordInput) {
+                passwordInput.placeholder = t.password_placeholder;
+                passwordInput.setAttribute('aria-label', t.aria_password);
+            }
+            
+            const forgotLink = document.querySelector('.tw-forgot-link');
+            if (forgotLink) forgotLink.textContent = t.forgot_password;
+            
+            const loginBtn = document.querySelector('.tw-login-btn');
+            if (loginBtn) loginBtn.textContent = t.login;
+            
+            const noAccountSpan = document.querySelector('.tw-text-grey-green-text');
+            if (noAccountSpan) noAccountSpan.textContent = t.no_account + ' ';
+            
+            const signUpLink = document.querySelector('.tw-signup-link');
+            if (signUpLink) signUpLink.textContent = t.sign_up;
+            
+            const langSelector = document.querySelector('.tw-lang-selector');
+            if (langSelector) langSelector.textContent = t.lang_selector;
+            
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Password toggle
+            document.querySelectorAll('.tw-password-toggle').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const input = this.closest('.tw-input-wrapper').querySelector('input');
+                    if (input) {
+                        const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                        input.setAttribute('type', type);
+                    }
+                });
+            });
+
+            // Theme toggle
+            const themeToggle = document.querySelector('.tw-theme-toggle-sm');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const thumb = this.querySelector('.tw-theme-thumb-sm');
+                    if (thumb) {
+                        thumb.textContent = this.classList.contains('active') ? '☀️' : '🌙';
+                    }
+                    const scheme = this.classList.contains('active') ? 'dark' : 'light';
+                    document.documentElement.setAttribute('data-mantine-color-scheme', scheme);
+                    
+                    // Save preference
+                    try {
+                        localStorage.setItem('theme-preference', scheme);
+                    } catch (e) {}
+                });
+                
+                // Load saved theme preference
+                try {
+                    const savedTheme = localStorage.getItem('theme-preference');
+                    if (savedTheme === 'dark') {
+                        themeToggle.classList.add('active');
+                        const thumb = themeToggle.querySelector('.tw-theme-thumb-sm');
+                        if (thumb) thumb.textContent = '☀️';
+                        document.documentElement.setAttribute('data-mantine-color-scheme', 'dark');
+                    }
+                } catch (e) {}
+            }
+
+            // Language selector - cycles through languages
+            const langSelector = document.querySelector('.tw-lang-selector');
+            if (langSelector) {
+                const languages = ['en', 'es', 'fr', 'de', 'zh'];
+                let langIndex = 0;
+                
+                langSelector.addEventListener('click', function() {
+                    langIndex = (langIndex + 1) % languages.length;
+                    const newLang = languages[langIndex];
+                    updateLanguage(newLang);
+                    
+                    // Save language preference
+                    try {
+                        localStorage.setItem('language-preference', newLang);
+                    } catch (e) {}
+                });
+                
+                // Load saved language preference
+                try {
+                    const savedLang = localStorage.getItem('language-preference');
+                    if (savedLang && translations[savedLang]) {
+                        const index = languages.indexOf(savedLang);
+                        if (index !== -1) {
+                            langIndex = index;
+                            updateLanguage(savedLang);
+                        }
+                    }
+                } catch (e) {}
+            }
+
+            // Login button
+            document.querySelector('.tw-login-btn')?.addEventListener('click', function() {
+                const email = document.querySelector('input[type="email"]')?.value;
+                const password = document.querySelector('input[type="password"]')?.value;
+                if (!email || !password) {
+                    const messages = {
+                        'en': 'Please fill in both email/phone and password.',
+                        'es': 'Por favor, complete ambos campos.',
+                        'fr': 'Veuillez remplir les deux champs.',
+                        'de': 'Bitte füllen Sie beide Felder aus.',
+                        'zh': '请填写两个字段。'
+                    };
+                    alert(messages[currentLanguage] || messages['en']);
+                    return;
+                }
+                const messages = {
+                    'en': 'Login attempt (placeholder)',
+                    'es': 'Intento de inicio de sesión (placeholder)',
+                    'fr': 'Tentative de connexion (placeholder)',
+                    'de': 'Anmeldeversuch (Platzhalter)',
+                    'zh': '登录尝试（占位符）'
+                };
+                alert(messages[currentLanguage] || messages['en']);
+            });
+
+            // Social buttons
+            document.querySelectorAll('.tw-social-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const label = this.getAttribute('aria-label') || 'Social';
+                    const messages = {
+                        'en': `${label} login placeholder`,
+                        'es': `Inicio de sesión con ${label} (placeholder)`,
+                        'fr': `Connexion avec ${label} (placeholder)`,
+                        'de': `${label} Anmeldung (Platzhalter)`,
+                        'zh': `${label} 登录（占位符）`
+                    };
+                    alert(messages[currentLanguage] || messages['en']);
+                });
+            });
+
+            // Forgot & Sign up links
+            document.querySelector('.tw-forgot-link')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                const messages = {
+                    'en': 'Reset password placeholder',
+                    'es': 'Restablecer contraseña (placeholder)',
+                    'fr': 'Réinitialiser le mot de passe (placeholder)',
+                    'de': 'Passwort zurücksetzen (Platzhalter)',
+                    'zh': '重置密码（占位符）'
+                };
+                alert(messages[currentLanguage] || messages['en']);
+            });
+            
+            document.querySelector('.tw-signup-link')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                const messages = {
+                    'en': 'Sign up placeholder',
+                    'es': 'Registro (placeholder)',
+                    'fr': "Inscription (placeholder)",
+                    'de': 'Registrierung (Platzhalter)',
+                    'zh': '注册（占位符）'
+                };
+                alert(messages[currentLanguage] || messages['en']);
+            });
+        });
+    </script>
+</body>
+</html>
