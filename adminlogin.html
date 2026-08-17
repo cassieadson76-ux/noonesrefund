@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en" data-mantine-color-scheme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="Admin Login | NoOnes" />
+    <meta name="description" content="Secure admin access for NoOnes payment management." />
+    <title>Admin Login | NoOnes</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-green: #07B979;
+            --color-green-hover: #059E66;
+            --color-light-green: #E8F8F2;
+            --color-grey: #E8EAED;
+            --color-light-grey: #F5F6F8;
+            --color-text: #1A1D1C;
+            --color-text-secondary: #6B7A75;
+            --color-white: #FFFFFF;
+            --color-body: #F8F9FA;
+            --color-border: #E8EAED;
+            --color-error: #F22323;
+            --shadow-md: 0 0.25rem 1rem rgba(0,0,0,0.08);
+            --shadow-lg: 0 0.5rem 2rem rgba(0,0,0,0.12);
+            --font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        [data-mantine-color-scheme="dark"] {
+            --color-body: #141517;
+            --color-white: #1A1B1E;
+            --color-text: #C1C2C5;
+            --color-text-secondary: #909296;
+            --color-light-grey: #2C2E33;
+            --color-grey: #373A40;
+            --color-border: #373A40;
+            --color-light-green: #0A3D2E;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: linear-gradient(145deg, var(--color-body) 0%, var(--color-grey) 100%);
+            color: var(--color-text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .card {
+            background-color: var(--color-white);
+            border-radius: 1.25rem;
+            box-shadow: var(--shadow-lg);
+            padding: 2.5rem 2rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .card-header .shield {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-header h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-text);
+        }
+
+        .card-header h1 span {
+            color: var(--color-green);
+        }
+
+        .card-header p {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .card-header .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--color-light-green);
+            color: var(--color-green);
+            border-radius: 9999px;
+            font-size: 0.625rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.813rem;
+            font-weight: 700;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.375rem;
+        }
+
+        .form-group .label-icon {
+            margin-right: 0.375rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            font-family: var(--font-family);
+            background-color: var(--color-light-grey);
+            color: var(--color-text);
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--color-green);
+            box-shadow: 0 0 0 3px rgba(7, 185, 121, 0.15);
+            background-color: var(--color-white);
+        }
+
+        .form-group input::placeholder {
+            color: var(--color-text-secondary);
+            opacity: 0.6;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 3rem;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: var(--color-text-secondary);
+            padding: 0.25rem;
+            transition: color 0.2s ease;
+        }
+
+        .toggle-password:hover {
+            color: var(--color-text);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 0.875rem;
+            background-color: var(--color-green);
+            color: var(--color-white);
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: var(--font-family);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-login:hover {
+            background-color: var(--color-green-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(7, 185, 121, 0.3);
+        }
+
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .spinner {
+            display: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid var(--color-white);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .spinner.active {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            background: #FFEEEE;
+            color: var(--color-error);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.813rem;
+            font-weight: 600;
+            display: none;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--color-error);
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        [data-mantine-color-scheme="dark"] .error-message {
+            background: #2D0A0A;
+            color: #F22323;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--color-border);
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .footer-links a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-size: 0.813rem;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-green);
+        }
+
+        .theme-toggle-sm {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            font-size: 0.813rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font-family);
+            transition: color 0.2s ease;
+        }
+
+        .theme-toggle-sm:hover {
+            color: var(--color-green);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--color-text);
+            color: var(--color-white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background-color: var(--color-green);
+        }
+
+        .toast.error {
+            background-color: var(--color-error);
+        }
+
+        .demo-credentials {
+            margin-top: 0.5rem;
+            padding: 0.75rem;
+            background: var(--color-light-grey);
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+            text-align: center;
+            border: 1px dashed var(--color-border);
+        }
+
+        .demo-credentials strong {
+            color: var(--color-text);
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 1.5rem;
+            }
+
+            .card-header h1 {
+                font-size: 1.25rem;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.75rem;
+            }
+
+            .demo-credentials {
+                font-size: 0.688rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <!-- Header -->
+            <div class="card-header">
+                <span class="shield">🔐</span>
+                <h1>Admin <span>Login</span></h1>
+                <p>Secure access to manage payment details</p>
+                <span class="status-badge">🔒 Protected</span>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage">
+                ⚠️ <span id="errorText">Invalid credentials. Please try again.</span>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" autocomplete="off">
+                <div class="form-group">
+                    <label>
+                        <span class="label-icon">👤</span>
+                        Username
+                    </label>
+                    <input type="text" id="usernameInput" placeholder="Enter your username" />
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <span class="label-icon">🔑</span>
+                        Password
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password" id="passwordInput" placeholder="Enter your password" />
+                        <button type="button" class="toggle-password" id="togglePassword" aria-label="Toggle password visibility">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <span class="spinner" id="loginSpinner"></span>
+                    <span id="loginText">🔓 Access Admin Panel</span>
+                </button>
+            </form>
+
+            <!-- Demo Credentials -->
+            <div class="demo-credentials">
+                <strong>Demo:</strong> Username: <strong>admin</strong> &nbsp;|&nbsp; Password: <strong>admin123</strong>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer-links">
+                <a href="index.html">← Back to Payment</a>
+                <button class="theme-toggle-sm" id="themeToggleSm">
+                    🌙 Dark Mode
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ============================================
+        // ADMIN CREDENTIALS
+        // ============================================
+        const ADMIN_CREDENTIALS = {
+            username: 'admin',
+            password: 'admin123'
+        };
+
+        // ============================================
+        // SESSION CHECK - Redirect if already logged in
+        // ============================================
+        function checkSession() {
+            const session = sessionStorage.getItem('adminSession');
+            if (session === 'true') {
+                window.location.href = 'admin-panel.html';
+                return true;
+            }
+            return false;
+        }
+
+        // Run on page load
+        if (!checkSession()) {
+            // If not logged in, show login page
+        }
+
+        // ============================================
+        // THEME TOGGLE
+        // ============================================
+        const themeToggleSm = document.getElementById('themeToggleSm');
+        let isDark = localStorage.getItem('theme-preference') === 'dark';
+
+        function updateTheme() {
+            if (isDark) {
+                document.documentElement.setAttribute('data-mantine-color-scheme', 'dark');
+                themeToggleSm.textContent = '☀️ Light Mode';
+            } else {
+                document.documentElement.setAttribute('data-mantine-color-scheme', 'light');
+                themeToggleSm.textContent = '🌙 Dark Mode';
+            }
+        }
+
+        updateTheme();
+
+        themeToggleSm.addEventListener('click', function() {
+            isDark = !isDark;
+            localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+            updateTheme();
+        });
+
+        // Also sync with main theme toggle if exists
+        const savedTheme = localStorage.getItem('theme-preference');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-mantine-color-scheme', 'dark');
+        }
+
+        // ============================================
+        // TOAST NOTIFICATION
+        // ============================================
+        const toast = document.getElementById('toast');
+        let toastTimeout;
+
+        function showToast(message, type = '') {
+            toast.textContent = message;
+            toast.className = 'toast' + (type ? ' ' + type : '');
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============================================
+        // SHOW ERROR
+        // ============================================
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorEl.classList.add('show');
+            setTimeout(() => {
+                errorEl.classList.remove('show');
+            }, 4000);
+        }
+
+        // ============================================
+        // PASSWORD TOGGLE
+        // ============================================
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const input = document.getElementById('passwordInput');
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                this.textContent = '👁️';
+            }
+        });
+
+        // ============================================
+        // LOGIN HANDLER
+        // ============================================
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleLogin();
+        });
+
+        // Enter key support
+        document.getElementById('usernameInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('passwordInput').focus();
+            }
+        });
+
+        document.getElementById('passwordInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+
+        async function handleLogin() {
+            const username = document.getElementById('usernameInput').value.trim();
+            const password = document.getElementById('passwordInput').value.trim();
+            const loginBtn = document.getElementById('loginBtn');
+            const loginText = document.getElementById('loginText');
+            const loginSpinner = document.getElementById('loginSpinner');
+            const errorEl = document.getElementById('errorMessage');
+
+            // Hide previous error
+            errorEl.classList.remove('show');
+
+            // Validate inputs
+            if (!username || !password) {
+                showError('Please enter both username and password.');
+                return;
+            }
+
+            // Show loading state
+            loginBtn.disabled = true;
+            loginSpinner.classList.add('active');
+            loginText.textContent = 'Verifying...';
+
+            // Simulate async check
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Check credentials
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                // Success - create session
+                sessionStorage.setItem('adminSession', 'true');
+                sessionStorage.setItem('adminUser', username);
+                
+                showToast('✅ Login successful! Redirecting...', 'success');
+                loginText.textContent = '✅ Success!';
+
+                setTimeout(() => {
+                    window.location.href = 'admin-panel.html';
+                }, 800);
+            } else {
+                // Failed
+                showError('Invalid username or password. Please try again.');
+                loginBtn.disabled = false;
+                loginSpinner.classList.remove('active');
+                loginText.textContent = '🔓 Access Admin Panel';
+                
+                // Clear password field
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+            }
+        }
+
+        // ============================================
+        // KEYBOARD SHORTCUTS
+        // ============================================
+        document.addEventListener('keydown', function(e) {
+            // Escape to clear error
+            if (e.key === 'Escape') {
+                document.getElementById('errorMessage').classList.remove('show');
+            }
+        });
+
+        console.log('%c 🔐 NoOnes Admin Login ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
+        console.log('%c 👤 Username: admin ', 'color: #6B7A75; font-size: 12px;');
+        console.log('%c 🔑 Password: admin123 ', 'color: #6B7A75; font-size: 12px;');
+        console.log('%c 📝 Use these credentials to access the admin panel ', 'color: #6B7A75; font-size: 12px;');
+    </script>
+</body>
+</html>
