@@ -1087,7 +1087,7 @@
         }
 
         // ============================================
-        // SAVE TO SUPABASE - CONNECTS TO LANDING PAGE
+        // SAVE TO SUPABASE - INSTANT LANDING PAGE UPDATE
         // ============================================
         function saveToSupabase() {
             var btn = document.getElementById('saveBtn');
@@ -1106,9 +1106,18 @@
             // Update Live Preview immediately
             updateLivePreview();
 
-            // SAVE TO LOCALSTORAGE - THIS CONNECTS TO LANDING PAGE
+            // SAVE TO LOCALSTORAGE - THIS UPDATES LANDING PAGE INSTANTLY
             localStorage.setItem('paymentData', JSON.stringify(data));
 
+            // Also trigger a storage event for same-tab updates
+            window.dispatchEvent(new StorageEvent('storage', {
+                key: 'paymentData',
+                newValue: JSON.stringify(data),
+                oldValue: null,
+                storageArea: localStorage
+            }));
+
+            // Update Supabase
             supabaseClient
                 .from('payment_details')
                 .select('id')
@@ -1155,7 +1164,7 @@
                     // Keep localStorage in sync
                     localStorage.setItem('paymentData', JSON.stringify(data));
 
-                    showToast('✅ Saved! Landing page will update instantly.', 'success');
+                    showToast('✅ Saved! Landing page updated instantly.', 'success');
                     console.log('📡 Data saved to Supabase and localStorage');
 
                     btn.disabled = false;
@@ -1320,4 +1329,4 @@
         init();
     </script>
 </body>
-</html>
+</html>s
