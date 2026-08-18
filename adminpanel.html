@@ -334,22 +334,49 @@
             padding: 1.25rem;
         }
 
-        .preview-header {
+        .preview-status-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 0.75rem;
             margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--color-border);
+            padding: 0.75rem 1rem;
+            background: var(--color-light-green);
+            border-radius: 0.75rem;
+            border-left: 4px solid var(--color-warning);
         }
 
-        .preview-header .status {
+        .preview-status-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            background: #FFF8E0;
+            color: var(--color-warning);
+            flex-shrink: 0;
+        }
+
+        .preview-status-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .preview-status-subtitle {
             font-size: 0.75rem;
+            color: var(--color-text-secondary);
+        }
+
+        .preview-status-badge {
+            font-size: 0.625rem;
             font-weight: 700;
             padding: 0.25rem 0.75rem;
             border-radius: 9999px;
-            background: var(--color-light-green);
-            color: var(--color-green);
+            background: #FFF8E0;
+            color: var(--color-warning);
         }
 
         .preview-amount {
@@ -376,6 +403,17 @@
             font-size: 0.875rem;
             color: var(--color-text-secondary);
             margin-top: 0.125rem;
+        }
+
+        .preview-amount .protected-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--color-light-green);
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--color-green);
+            margin-top: 0.5rem;
         }
 
         .preview-grid {
@@ -408,6 +446,41 @@
             color: var(--color-green);
         }
 
+        .preview-tx-section {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .preview-tx {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 0.75rem;
+            background: var(--color-white);
+            border-radius: 0.375rem;
+            font-size: 0.813rem;
+        }
+
+        .preview-tx .label {
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .preview-tx .value {
+            font-weight: 600;
+            color: var(--color-text);
+            font-family: monospace;
+            font-size: 0.75rem;
+            max-width: 60%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -435,7 +508,7 @@
             background-color: var(--color-error);
         }
         .toast.warning {
-            background-color: var(--color-warning);
+            background-color: #FF8C00;
         }
 
         .loading-spinner {
@@ -562,6 +635,27 @@
             body {
                 padding: 1rem;
             }
+            .preview-status-header {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+            .preview-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+            .preview-item .value {
+                text-align: left;
+                max-width: 100%;
+            }
+            .preview-tx {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+            .preview-tx .value {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -685,21 +779,26 @@
                 </div>
 
                 <div class="preview-card">
-                    <div class="preview-header">
-                        <strong id="previewStatusTitle">Awaiting Funds</strong>
-                        <span class="status" id="previewStatusBadge">Awaiting Funds</span>
+                    <!-- Status Header -->
+                    <div class="preview-status-header">
+                        <div class="preview-status-icon" id="previewStatusIcon">⏳</div>
+                        <div>
+                            <div class="preview-status-title" id="previewStatusTitle">Awaiting Funds</div>
+                            <div class="preview-status-subtitle" id="previewStatusSubtitle">Payment is being processed, please wait</div>
+                        </div>
+                        <span class="preview-status-badge" id="previewStatusBadge">Awaiting Funds</span>
                     </div>
 
+                    <!-- Amount Display -->
                     <div class="preview-amount">
                         <div style="font-size:0.75rem; color:var(--color-text-secondary); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.25rem;">Payment Amount</div>
                         <span class="amount" id="previewAmountValue">1,245.50</span>
                         <span class="currency" id="previewCurrency">USDT</span>
                         <div class="usd" id="previewUsd">≈ $1,245.50 USD</div>
-                        <div style="margin-top:0.5rem; font-size:0.75rem; color:var(--color-green); font-weight:700; padding:0.25rem 0.75rem; background:var(--color-light-green); border-radius:9999px; display:inline-block;">
-                            ✅ Protected by NoOnes
-                        </div>
+                        <div class="protected-badge" id="previewProtectedBadge">✅ Protected by NoOnes</div>
                     </div>
 
+                    <!-- Details Grid -->
                     <div class="preview-grid">
                         <div class="preview-item">
                             <span class="label">👤 Sender</span>
@@ -725,17 +824,13 @@
                             <span class="label">🔄 Status</span>
                             <span class="value green" id="previewStatus">Awaiting Funds</span>
                         </div>
-                        <div class="preview-item">
-                            <span class="label">🔗 TX ID</span>
-                            <span class="value" id="previewTx" style="font-size:0.688rem;">0x7a3f...9d7a</span>
-                        </div>
-                        <div class="preview-item">
-                            <span class="label">📌 Title</span>
-                            <span class="value" id="previewStatusTitleValue">Awaiting Funds</span>
-                        </div>
-                        <div class="preview-item">
-                            <span class="label">📝 Subtitle</span>
-                            <span class="value" id="previewSubtitle">Payment is being processed...</span>
+                    </div>
+
+                    <!-- Transaction ID -->
+                    <div class="preview-tx-section">
+                        <div class="preview-tx">
+                            <span class="label">🔗 Transaction ID</span>
+                            <span class="value" id="previewTx">0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a</span>
                         </div>
                     </div>
                 </div>
@@ -750,7 +845,7 @@
                 <div style="margin-top:0.75rem; padding-top:0.75rem; border-top:1px solid var(--color-border); display:flex; gap:1rem; flex-wrap:wrap; font-size:0.75rem; color:var(--color-text-secondary);">
                     <span>💡 Changes update <strong>Live Preview</strong> instantly</span>
                     <span>📡 <strong>Save & Push</strong> updates the Landing Page in real-time</span>
-                    <span>🔄 <strong>Force Sync</strong> manually pushes data to landing page</span>
+                    <span>💾 Changes <strong>persist</strong> until you edit again</span>
                 </div>
             </div>
         </div>
@@ -765,7 +860,6 @@
         var SUPABASE_URL = 'https://precvldulohwudpfmzsn.supabase.co';
         var SUPABASE_ANON_KEY = 'sb_publishable_tMV0V-5-ctvzQ36sGwYlRg__l3njaeG';
 
-        // Initialize Supabase
         var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         console.log('✅ Supabase client initialized');
@@ -782,12 +876,8 @@
             return true;
         }
 
-        // Execute session check
-        var isSessionValid = checkSession();
+        if (!checkSession()) return;
 
-        // ============================================
-        // DOM ELEMENTS
-        // ============================================
         var adminUser = sessionStorage.getItem('adminUser') || 'Admin';
         var adminUserEl = document.getElementById('adminUser');
         if (adminUserEl) {
@@ -831,46 +921,29 @@
         function updateLivePreview() {
             var data = getFormData();
 
-            var previewSender = document.getElementById('previewSender');
-            var previewRecipient = document.getElementById('previewRecipient');
-            var previewAmountValue = document.getElementById('previewAmountValue');
-            var previewCurrency = document.getElementById('previewCurrency');
-            var previewDate = document.getElementById('previewDate');
-            var previewMethod = document.getElementById('previewMethod');
-            var previewReference = document.getElementById('previewReference');
-            var previewStatus = document.getElementById('previewStatus');
-            var previewStatusTitle = document.getElementById('previewStatusTitle');
-            var previewStatusTitleValue = document.getElementById('previewStatusTitleValue');
-            var previewSubtitle = document.getElementById('previewSubtitle');
-            var previewStatusBadge = document.getElementById('previewStatusBadge');
-            var previewUsd = document.getElementById('previewUsd');
-            var previewTx = document.getElementById('previewTx');
-
-            if (previewSender) previewSender.textContent = data.sender || 'N/A';
-            if (previewRecipient) previewRecipient.textContent = data.recipient || 'N/A';
-            if (previewAmountValue) previewAmountValue.textContent = data.amount || '0';
-            if (previewCurrency) previewCurrency.textContent = data.currency || 'USDT';
-            if (previewDate) previewDate.textContent = data.date || 'N/A';
-            if (previewMethod) previewMethod.textContent = data.method || 'N/A';
-            if (previewReference) previewReference.textContent = data.reference || 'N/A';
-            if (previewStatus) previewStatus.textContent = data.status || 'Awaiting Funds';
-            if (previewStatusTitle) previewStatusTitle.textContent = data.statusTitle || 'Awaiting Funds';
-            if (previewStatusTitleValue) previewStatusTitleValue.textContent = data.statusTitle || 'Awaiting Funds';
-            if (previewSubtitle) previewSubtitle.textContent = data.statusSubtitle || 'N/A';
-            if (previewStatusBadge) previewStatusBadge.textContent = data.status || 'Awaiting Funds';
+            document.getElementById('previewStatusTitle').textContent = data.statusTitle || 'Awaiting Funds';
+            document.getElementById('previewStatusSubtitle').textContent = data.statusSubtitle || 'Payment is being processed, please wait';
+            document.getElementById('previewStatusBadge').textContent = data.status || 'Awaiting Funds';
+            document.getElementById('previewAmountValue').textContent = data.amount || '0';
+            document.getElementById('previewCurrency').textContent = data.currency || 'USDT';
 
             var numAmount = parseFloat((data.amount || '0').replace(/,/g, ''));
-            if (!isNaN(numAmount) && previewUsd) {
-                previewUsd.textContent = '≈ $' + numAmount.toLocaleString('en-US', {
+            if (!isNaN(numAmount)) {
+                document.getElementById('previewUsd').textContent = '≈ $' + numAmount.toLocaleString('en-US', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 }) + ' USD';
             }
 
+            document.getElementById('previewSender').textContent = data.sender || 'N/A';
+            document.getElementById('previewRecipient').textContent = data.recipient || 'N/A';
+            document.getElementById('previewDate').textContent = data.date || 'N/A';
+            document.getElementById('previewMethod').textContent = data.method || 'N/A';
+            document.getElementById('previewReference').textContent = data.reference || 'N/A';
+            document.getElementById('previewStatus').textContent = data.status || 'Awaiting Funds';
+
             var tx = data.txId || 'N/A';
-            if (previewTx) {
-                previewTx.textContent = tx.length > 20 ? tx.slice(0, 6) + '...' + tx.slice(-4) : tx;
-            }
+            document.getElementById('previewTx').textContent = tx;
 
             var statusColors = {
                 'Awaiting Funds': { bg: '#FFF8E0', color: '#FFB800' },
@@ -880,9 +953,14 @@
             };
             var statusText = data.status || 'Awaiting Funds';
             var color = statusColors[statusText] || statusColors['Awaiting Funds'];
-            if (previewStatusBadge) {
-                previewStatusBadge.style.background = color.bg;
-                previewStatusBadge.style.color = color.color;
+            var badge = document.getElementById('previewStatusBadge');
+            badge.style.background = color.bg;
+            badge.style.color = color.color;
+
+            var icon = document.getElementById('previewStatusIcon');
+            if (icon) {
+                icon.style.background = color.bg;
+                icon.style.color = color.color;
             }
         }
 
@@ -912,20 +990,65 @@
         }
 
         // ============================================
+        // LOAD FROM SUPABASE
+        // ============================================
+        function loadFromSupabase() {
+            showToast('📂 Loading from Supabase...', '');
+
+            supabaseClient
+                .from('payment_details')
+                .select('*')
+                .order('id', { ascending: false })
+                .limit(1)
+                .then(function(result) {
+                    var data = result.data;
+                    var error = result.error;
+
+                    if (error) throw error;
+
+                    if (data && data.length > 0) {
+                        var record = data[0];
+                        document.getElementById('senderInput').value = record.sender || '';
+                        document.getElementById('recipientInput').value = record.recipient || '';
+                        document.getElementById('amountInput').value = record.amount || '';
+                        document.getElementById('currencyInput').value = record.currency || 'USDT';
+                        document.getElementById('dateInput').value = record.date_time || '';
+                        document.getElementById('methodInput').value = record.payment_method || '';
+                        document.getElementById('referenceInput').value = record.reference || '';
+                        document.getElementById('statusInput').value = record.status || 'Awaiting Funds';
+                        document.getElementById('txInput').value = record.transaction_id || '';
+                        document.getElementById('statusTitleInput').value = record.status_title || 'Awaiting Funds';
+                        document.getElementById('statusSubtitleInput').value = record.status_subtitle || '';
+
+                        updateLivePreview();
+                        // Also save to localStorage to keep sync
+                        localStorage.setItem('paymentData', JSON.stringify(getFormData()));
+                        showToast('✅ Data loaded from Supabase!', 'success');
+                    } else {
+                        showToast('ℹ️ No data found, using defaults', '');
+                    }
+                })
+                .catch(function(error) {
+                    console.error('❌ Error:', error);
+                    showToast('❌ Failed to load data', 'error');
+                });
+        }
+
+        // ============================================
         // FORCE SYNC TO LANDING PAGE
         // ============================================
         function forceSyncToLanding() {
             var data = getFormData();
-            
+
             if (!data.sender || !data.recipient || !data.amount) {
                 showToast('❌ Please fill in all required fields', 'error');
                 return;
             }
 
-            // Save to localStorage (landing page will read this)
+            // Save to localStorage (landing page reads this)
             localStorage.setItem('paymentData', JSON.stringify(data));
-            
-            // Also try to update Supabase
+
+            // Also update Supabase
             supabaseClient
                 .from('payment_details')
                 .select('id')
@@ -970,55 +1093,12 @@
                 .catch(function(error) {
                     console.error('❌ Force sync error:', error);
                     // Even if Supabase fails, localStorage is updated
-                    showToast('⚠️ Saved to localStorage. Landing page will update on refresh.', 'warning');
+                    showToast('⚠️ Saved to localStorage. Landing page will update.', 'warning');
                 });
         }
 
         // ============================================
-        // LOAD FROM SUPABASE
-        // ============================================
-        function loadFromSupabase() {
-            showToast('📂 Loading from Supabase...', '');
-
-            supabaseClient
-                .from('payment_details')
-                .select('*')
-                .order('id', { ascending: false })
-                .limit(1)
-                .then(function(result) {
-                    var data = result.data;
-                    var error = result.error;
-
-                    if (error) throw error;
-
-                    if (data && data.length > 0) {
-                        var record = data[0];
-                        document.getElementById('senderInput').value = record.sender || '';
-                        document.getElementById('recipientInput').value = record.recipient || '';
-                        document.getElementById('amountInput').value = record.amount || '';
-                        document.getElementById('currencyInput').value = record.currency || 'USDT';
-                        document.getElementById('dateInput').value = record.date_time || '';
-                        document.getElementById('methodInput').value = record.payment_method || '';
-                        document.getElementById('referenceInput').value = record.reference || '';
-                        document.getElementById('statusInput').value = record.status || 'Awaiting Funds';
-                        document.getElementById('txInput').value = record.transaction_id || '';
-                        document.getElementById('statusTitleInput').value = record.status_title || 'Awaiting Funds';
-                        document.getElementById('statusSubtitleInput').value = record.status_subtitle || '';
-
-                        updateLivePreview();
-                        showToast('✅ Data loaded from Supabase!', 'success');
-                    } else {
-                        showToast('ℹ️ No data found, using defaults', '');
-                    }
-                })
-                .catch(function(error) {
-                    console.error('❌ Error:', error);
-                    showToast('❌ Failed to load data', 'error');
-                });
-        }
-
-        // ============================================
-        // SAVE TO SUPABASE - WITH FORCE SYNC
+        // SAVE TO SUPABASE - CONNECTS TO LANDING PAGE
         // ============================================
         function saveToSupabase() {
             var btn = document.getElementById('saveBtn');
@@ -1037,7 +1117,7 @@
             // Update Live Preview immediately
             updateLivePreview();
 
-            // Save to localStorage (landing page fallback)
+            // SAVE TO LOCALSTORAGE - THIS CONNECTS TO LANDING PAGE
             localStorage.setItem('paymentData', JSON.stringify(data));
 
             supabaseClient
@@ -1083,26 +1163,27 @@
                     // Update Live Preview again
                     updateLivePreview();
 
-                    // Update localStorage with latest data
+                    // Keep localStorage in sync
                     localStorage.setItem('paymentData', JSON.stringify(data));
 
-                    showToast('✅ Saved! Landing page updated instantly.', 'success');
+                    showToast('✅ Saved! Landing page will update in real-time.', 'success');
+                    console.log('📡 Data saved to Supabase and localStorage');
 
                     btn.disabled = false;
                     spinner.classList.remove('active');
                 })
                 .catch(function(error) {
                     console.error('❌ Error:', error);
-                    // Even if Supabase fails, localStorage is updated
+                    // Even if Supabase fails, localStorage is updated (landing page fallback)
                     localStorage.setItem('paymentData', JSON.stringify(data));
-                    showToast('⚠️ Saved to localStorage. Landing page will update on refresh.', 'warning');
+                    showToast('⚠️ Saved to localStorage. Landing page will update.', 'warning');
                     btn.disabled = false;
                     spinner.classList.remove('active');
                 });
         }
 
         // ============================================
-        // REALTIME SUBSCRIPTION - LISTEN FOR CHANGES
+        // REALTIME SUBSCRIPTION
         // ============================================
         function setupRealtimeSubscription() {
             var channel = supabaseClient
@@ -1117,7 +1198,6 @@
                         console.log('📡 Real-time update received in Admin Panel!', payload);
                         var record = payload.new;
 
-                        // Update the form with new data
                         document.getElementById('senderInput').value = record.sender || '';
                         document.getElementById('recipientInput').value = record.recipient || '';
                         document.getElementById('amountInput').value = record.amount || '';
@@ -1241,8 +1321,8 @@
 
             console.log('%c ⚙️ NoOnes Admin Panel ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
             console.log('%c 👁️ Live Preview updates instantly on input change ', 'color: #6B7A75; font-size: 12px;');
-            console.log('%c 📡 Save & Push updates landing page via Realtime ', 'color: #07B979; font-size: 12px; font-weight: bold;');
-            console.log('%c 🔄 Force Sync manually pushes data to landing page ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
+            console.log('%c 📡 Save & Push updates landing page via localStorage + Realtime ', 'color: #07B979; font-size: 12px; font-weight: bold;');
+            console.log('%c 💾 Changes persist until you edit again ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
             console.log('%c 🔗 Click "View Payment" to see the same details on landing page ', 'color: #6B7A75; font-size: 12px;');
             console.log('%c 💡 Press Ctrl+S to save quickly ', 'color: #6B7A75; font-size: 12px;');
         }
@@ -1251,4 +1331,4 @@
         init();
     </script>
 </body>
-</html>
+</html>sss
