@@ -59,7 +59,7 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .container { max-width: 800px; margin: 0 auto; }
+        .container { max-width: 900px; margin: 0 auto; }
 
         .header {
             display: flex;
@@ -208,6 +208,16 @@
             flex-wrap: wrap;
         }
 
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .admin-layout .card {
+            margin-bottom: 0;
+        }
+
         .form-group { margin-bottom: 1.25rem; }
         .form-group label {
             display: block;
@@ -275,21 +285,73 @@
         .btn-danger:hover { opacity: 0.85; transform: translateY(-2px); }
         .btn:active { transform: scale(0.97) !important; }
 
+        .preview-card {
+            background: var(--color-light-grey);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .preview-header .status {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            background: var(--color-light-green);
+            color: var(--color-green);
+        }
+
+        .preview-amount {
+            text-align: center;
+            padding: 1rem 0;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .preview-amount .amount {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--color-green);
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .preview-amount .currency {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--color-text-secondary);
+        }
+
+        .preview-amount .usd {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            margin-top: 0.125rem;
+        }
+
         .preview-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
+            gap: 0.5rem;
         }
         .preview-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.625rem 0.875rem;
-            background-color: var(--color-light-grey);
-            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: var(--color-white);
+            border-radius: 0.375rem;
             font-size: 0.813rem;
         }
-        .preview-item .label { font-weight: 600; color: var(--color-text-secondary); }
+        .preview-item .label {
+            font-weight: 600;
+            color: var(--color-text-secondary);
+        }
         .preview-item .value {
             font-weight: 600;
             color: var(--color-text);
@@ -378,13 +440,18 @@
         .sync-status .dot.offline { background: var(--color-error); }
         .sync-status .dot.live { background: #FF6B00; animation: pulse-dot 1.5s ease-in-out infinite; }
 
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
+            .admin-layout .card {
+                margin-bottom: 1.5rem;
+            }
             .form-row { grid-template-columns: 1fr; }
             .btn-group { flex-direction: column; }
             .btn { width: 100%; }
             .card { padding: 1.5rem; }
             body { padding: 1rem; }
-            .preview-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -411,118 +478,168 @@
             </div>
         </header>
 
-        <!-- Edit Form -->
-        <div class="card">
-            <div class="card-title">
-                📝 Edit Payment Details
-                <span class="status-badge">Live Edit</span>
-                <span class="realtime-badge">🔴 Real-time</span>
-            </div>
-
-            <form id="adminForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>👤 Sender</label>
-                        <input type="text" id="senderInput" placeholder="John Doe" />
-                    </div>
-                    <div class="form-group">
-                        <label>🏦 Recipient</label>
-                        <input type="text" id="recipientInput" placeholder="Jane Smith" />
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>💰 Amount</label>
-                        <input type="text" id="amountInput" placeholder="1,245.50" />
-                    </div>
-                    <div class="form-group">
-                        <label>💱 Currency</label>
-                        <input type="text" id="currencyInput" placeholder="USDT" />
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>📅 Date & Time</label>
-                        <input type="text" id="dateInput" placeholder="2026-08-17 14:30:45 UTC" />
-                    </div>
-                    <div class="form-group">
-                        <label>💳 Payment Method</label>
-                        <input type="text" id="methodInput" placeholder="Bank Transfer - Chase" />
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>📎 Reference</label>
-                        <input type="text" id="referenceInput" placeholder="PAY-2026-08-17-0042" />
-                    </div>
-                    <div class="form-group">
-                        <label>🔄 Status</label>
-                        <input type="text" id="statusInput" placeholder="Awaiting Funds" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>🔗 Transaction ID</label>
-                    <input type="text" id="txInput" placeholder="0x7a3f..." />
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>📌 Status Title</label>
-                        <input type="text" id="statusTitleInput" placeholder="Awaiting Funds" />
-                    </div>
-                    <div class="form-group">
-                        <label>📝 Status Subtitle</label>
-                        <input type="text" id="statusSubtitleInput" placeholder="Payment is being processed..." />
-                    </div>
-                </div>
-
-                <div class="btn-group">
-                    <button type="button" class="btn btn-primary" id="saveBtn">
-                        <span class="loading-spinner" id="saveSpinner"></span>
-                        💾 Save & Push Update
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="loadFromSupabase()">
-                        📂 Reload from Supabase
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
-                        ↩️ Reset to Defaults
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Live Preview -->
-        <div class="card">
-            <div class="card-title">
-                👁️ Live Preview
-                <span class="status-badge">Auto-updates</span>
-                <span class="realtime-badge">⚡ Instant Sync</span>
-            </div>
-            <div class="preview-grid">
-                <div class="preview-item"><span class="label">👤 Sender</span><span class="value" id="previewSender">John Doe</span></div>
-                <div class="preview-item"><span class="label">🏦 Recipient</span><span class="value" id="previewRecipient">Jane Smith</span></div>
-                <div class="preview-item"><span class="label">💰 Amount</span><span class="value green" id="previewAmount">1,245.50 USDT</span></div>
-                <div class="preview-item"><span class="label">📅 Date</span><span class="value" id="previewDate">2026-08-17 14:30:45 UTC</span></div>
-                <div class="preview-item"><span class="label">💳 Method</span><span class="value" id="previewMethod">Bank Transfer - Chase</span></div>
-                <div class="preview-item"><span class="label">📎 Reference</span><span class="value" id="previewReference">PAY-2026-08-17-0042</span></div>
-                <div class="preview-item"><span class="label">🔄 Status</span><span class="value green" id="previewStatus">Awaiting Funds</span></div>
-                <div class="preview-item"><span class="label">🔗 TX ID</span><span class="value" id="previewTx" style="font-size:0.688rem;">0x7a3f...9d7a</span></div>
-            </div>
+        <!-- Two Column Layout: Edit Form | Live Preview -->
+        <div class="admin-layout">
             
-            <!-- Sync Status -->
-            <div class="sync-status">
-                <span class="dot synced" id="syncDot"></span>
-                <span id="syncText">Synced with Supabase ✅</span>
-                <span style="margin-left: auto; font-weight: 600; color: var(--color-text);">Landing Page: <span id="landingStatus" style="color: var(--color-green);">🟢 Live</span></span>
+            <!-- LEFT: Edit Form -->
+            <div class="card">
+                <div class="card-title">
+                    📝 Edit Payment Details
+                    <span class="status-badge">Live Edit</span>
+                    <span class="realtime-badge">🔴 Real-time</span>
+                </div>
+
+                <form id="adminForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>👤 Sender</label>
+                            <input type="text" id="senderInput" placeholder="John Doe" />
+                        </div>
+                        <div class="form-group">
+                            <label>🏦 Recipient</label>
+                            <input type="text" id="recipientInput" placeholder="Jane Smith" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>💰 Amount</label>
+                            <input type="text" id="amountInput" placeholder="1,245.50" />
+                        </div>
+                        <div class="form-group">
+                            <label>💱 Currency</label>
+                            <input type="text" id="currencyInput" placeholder="USDT" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>📅 Date & Time</label>
+                            <input type="text" id="dateInput" placeholder="2026-08-17 14:30:45 UTC" />
+                        </div>
+                        <div class="form-group">
+                            <label>💳 Payment Method</label>
+                            <input type="text" id="methodInput" placeholder="Bank Transfer - Chase" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>📎 Reference</label>
+                            <input type="text" id="referenceInput" placeholder="PAY-2026-08-17-0042" />
+                        </div>
+                        <div class="form-group">
+                            <label>🔄 Status</label>
+                            <input type="text" id="statusInput" placeholder="Pending" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>🔗 Transaction ID</label>
+                        <input type="text" id="txInput" placeholder="0x7a3f..." />
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>📌 Status Title</label>
+                            <input type="text" id="statusTitleInput" placeholder="Pending" />
+                        </div>
+                        <div class="form-group">
+                            <label>📝 Status Subtitle</label>
+                            <input type="text" id="statusSubtitleInput" placeholder="Payment is being processed..." />
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" id="saveBtn">
+                            <span class="loading-spinner" id="saveSpinner"></span>
+                            💾 Save & Push Update
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="loadFromSupabase()">
+                            📂 Reload from Supabase
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                            ↩️ Reset to Defaults
+                        </button>
+                    </div>
+                </form>
             </div>
-            
-            <div style="margin-top:0.75rem; padding-top:0.75rem; border-top:1px solid var(--color-border); display:flex; gap:1rem; flex-wrap:wrap; font-size:0.75rem; color:var(--color-text-secondary);">
-                <span>💡 Changes update Live Preview instantly</span>
-                <span>📡 <strong>Save & Push</strong> updates the Landing Page in real-time</span>
+
+            <!-- RIGHT: Live Preview -->
+            <div class="card">
+                <div class="card-title">
+                    👁️ Live Preview
+                    <span class="status-badge">Auto-updates</span>
+                    <span class="realtime-badge">⚡ Instant</span>
+                </div>
+
+                <div class="preview-card">
+                    <div class="preview-header">
+                        <strong id="previewStatusTitle">Pending</strong>
+                        <span class="status" id="previewStatusBadge">Pending</span>
+                    </div>
+
+                    <div class="preview-amount">
+                        <div style="font-size:0.75rem; color:var(--color-text-secondary); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.25rem;">Payment Amount</div>
+                        <span class="amount" id="previewAmountValue">1,245.50</span>
+                        <span class="currency" id="previewCurrency">USDT</span>
+                        <div class="usd" id="previewUsd">≈ $1,245.50 USD</div>
+                        <div style="margin-top:0.5rem; font-size:0.75rem; color:var(--color-green); font-weight:700; padding:0.25rem 0.75rem; background:var(--color-light-green); border-radius:9999px; display:inline-block;">
+                            ✅ Protected by NoOnes
+                        </div>
+                    </div>
+
+                    <div class="preview-grid">
+                        <div class="preview-item">
+                            <span class="label">👤 Sender</span>
+                            <span class="value" id="previewSender">John Doe</span>
+                        </div>
+                        <div class="preview-item">
+                            <span class="label">🏦 Recipient</span>
+                            <span class="value" id="previewRecipient">Jane Smith</span>
+                        </div>
+                        <div class="preview-item">
+                            <span class="label">📅 Date</span>
+                            <span class="value" id="previewDate">2026-08-17 14:30:45 UTC</span>
+                        </div>
+                        <div class="preview-item">
+                            <span class="label">💳 Method</span>
+                            <span class="value" id="previewMethod">Bank Transfer - Chase</span>
+                        </div>
+                        <div class="preview-item">
+                            <span class="label">📎 Reference</span>
+                            <span class="value" id="previewReference">PAY-2026-08-17-0042</span>
+                        </div>
+                        <div class="preview-item">
+                            <span class="label">🔄 Status</span>
+                            <span class="value green" id="previewStatus">Pending</span>
+                        </div>
+                        <div class="preview-item">
+                            <span class="label">🔗 TX ID</span>
+                            <span class="value" id="previewTx" style="font-size:0.688rem;">0x7a3f...9d7a</span>
+                        </div>
+                        <div class="preview-item">
+                            <span class="label">📌 Title</span>
+                            <span class="value" id="previewStatusTitleValue">Pending</span>
+                        </div>
+                        <div class="preview-item">
+                            <span class="label">📝 Subtitle</span>
+                            <span class="value" id="previewSubtitle">Payment is being processed...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sync Status -->
+                <div class="sync-status">
+                    <span class="dot synced" id="syncDot"></span>
+                    <span id="syncText">Synced with Supabase ✅</span>
+                    <span style="margin-left: auto; font-weight: 600; color: var(--color-text);">Landing Page: <span id="landingStatus" style="color: var(--color-green);">🟢 Live</span></span>
+                </div>
+
+                <div style="margin-top:0.75rem; padding-top:0.75rem; border-top:1px solid var(--color-border); display:flex; gap:1rem; flex-wrap:wrap; font-size:0.75rem; color:var(--color-text-secondary);">
+                    <span>💡 Changes update <strong>Live Preview</strong> instantly</span>
+                    <span>📡 <strong>Save & Push</strong> updates the Landing Page in real-time</span>
+                </div>
             </div>
         </div>
     </div>
@@ -565,7 +682,7 @@
         });
 
         // ============================================
-        // DEFAULT DATA
+        // DEFAULT DATA - Status Title changed to "Pending"
         // ============================================
         const DEFAULT_DATA = {
             sender: 'John Doe',
@@ -575,14 +692,14 @@
             date: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
             method: 'Bank Transfer - Chase',
             reference: 'PAY-2026-08-17-0042',
-            status: 'Awaiting Funds',
+            status: 'Pending',
             txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
-            statusTitle: 'Awaiting Funds',
+            statusTitle: 'Pending',
             statusSubtitle: 'Payment is being processed, please wait'
         };
 
         // ============================================
-        // DOM REFERENCES
+        // DOM REFERENCES - Form Inputs
         // ============================================
         const fields = {
             sender: document.getElementById('senderInput'),
@@ -598,34 +715,76 @@
             statusSubtitle: document.getElementById('statusSubtitleInput')
         };
 
+        // ============================================
+        // DOM REFERENCES - Live Preview
+        // ============================================
         const preview = {
             sender: document.getElementById('previewSender'),
             recipient: document.getElementById('previewRecipient'),
-            amount: document.getElementById('previewAmount'),
+            amount: document.getElementById('previewAmountValue'),
+            currency: document.getElementById('previewCurrency'),
+            usd: document.getElementById('previewUsd'),
             date: document.getElementById('previewDate'),
             method: document.getElementById('previewMethod'),
             reference: document.getElementById('previewReference'),
             status: document.getElementById('previewStatus'),
-            tx: document.getElementById('previewTx')
+            tx: document.getElementById('previewTx'),
+            statusTitle: document.getElementById('previewStatusTitle'),
+            statusTitleValue: document.getElementById('previewStatusTitleValue'),
+            subtitle: document.getElementById('previewSubtitle'),
+            badge: document.getElementById('previewStatusBadge')
         };
 
         const syncDot = document.getElementById('syncDot');
         const syncText = document.getElementById('syncText');
 
         // ============================================
-        // UPDATE LIVE PREVIEW (Instant)
+        // UPDATE LIVE PREVIEW (Instant on input)
         // ============================================
         function updateLivePreview() {
             const data = getFormData();
+            
+            // Update preview fields
             preview.sender.textContent = data.sender || 'N/A';
             preview.recipient.textContent = data.recipient || 'N/A';
-            preview.amount.textContent = (data.amount || '0') + ' ' + (data.currency || 'USDT');
+            preview.amount.textContent = data.amount || '0';
+            preview.currency.textContent = data.currency || 'USDT';
             preview.date.textContent = data.date || 'N/A';
             preview.method.textContent = data.method || 'N/A';
             preview.reference.textContent = data.reference || 'N/A';
-            preview.status.textContent = data.status || 'N/A';
+            preview.status.textContent = data.status || 'Pending';
+            preview.statusTitle.textContent = data.statusTitle || 'Pending';
+            preview.statusTitleValue.textContent = data.statusTitle || 'Pending';
+            preview.subtitle.textContent = data.statusSubtitle || 'N/A';
+            preview.badge.textContent = data.status || 'Pending';
+
+            // Update USD
+            const numAmount = parseFloat((data.amount || '0').replace(/,/g, ''));
+            if (!isNaN(numAmount)) {
+                preview.usd.textContent = '≈ $' + numAmount.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) + ' USD';
+            } else {
+                preview.usd.textContent = '≈ $0.00 USD';
+            }
+
+            // Update TX ID (shortened)
             const tx = data.txId || 'N/A';
             preview.tx.textContent = tx.length > 20 ? tx.slice(0, 6) + '...' + tx.slice(-4) : tx;
+
+            // Update badge color based on status
+            const statusColors = {
+                'Pending': { bg: '#FFF8E0', color: '#FFB800' },
+                'Completed': { bg: '#E8F8F2', color: '#07B979' },
+                'Declined': { bg: '#FFEEEE', color: '#F22323' },
+                'Processing': { bg: '#FFF3E0', color: '#FF8C00' },
+                'Awaiting Funds': { bg: '#FFF8E0', color: '#FFB800' }
+            };
+            const statusText = data.status || 'Pending';
+            const color = statusColors[statusText] || statusColors['Pending'];
+            preview.badge.style.background = color.bg;
+            preview.badge.style.color = color.color;
         }
 
         function getFormData() {
@@ -652,9 +811,9 @@
             fields.date.value = data.date || '';
             fields.method.value = data.method || '';
             fields.reference.value = data.reference || '';
-            fields.status.value = data.status || '';
+            fields.status.value = data.status || 'Pending';
             fields.txId.value = data.txId || '';
-            fields.statusTitle.value = data.statusTitle || '';
+            fields.statusTitle.value = data.statusTitle || 'Pending';
             fields.statusSubtitle.value = data.statusSubtitle || '';
             updateLivePreview();
         }
@@ -682,6 +841,16 @@
                 toast.classList.remove('show');
             }, 3000);
         }
+
+        // ============================================
+        // AUTO-UPDATE LIVE PREVIEW ON INPUT
+        // ============================================
+        document.querySelectorAll('#adminForm input').forEach(input => {
+            input.addEventListener('input', function() {
+                updateLivePreview();
+                setSyncStatus('synced', 'Live preview updated ✅');
+            });
+        });
 
         // ============================================
         // SUPABASE FUNCTIONS
@@ -748,9 +917,9 @@
                         date: record.date_time,
                         method: record.payment_method,
                         reference: record.reference,
-                        status: record.status,
+                        status: record.status || 'Pending',
                         txId: record.transaction_id,
-                        statusTitle: record.status_title,
+                        statusTitle: record.status_title || 'Pending',
                         statusSubtitle: record.status_subtitle
                     });
                     showToast('✅ Data loaded from Supabase!', 'success');
@@ -777,6 +946,9 @@
             }
         }
 
+        // ============================================
+        // SAVE TO SUPABASE - Updates Live Preview instantly
+        // ============================================
         async function saveToSupabase() {
             const btn = document.querySelector('#saveBtn');
             const spinner = document.getElementById('saveSpinner');
@@ -789,12 +961,16 @@
                 return;
             }
 
+            // First, update the Live Preview instantly
+            updateLivePreview();
+            setSyncStatus('syncing', 'Saving to Supabase...');
+            showToast('💾 Saving to Supabase...', '');
+
             if (!dbConnected) {
                 await checkSupabaseConnection();
                 if (!dbConnected) {
                     localStorage.setItem('paymentData', JSON.stringify(data));
                     showToast('⚠️ Saved to localStorage (Supabase offline)', 'error');
-                    updateLivePreview();
                     setSyncStatus('offline', 'Saved locally only');
                     return;
                 }
@@ -803,8 +979,6 @@
             try {
                 btn.disabled = true;
                 spinner.classList.add('active');
-                setSyncStatus('syncing', 'Saving to Supabase...');
-                showToast('💾 Saving to Supabase...', '');
 
                 console.log('🔍 Fetching latest record...');
                 const { data: existing, error: fetchError } = await supabaseClient
@@ -830,9 +1004,9 @@
                         date_time: data.date,
                         payment_method: data.method,
                         reference: data.reference,
-                        status: data.status,
+                        status: data.status || 'Pending',
                         transaction_id: data.txId,
-                        status_title: data.statusTitle,
+                        status_title: data.statusTitle || 'Pending',
                         status_subtitle: data.statusSubtitle
                     };
                     console.log('📝 Update data:', updateData);
@@ -858,9 +1032,9 @@
                         date_time: data.date,
                         payment_method: data.method,
                         reference: data.reference,
-                        status: data.status,
+                        status: data.status || 'Pending',
                         transaction_id: data.txId,
-                        status_title: data.statusTitle,
+                        status_title: data.statusTitle || 'Pending',
                         status_subtitle: data.statusSubtitle
                     };
                     console.log('📝 Insert data:', insertData);
@@ -879,9 +1053,10 @@
 
                 localStorage.setItem('paymentData', JSON.stringify(data));
 
-                showToast('✅ Saved to Supabase! Realtime update should trigger.', 'success');
-                setSyncStatus('synced', 'Saved & Synced ✅');
+                // Update Live Preview again after save
                 updateLivePreview();
+                setSyncStatus('synced', 'Saved & Synced ✅');
+                showToast('✅ Saved to Supabase! Landing Page updated.', 'success');
                 
                 console.log('🎉 Done! Realtime event should trigger now.');
                 console.log('✅ Check your landing page for the update.');
@@ -940,9 +1115,9 @@
                             date: record.date_time,
                             method: record.payment_method,
                             reference: record.reference,
-                            status: record.status,
+                            status: record.status || 'Pending',
                             txId: record.transaction_id,
-                            statusTitle: record.status_title,
+                            statusTitle: record.status_title || 'Pending',
                             statusSubtitle: record.status_subtitle
                         });
                         
@@ -983,17 +1158,7 @@
         });
 
         // ============================================
-        // AUTO-UPDATE LIVE PREVIEW ON INPUT
-        // ============================================
-        document.querySelectorAll('#adminForm input').forEach(input => {
-            input.addEventListener('input', function() {
-                updateLivePreview();
-                setSyncStatus('synced', 'Live preview updated ✅');
-            });
-        });
-
-        // ============================================
-        // SAVE BUTTON
+        // SAVE BUTTON - Now updates Live Preview instantly
         // ============================================
         document.getElementById('saveBtn').addEventListener('click', saveToSupabase);
 
@@ -1018,7 +1183,7 @@
 
         console.log('%c ⚙️ NoOnes Admin Panel ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
         console.log('%c 👁️ Live Preview updates instantly on input change ', 'color: #6B7A75; font-size: 12px;');
-        console.log('%c 📡 Save & Push updates the Landing Page in real-time ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
+        console.log('%c 📡 Save & Push updates Live Preview AND Landing Page ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
         console.log('%c 💡 Press Ctrl+S to save quickly ', 'color: #6B7A75; font-size: 12px;');
     </script>
 </body>
