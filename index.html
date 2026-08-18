@@ -960,7 +960,7 @@
         // Initialize Supabase
         var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        var currentData = null; // Store current data to detect changes
+        var currentData = null;
 
         // ============================================
         // THEME TOGGLE
@@ -1061,7 +1061,6 @@
             if (statusTitleEl && data.statusTitle) statusTitleEl.textContent = data.statusTitle;
             if (statusSubtitleEl && data.statusSubtitle) statusSubtitleEl.textContent = data.statusSubtitle;
 
-            // Store current data for change detection
             currentData = data;
         }
 
@@ -1096,7 +1095,6 @@
                             statusSubtitle: record.status_subtitle
                         };
 
-                        // Only update if data changed
                         if (hasDataChanged(newData)) {
                             displayPaymentData(newData);
                             console.log('📂 Data updated from Supabase');
@@ -1162,7 +1160,6 @@
                     console.log('📡 Realtime subscription status:', status);
                     if (status === 'SUBSCRIBED') {
                         console.log('✅ Realtime is active!');
-                        // Stop polling since Realtime is working
                         if (pollInterval) {
                             clearInterval(pollInterval);
                             pollInterval = null;
