@@ -563,7 +563,7 @@
                     👤 <span id="adminUser">Admin</span>
                     <button class="logout-btn" id="logoutBtn">✕ Logout</button>
                 </span>
-                <a href="index.html" class="view-link">👁️ View Payment</a>
+                <a href="index.html" class="view-link" target="_blank">👁️ View Payment</a>
                 <button class="theme-toggle" id="themeToggle">
                     <span class="theme-thumb">🌙</span>
                 </button>
@@ -935,7 +935,7 @@
         }
 
         // ============================================
-        // SAVE TO SUPABASE - UPDATES LANDING PAGE
+        // SAVE TO SUPABASE - Updates landing page via Realtime
         // ============================================
         function saveToSupabase() {
             var btn = document.getElementById('saveBtn');
@@ -953,6 +953,9 @@
 
             // Update Live Preview immediately
             updateLivePreview();
+
+            // Also update the landing page by storing in localStorage
+            localStorage.setItem('paymentData', JSON.stringify(data));
 
             supabaseClient
                 .from('payment_details')
@@ -994,14 +997,13 @@
                     var error = result.error;
                     if (error) throw error;
 
-                    // Update Live Preview
+                    // Update Live Preview again
                     updateLivePreview();
 
-                    // Save to localStorage as backup
+                    // Make sure localStorage is updated
                     localStorage.setItem('paymentData', JSON.stringify(data));
 
-                    // Show success message - LANDING PAGE WILL UPDATE AUTOMATICALLY via Realtime!
-                    showToast('✅ Saved! Landing page updated instantly via Realtime.', 'success');
+                    showToast('✅ Saved! Landing page updated instantly.', 'success');
 
                     btn.disabled = false;
                     spinner.classList.remove('active');
@@ -1155,6 +1157,7 @@
             console.log('%c ⚙️ NoOnes Admin Panel ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
             console.log('%c 👁️ Live Preview updates instantly on input change ', 'color: #6B7A75; font-size: 12px;');
             console.log('%c 📡 Save & Push updates landing page via Realtime ', 'color: #07B979; font-size: 12px; font-weight: bold;');
+            console.log('%c 🔗 Click "View Payment" to see the same details on landing page ', 'color: #6B7A75; font-size: 12px;');
             console.log('%c 💡 Press Ctrl+S to save quickly ', 'color: #6B7A75; font-size: 12px;');
         }
 
