@@ -885,6 +885,11 @@
             var statusSubtitleEl = document.getElementById('statusSubtitle');
             var usdEl = document.querySelector('.amount-usd');
 
+            // Check if data actually changed
+            if (currentData && JSON.stringify(currentData) === JSON.stringify(data)) {
+                return;
+            }
+
             if (senderEl && data.sender) senderEl.textContent = data.sender;
             if (recipientEl && data.recipient) recipientEl.textContent = data.recipient;
             if (data.amount) {
@@ -922,7 +927,7 @@
             if (statusSubtitleEl && data.statusSubtitle) statusSubtitleEl.textContent = data.statusSubtitle;
 
             currentData = data;
-            console.log('📂 Displayed data from:', data._source || 'unknown');
+            console.log('📂 Displayed updated data');
         }
 
         // ============================================
@@ -935,7 +940,6 @@
                 try {
                     var data = JSON.parse(savedData);
                     if (data.sender && data.recipient) {
-                        data._source = 'localStorage';
                         displayPaymentData(data);
                         console.log('📂 Data loaded from localStorage (admin edit)');
                         return true;
@@ -968,8 +972,7 @@
                             status: record.status,
                             txId: record.transaction_id,
                             statusTitle: record.status_title,
-                            statusSubtitle: record.status_subtitle,
-                            _source: 'Supabase'
+                            statusSubtitle: record.status_subtitle
                         };
                         displayPaymentData(newData);
                         console.log('📂 Data loaded from Supabase');
@@ -985,8 +988,7 @@
                             status: 'Awaiting Funds',
                             txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
                             statusTitle: 'Awaiting Funds',
-                            statusSubtitle: 'Payment is being processed, please wait',
-                            _source: 'default'
+                            statusSubtitle: 'Payment is being processed, please wait'
                         };
                         displayPaymentData(defaultData);
                         console.log('📂 No data found, using defaults');
@@ -1005,15 +1007,30 @@
                         status: 'Awaiting Funds',
                         txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
                         statusTitle: 'Awaiting Funds',
-                        statusSubtitle: 'Payment is being processed, please wait',
-                        _source: 'default'
+                        statusSubtitle: 'Payment is being processed, please wait'
                     };
                     displayPaymentData(defaultData);
                 });
         }
 
         // ============================================
-        // REALTIME SUBSCRIPTION
+        // LISTEN FOR STORAGE EVENTS (INSTANT UPDATES)
+        // ============================================
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'paymentData' && e.newValue) {
+                try {
+                    var data = JSON.parse(e.newValue);
+                    if (data.sender && data.recipient) {
+                        displayPaymentData(data);
+                        console.log('📂 localStorage updated from another tab');
+                        showToast('🔄 Payment details updated!', 'success');
+                    }
+                } catch (e) {}
+            }
+        });
+
+        // ============================================
+        // REALTIME SUBSCRIPTION (FALLBACK)
         // ============================================
         function setupRealtimeSubscription() {
             var channel = supabaseClient
@@ -1038,60 +1055,17 @@
                             status: record.status,
                             txId: record.transaction_id,
                             statusTitle: record.status_title,
-                            statusSubtitle: record.status_subtitle,
-                            _source: 'realtime'
+                            statusSubtitle: record.status_subtitle
                         };
-
-                        // Check if localStorage has newer data
-                        var savedData = localStorage.getItem('paymentData');
-                        if (savedData) {
-                            try {
-                                var localData = JSON.parse(savedData);
-                                if (localData.sender && localData.recipient) {
-                                    // Only update if localStorage data is older
-                                    var localTime = localData._updated || 0;
-                                    var realtimeTime = Date.now();
-                                    if (realtimeTime > localTime) {
-                                        displayPaymentData(newData);
-                                        localStorage.setItem('paymentData', JSON.stringify(newData));
-                                        showToast('🔄 Payment details updated!', 'success');
-                                    }
-                                    return;
-                                }
-                            } catch (e) {}
-                        }
                         displayPaymentData(newData);
+                        // Also update localStorage to keep sync
                         localStorage.setItem('paymentData', JSON.stringify(newData));
-                        showToast('🔄 Payment details updated!', 'success');
+                        showToast('🔄 Payment details updated in real-time!', 'success');
                     }
                 )
                 .subscribe(function(status) {
                     console.log('📡 Realtime subscription status:', status);
                 });
-        }
-
-        // ============================================
-        // LOCALSTORAGE CHECK (Every 2 seconds)
-        // ============================================
-        function startLocalStorageCheck() {
-            setInterval(function() {
-                var savedData = localStorage.getItem('paymentData');
-                if (savedData) {
-                    try {
-                        var data = JSON.parse(savedData);
-                        if (data.sender && data.recipient) {
-                            // Compare with current data
-                            var currentStr = JSON.stringify(currentData);
-                            var newStr = JSON.stringify(data);
-                            if (currentStr !== newStr) {
-                                data._source = 'localStorage-poll';
-                                displayPaymentData(data);
-                                console.log('📂 localStorage poll: data updated');
-                            }
-                        }
-                    } catch (e) {}
-                }
-            }, 2000);
         }
 
         // ============================================
@@ -1227,35 +1201,36 @@
         }
 
         // ============================================
-        // LISTEN FOR STORAGE CHANGES
-        // ============================================
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'paymentData' && e.newValue) {
-                try {
-                    var data = JSON.parse(e.newValue);
-                    if (data.sender && data.recipient) {
-                        data._source = 'storage-event';
-                        displayPaymentData(data);
-                        console.log('📂 localStorage updated from another tab');
-                        showToast('🔄 Payment details updated!', 'success');
-                    }
-                } catch (e) {}
-            }
-        });
-
-        // ============================================
         // INITIALIZE
         // ============================================
         function init() {
             checkConnection();
             loadPaymentData();
             setupRealtimeSubscription();
-            startLocalStorageCheck();
+
+            // Also check localStorage every 1 second for instant updates
+            var lastData = localStorage.getItem('paymentData');
+            setInterval(function() {
+                var currentData = localStorage.getItem('paymentData');
+                if (currentData !== lastData) {
+                    lastData = currentData;
+                    if (currentData) {
+                        try {
+                            var data = JSON.parse(currentData);
+                            if (data.sender && data.recipient) {
+                                displayPaymentData(data);
+                                console.log('📂 localStorage updated (polling)');
+                                showToast('🔄 Payment details updated!', 'success');
+                            }
+                        } catch (e) {}
+                    }
+                }
+            }, 1000);
 
             console.log('%c 💰 NoOnes Payment Confirmation ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
             console.log('%c 🔒 Protected by NoOnes ', 'color: #07B979; font-size: 12px; font-weight: bold;');
             console.log('%c 💾 Changes persist until you edit again in admin ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
-            console.log('%c 📡 Checks localStorage every 2 seconds for updates ', 'color: #6B7A75; font-size: 12px;');
+            console.log('%c 📡 Checks localStorage every 1 second for instant updates ', 'color: #6B7A75; font-size: 12px;');
         }
 
         document.addEventListener('DOMContentLoaded', init);
