@@ -522,6 +522,24 @@
             animation: pulse-dot 1.5s ease-in-out infinite;
         }
 
+        .force-sync-btn {
+            background: var(--color-green);
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: var(--font-family);
+            margin-left: 0.5rem;
+        }
+        .force-sync-btn:hover {
+            background: var(--color-green-hover);
+            transform: scale(1.02);
+        }
+
         @media (max-width: 768px) {
             .admin-layout {
                 grid-template-columns: 1fr;
@@ -579,6 +597,7 @@
                     📝 Edit Payment Details
                     <span class="status-badge">Live Edit</span>
                     <span class="realtime-badge">🔴 Real-time</span>
+                    <button class="force-sync-btn" onclick="forceSyncToLanding()">🔄 Force Sync</button>
                 </div>
 
                 <form id="adminForm">
@@ -731,6 +750,7 @@
                 <div style="margin-top:0.75rem; padding-top:0.75rem; border-top:1px solid var(--color-border); display:flex; gap:1rem; flex-wrap:wrap; font-size:0.75rem; color:var(--color-text-secondary);">
                     <span>💡 Changes update <strong>Live Preview</strong> instantly</span>
                     <span>📡 <strong>Save & Push</strong> updates the Landing Page in real-time</span>
+                    <span>🔄 <strong>Force Sync</strong> manually pushes data to landing page</span>
                 </div>
             </div>
         </div>
@@ -892,6 +912,69 @@
         }
 
         // ============================================
+        // FORCE SYNC TO LANDING PAGE
+        // ============================================
+        function forceSyncToLanding() {
+            var data = getFormData();
+            
+            if (!data.sender || !data.recipient || !data.amount) {
+                showToast('❌ Please fill in all required fields', 'error');
+                return;
+            }
+
+            // Save to localStorage (landing page will read this)
+            localStorage.setItem('paymentData', JSON.stringify(data));
+            
+            // Also try to update Supabase
+            supabaseClient
+                .from('payment_details')
+                .select('id')
+                .order('id', { ascending: false })
+                .limit(1)
+                .then(function(result) {
+                    var existing = result.data;
+                    var fetchError = result.error;
+                    if (fetchError) throw fetchError;
+
+                    var updateData = {
+                        sender: data.sender,
+                        recipient: data.recipient,
+                        amount: parseFloat(data.amount.replace(/,/g, '')) || 0,
+                        currency: data.currency || 'USDT',
+                        date_time: data.date || new Date().toISOString(),
+                        payment_method: data.method || 'Bank Transfer',
+                        reference: data.reference || 'REF-' + Date.now(),
+                        status: data.status || 'Awaiting Funds',
+                        transaction_id: data.txId || '0x' + Math.random().toString(16).slice(2, 42),
+                        status_title: data.statusTitle || 'Awaiting Funds',
+                        status_subtitle: data.statusSubtitle || 'Payment is being processed'
+                    };
+
+                    if (existing && existing.length > 0) {
+                        return supabaseClient
+                            .from('payment_details')
+                            .update(updateData)
+                            .eq('id', existing[0].id);
+                    } else {
+                        return supabaseClient
+                            .from('payment_details')
+                            .insert(updateData);
+                    }
+                })
+                .then(function(result) {
+                    var error = result.error;
+                    if (error) throw error;
+                    showToast('✅ Force sync successful! Landing page updated.', 'success');
+                    updateLivePreview();
+                })
+                .catch(function(error) {
+                    console.error('❌ Force sync error:', error);
+                    // Even if Supabase fails, localStorage is updated
+                    showToast('⚠️ Saved to localStorage. Landing page will update on refresh.', 'warning');
+                });
+        }
+
+        // ============================================
         // LOAD FROM SUPABASE
         // ============================================
         function loadFromSupabase() {
@@ -935,7 +1018,7 @@
         }
 
         // ============================================
-        // SAVE TO SUPABASE - Updates landing page via Realtime
+        // SAVE TO SUPABASE - WITH FORCE SYNC
         // ============================================
         function saveToSupabase() {
             var btn = document.getElementById('saveBtn');
@@ -954,7 +1037,7 @@
             // Update Live Preview immediately
             updateLivePreview();
 
-            // Also update the landing page by storing in localStorage
+            // Save to localStorage (landing page fallback)
             localStorage.setItem('paymentData', JSON.stringify(data));
 
             supabaseClient
@@ -1000,7 +1083,7 @@
                     // Update Live Preview again
                     updateLivePreview();
 
-                    // Make sure localStorage is updated
+                    // Update localStorage with latest data
                     localStorage.setItem('paymentData', JSON.stringify(data));
 
                     showToast('✅ Saved! Landing page updated instantly.', 'success');
@@ -1010,7 +1093,9 @@
                 })
                 .catch(function(error) {
                     console.error('❌ Error:', error);
-                    showToast('❌ Error: ' + (error.message || 'Unknown error'), 'error');
+                    // Even if Supabase fails, localStorage is updated
+                    localStorage.setItem('paymentData', JSON.stringify(data));
+                    showToast('⚠️ Saved to localStorage. Landing page will update on refresh.', 'warning');
                     btn.disabled = false;
                     spinner.classList.remove('active');
                 });
@@ -1157,6 +1242,7 @@
             console.log('%c ⚙️ NoOnes Admin Panel ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
             console.log('%c 👁️ Live Preview updates instantly on input change ', 'color: #6B7A75; font-size: 12px;');
             console.log('%c 📡 Save & Push updates landing page via Realtime ', 'color: #07B979; font-size: 12px; font-weight: bold;');
+            console.log('%c 🔄 Force Sync manually pushes data to landing page ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
             console.log('%c 🔗 Click "View Payment" to see the same details on landing page ', 'color: #6B7A75; font-size: 12px;');
             console.log('%c 💡 Press Ctrl+S to save quickly ', 'color: #6B7A75; font-size: 12px;');
         }
