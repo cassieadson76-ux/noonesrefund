@@ -29,8 +29,8 @@
             --color-body: #F8F9FA;
             --color-border: #E8EAED;
             --color-error: #F22323;
-            --shadow-md: 0 0.25rem 1rem rgba(0,0,0,0.08);
-            --shadow-lg: 0 0.5rem 2rem rgba(0,0,0,0.12);
+            --shadow-md: 0 0.25rem 1rem rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 0.5rem 2rem rgba(0, 0, 0, 0.12);
             --font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
         }
 
@@ -323,21 +323,6 @@
             background-color: var(--color-error);
         }
 
-        .demo-credentials {
-            margin-top: 0.75rem;
-            padding: 0.75rem;
-            background: var(--color-light-grey);
-            border-radius: 0.5rem;
-            font-size: 0.75rem;
-            color: var(--color-text-secondary);
-            text-align: center;
-            border: 1px dashed var(--color-border);
-        }
-
-        .demo-credentials strong {
-            color: var(--color-text);
-        }
-
         @media (max-width: 480px) {
             .card {
                 padding: 1.5rem;
@@ -378,7 +363,7 @@
                         <span class="label-icon">👤</span>
                         Username
                     </label>
-                    <input type="text" id="usernameInput" placeholder="Enter your username" value="admin" />
+                    <input type="text" id="usernameInput" placeholder="Enter your username" />
                 </div>
 
                 <div class="form-group">
@@ -387,7 +372,7 @@
                         Password
                     </label>
                     <div class="password-wrapper">
-                        <input type="password" id="passwordInput" placeholder="Enter your password" value="admin123" />
+                        <input type="password" id="passwordInput" placeholder="Enter your password" />
                         <button type="button" class="toggle-password" id="togglePassword" aria-label="Toggle password visibility">
                             👁️
                         </button>
@@ -399,11 +384,6 @@
                     <span id="loginText">🔓 Access Admin Panel</span>
                 </button>
             </form>
-
-            <!-- Demo Credentials -->
-            <div class="demo-credentials">
-                <strong>Demo:</strong> Username: <strong>admin</strong> &nbsp;|&nbsp; Password: <strong>admin123</strong>
-            </div>
 
             <!-- Footer -->
             <div class="footer-links">
@@ -420,9 +400,9 @@
 
     <script>
         // ============================================
-        // ADMIN CREDENTIALS
+        // ADMIN CREDENTIALS - CHANGE THESE
         // ============================================
-        const ADMIN_CREDENTIALS = {
+        var ADMIN_CREDENTIALS = {
             username: 'admin',
             password: 'admin123'
         };
@@ -431,7 +411,7 @@
         // SESSION CHECK - Redirect if already logged in
         // ============================================
         function checkSession() {
-            const session = sessionStorage.getItem('adminSession');
+            var session = sessionStorage.getItem('adminSession');
             if (session === 'true') {
                 window.location.href = 'adminpanel.html';
                 return true;
@@ -445,8 +425,8 @@
         // ============================================
         // THEME TOGGLE
         // ============================================
-        const themeToggleSm = document.getElementById('themeToggleSm');
-        let isDark = localStorage.getItem('theme-preference') === 'dark';
+        var themeToggleSm = document.getElementById('themeToggleSm');
+        var isDark = localStorage.getItem('theme-preference') === 'dark';
 
         function updateTheme() {
             if (isDark) {
@@ -469,15 +449,16 @@
         // ============================================
         // TOAST NOTIFICATION
         // ============================================
-        const toast = document.getElementById('toast');
-        let toastTimeout;
+        var toast = document.getElementById('toast');
+        var toastTimeout;
 
-        function showToast(message, type = '') {
+        function showToast(message, type) {
+            type = type || '';
             toast.textContent = message;
             toast.className = 'toast' + (type ? ' ' + type : '');
             toast.classList.add('show');
             clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
+            toastTimeout = setTimeout(function() {
                 toast.classList.remove('show');
             }, 3000);
         }
@@ -486,11 +467,11 @@
         // SHOW ERROR
         // ============================================
         function showError(message) {
-            const errorEl = document.getElementById('errorMessage');
-            const errorText = document.getElementById('errorText');
+            var errorEl = document.getElementById('errorMessage');
+            var errorText = document.getElementById('errorText');
             errorText.textContent = message;
             errorEl.classList.add('show');
-            setTimeout(() => {
+            setTimeout(function() {
                 errorEl.classList.remove('show');
             }, 4000);
         }
@@ -499,7 +480,7 @@
         // PASSWORD TOGGLE
         // ============================================
         document.getElementById('togglePassword').addEventListener('click', function() {
-            const input = document.getElementById('passwordInput');
+            var input = document.getElementById('passwordInput');
             if (input.type === 'password') {
                 input.type = 'text';
                 this.textContent = '🙈';
@@ -510,14 +491,13 @@
         });
 
         // ============================================
-        // LOGIN HANDLER - Redirects to adminpanel.html
+        // LOGIN HANDLER
         // ============================================
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             handleLogin();
         });
 
-        // Enter key support
         document.getElementById('usernameInput').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 document.getElementById('passwordInput').focus();
@@ -530,61 +510,49 @@
             }
         });
 
-        async function handleLogin() {
-            const username = document.getElementById('usernameInput').value.trim();
-            const password = document.getElementById('passwordInput').value.trim();
-            const loginBtn = document.getElementById('loginBtn');
-            const loginText = document.getElementById('loginText');
-            const loginSpinner = document.getElementById('loginSpinner');
-            const errorEl = document.getElementById('errorMessage');
+        function handleLogin() {
+            var username = document.getElementById('usernameInput').value.trim();
+            var password = document.getElementById('passwordInput').value.trim();
+            var loginBtn = document.getElementById('loginBtn');
+            var loginText = document.getElementById('loginText');
+            var loginSpinner = document.getElementById('loginSpinner');
+            var errorEl = document.getElementById('errorMessage');
 
-            // Hide previous error
             errorEl.classList.remove('show');
 
-            // Validate inputs
             if (!username || !password) {
                 showError('Please enter both username and password.');
                 return;
             }
 
-            // Show loading state
             loginBtn.disabled = true;
             loginSpinner.classList.add('active');
             loginText.textContent = 'Verifying...';
 
-            // Simulate async check
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            setTimeout(function() {
+                if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                    // AUTHORIZED - Create session
+                    sessionStorage.setItem('adminSession', 'true');
+                    sessionStorage.setItem('adminUser', username);
 
-            // Check credentials
-            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-                // Success - create session
-                sessionStorage.setItem('adminSession', 'true');
-                sessionStorage.setItem('adminUser', username);
-                
-                showToast('✅ Login successful! Redirecting...', 'success');
-                loginText.textContent = '✅ Success!';
+                    showToast('✅ Login successful! Redirecting...', 'success');
+                    loginText.textContent = '✅ Success!';
 
-                setTimeout(() => {
-                    window.location.href = 'adminpanel.html';
-                }, 800);
-            } else {
-                // Failed
-                showError('Invalid username or password. Please try again.');
-                loginBtn.disabled = false;
-                loginSpinner.classList.remove('active');
-                loginText.textContent = '🔓 Access Admin Panel';
-                
-                // Clear password field
-                document.getElementById('passwordInput').value = '';
-                document.getElementById('passwordInput').focus();
-            }
+                    setTimeout(function() {
+                        window.location.href = 'adminpanel.html';
+                    }, 800);
+                } else {
+                    showError('Invalid username or password. Please try again.');
+                    loginBtn.disabled = false;
+                    loginSpinner.classList.remove('active');
+                    loginText.textContent = '🔓 Access Admin Panel';
+                    document.getElementById('passwordInput').value = '';
+                    document.getElementById('passwordInput').focus();
+                }
+            }, 1000);
         }
 
-        // ============================================
-        // KEYBOARD SHORTCUTS
-        // ============================================
         document.addEventListener('keydown', function(e) {
-            // Escape to clear error
             if (e.key === 'Escape') {
                 document.getElementById('errorMessage').classList.remove('show');
             }
@@ -596,4 +564,4 @@
         console.log('%c 📝 Login redirects to adminpanel.html ', 'color: #6B7A75; font-size: 12px;');
     </script>
 </body>
-</html>
+</html>sss
