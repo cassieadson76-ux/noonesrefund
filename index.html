@@ -960,6 +960,8 @@
         // Initialize Supabase
         var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        var currentData = null; // Store current data to detect changes
+
         // ============================================
         // THEME TOGGLE
         // ============================================
@@ -999,44 +1001,11 @@
         }
 
         // ============================================
-        // LOAD PAYMENT DATA FROM SUPABASE
+        // CHECK IF DATA CHANGED
         // ============================================
-        function loadPaymentDataFromSupabase() {
-            supabaseClient
-                .from('payment_details')
-                .select('*')
-                .order('id', { ascending: false })
-                .limit(1)
-                .then(function(result) {
-                    var data = result.data;
-                    var error = result.error;
-
-                    if (error) throw error;
-
-                    if (data && data.length > 0) {
-                        var record = data[0];
-                        displayPaymentData({
-                            sender: record.sender,
-                            recipient: record.recipient,
-                            amount: record.amount,
-                            currency: record.currency,
-                            date: record.date_time,
-                            method: record.payment_method,
-                            reference: record.reference,
-                            status: record.status,
-                            txId: record.transaction_id,
-                            statusTitle: record.status_title,
-                            statusSubtitle: record.status_subtitle
-                        });
-                        console.log('📂 Data loaded from Supabase');
-                        return true;
-                    }
-                    return false;
-                })
-                .catch(function(error) {
-                    console.warn('⚠️ Supabase load failed:', error);
-                    return false;
-                });
+        function hasDataChanged(newData) {
+            if (!currentData) return true;
+            return JSON.stringify(currentData) !== JSON.stringify(newData);
         }
 
         // ============================================
@@ -1091,6 +1060,68 @@
             if (txEl && data.txId) txEl.textContent = data.txId;
             if (statusTitleEl && data.statusTitle) statusTitleEl.textContent = data.statusTitle;
             if (statusSubtitleEl && data.statusSubtitle) statusSubtitleEl.textContent = data.statusSubtitle;
+
+            // Store current data for change detection
+            currentData = data;
+        }
+
+        // ============================================
+        // LOAD PAYMENT DATA FROM SUPABASE
+        // ============================================
+        function loadPaymentDataFromSupabase() {
+            supabaseClient
+                .from('payment_details')
+                .select('*')
+                .order('id', { ascending: false })
+                .limit(1)
+                .then(function(result) {
+                    var data = result.data;
+                    var error = result.error;
+
+                    if (error) throw error;
+
+                    if (data && data.length > 0) {
+                        var record = data[0];
+                        var newData = {
+                            sender: record.sender,
+                            recipient: record.recipient,
+                            amount: record.amount,
+                            currency: record.currency,
+                            date: record.date_time,
+                            method: record.payment_method,
+                            reference: record.reference,
+                            status: record.status,
+                            txId: record.transaction_id,
+                            statusTitle: record.status_title,
+                            statusSubtitle: record.status_subtitle
+                        };
+
+                        // Only update if data changed
+                        if (hasDataChanged(newData)) {
+                            displayPaymentData(newData);
+                            console.log('📂 Data updated from Supabase');
+                        }
+                        return true;
+                    }
+                    return false;
+                })
+                .catch(function(error) {
+                    console.warn('⚠️ Supabase load failed:', error);
+                    return false;
+                });
+        }
+
+        // ============================================
+        // POLL FOR CHANGES - FALLBACK
+        // ============================================
+        var pollInterval = null;
+
+        function startPolling() {
+            if (pollInterval) clearInterval(pollInterval);
+            pollInterval = setInterval(function() {
+                loadPaymentDataFromSupabase();
+            }, 3000); // Check every 3 seconds
+            console.log('🔄 Polling started (every 3 seconds)');
         }
 
         // ============================================
@@ -1109,8 +1140,7 @@
                         console.log('📡 Real-time update received on landing page!', payload);
                         var record = payload.new;
 
-                        // Update the page with new data
-                        displayPaymentData({
+                        var newData = {
                             sender: record.sender,
                             recipient: record.recipient,
                             amount: record.amount,
@@ -1122,18 +1152,25 @@
                             txId: record.transaction_id,
                             statusTitle: record.status_title,
                             statusSubtitle: record.status_subtitle
-                        });
+                        };
 
-                        // Show notification
+                        displayPaymentData(newData);
                         showToast('🔄 Payment details updated in real-time!', 'success');
                     }
                 )
                 .subscribe(function(status) {
                     console.log('📡 Realtime subscription status:', status);
                     if (status === 'SUBSCRIBED') {
-                        console.log('✅ Realtime is active and waiting for updates!');
+                        console.log('✅ Realtime is active!');
+                        // Stop polling since Realtime is working
+                        if (pollInterval) {
+                            clearInterval(pollInterval);
+                            pollInterval = null;
+                            console.log('🔄 Polling stopped (Realtime active)');
+                        }
                     } else if (status === 'CHANNEL_ERROR') {
-                        console.error('❌ Realtime channel error - check Supabase Realtime settings');
+                        console.warn('⚠️ Realtime error - using polling fallback');
+                        startPolling();
                     }
                 });
         }
@@ -1145,8 +1182,11 @@
             var savedData = localStorage.getItem('paymentData');
             if (savedData) {
                 try {
-                    displayPaymentData(JSON.parse(savedData));
-                    console.log('📂 Data loaded from localStorage (fallback)');
+                    var data = JSON.parse(savedData);
+                    if (hasDataChanged(data)) {
+                        displayPaymentData(data);
+                        console.log('📂 Data loaded from localStorage (fallback)');
+                    }
                 } catch (e) {
                     console.log('No saved data found');
                 }
@@ -1299,24 +1339,27 @@
         }
 
         // ============================================
-        // INITIALIZE - Load from Supabase on page load & setup realtime
+        // INITIALIZE
         // ============================================
         function init() {
             // Check connection
             checkConnection();
 
-            // Try Supabase first
+            // Load data (will trigger updates)
             loadPaymentDataFromSupabase();
 
             // Also check localStorage as fallback
             loadFromLocalStorage();
 
-            // Setup realtime subscription for instant updates
+            // Setup realtime subscription
             setupRealtimeSubscription();
+
+            // Always start polling as backup
+            startPolling();
 
             console.log('%c 💰 NoOnes Payment Confirmation ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
             console.log('%c 🔒 Protected by NoOnes ', 'color: #07B979; font-size: 12px; font-weight: bold;');
-            console.log('%c 📡 Real-time sync enabled - updates appear instantly! ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
+            console.log('%c 📡 Real-time + Polling enabled - updates appear within 3 seconds! ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
             console.log('%c ⏳ Awaiting funds - please wait for confirmation. ', 'color: #6B7A75; font-size: 12px;');
         }
 
@@ -1324,4 +1367,4 @@
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
-</html>s
+</html>
