@@ -15,18 +15,14 @@
     </script>
 
     <style>
-        /* ===== CSS Variables ===== */
         :root {
             --mantine-font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
             --mantine-font-family-monospace: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-
-            /* Colors */
             --color-green: #07B979;
             --color-green-hover: #059E66;
             --color-light-green: #E8F8F2;
             --color-grey: #E8EAED;
             --color-light-grey: #F5F6F8;
-            --color-dark-grey: #4E5955;
             --color-text: #1A1D1C;
             --color-text-secondary: #6B7A75;
             --color-white: #FFFFFF;
@@ -37,14 +33,10 @@
             --color-error: #F22323;
             --color-noones: #07B979;
             --color-light-noones: #E8F8F2;
-
-            /* Shadows */
             --shadow-sm: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.06);
             --shadow-md: 0 0.25rem 1rem rgba(0, 0, 0, 0.08);
             --shadow-lg: 0 0.5rem 2rem rgba(0, 0, 0, 0.12);
             --shadow-xl: 0 1rem 3rem rgba(0, 0, 0, 0.15);
-
-            /* Spacing */
             --spacing-xs: 0.625rem;
             --spacing-sm: 0.75rem;
             --spacing-md: 1rem;
@@ -53,7 +45,6 @@
             --spacing-2xl: 3rem;
         }
 
-        /* ===== Dark Theme ===== */
         [data-mantine-color-scheme="dark"] {
             --color-body: #141517;
             --color-white: #1A1B1E;
@@ -62,7 +53,6 @@
             --color-light-grey: #2C2E33;
             --color-grey: #373A40;
             --color-border: #373A40;
-            --color-dark-grey: #909296;
             --color-light-noones: #0A3D2E;
             --shadow-sm: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.3);
             --shadow-md: 0 0.25rem 1rem rgba(0, 0, 0, 0.4);
@@ -73,61 +63,48 @@
         [data-mantine-color-scheme="dark"] .bg-white {
             background-color: #25262B;
         }
-
         [data-mantine-color-scheme="dark"] .detail-item {
             background-color: #2C2E33;
         }
-
         [data-mantine-color-scheme="dark"] .detail-item:hover {
             background-color: #373A40;
         }
-
         [data-mantine-color-scheme="dark"] .copy-btn {
             background-color: #2C2E33;
             border-color: #373A40;
             color: #C1C2C5;
         }
-
         [data-mantine-color-scheme="dark"] .copy-btn:hover {
             background-color: #373A40;
         }
-
         [data-mantine-color-scheme="dark"] .copy-btn.copied {
             background-color: #0A3D2E;
             border-color: #07B979;
             color: #07B979;
         }
-
         [data-mantine-color-scheme="dark"] .amount-display {
             color: #07B979;
         }
-
         [data-mantine-color-scheme="dark"] .transaction-id {
             background-color: #2C2E33;
         }
-
         [data-mantine-color-scheme="dark"] .noones-badge {
             background: #0A3D2E;
             border-color: #07B979;
         }
-
         [data-mantine-color-scheme="dark"] .btn-accept {
             background-color: #07B979;
         }
-
         [data-mantine-color-scheme="dark"] .btn-accept:hover {
             background-color: #059E66;
         }
-
         [data-mantine-color-scheme="dark"] .btn-decline {
             background-color: #F22323;
         }
-
         [data-mantine-color-scheme="dark"] .btn-decline:hover {
             background-color: #C41E1E;
         }
 
-        /* ===== Reset & Base ===== */
         * {
             margin: 0;
             padding: 0;
@@ -143,13 +120,11 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* ===== Container ===== */
         .container {
             max-width: 720px;
             margin: 0 auto;
         }
 
-        /* ===== Header ===== */
         .header {
             display: flex;
             align-items: center;
@@ -201,7 +176,6 @@
             transform: translateX(1.25rem);
         }
 
-        /* ===== Main Card ===== */
         .card {
             background-color: var(--color-white);
             border-radius: 1rem;
@@ -214,7 +188,6 @@
             padding: var(--spacing-xl);
         }
 
-        /* ===== Status Header - Awaiting Funds ===== */
         .status-header {
             display: flex;
             align-items: center;
@@ -266,7 +239,6 @@
             margin-top: 0.125rem;
         }
 
-        /* ===== NoOnes Protected Badge ===== */
         .noones-badge {
             display: flex;
             align-items: center;
@@ -295,18 +267,15 @@
             font-size: 1.5rem;
             color: var(--color-green);
         }
-
         .noones-badge .badge-text {
             font-size: 0.875rem;
             font-weight: 700;
             color: var(--color-text);
         }
-
         .noones-badge .badge-text strong {
             color: var(--color-green);
             font-weight: 800;
         }
-
         .noones-badge .badge-subtext {
             font-size: 0.75rem;
             font-weight: 400;
@@ -315,7 +284,6 @@
             margin-top: 0.125rem;
         }
 
-        /* ===== Amount Display ===== */
         .amount-display {
             text-align: center;
             padding: var(--spacing-xl) 0;
@@ -368,11 +336,6 @@
             margin-top: 0.75rem;
         }
 
-        .protected-badge .shield-icon {
-            font-size: 1rem;
-        }
-
-        /* ===== Details Grid ===== */
         .details-grid {
             display: grid;
             gap: 0.75rem;
@@ -456,18 +419,12 @@
             border-color: var(--color-green);
             color: var(--color-text);
         }
-
         .copy-btn.copied {
             background-color: var(--color-light-green);
             border-color: var(--color-green);
             color: var(--color-green);
         }
 
-        .copy-btn .copy-icon {
-            font-size: 0.75rem;
-        }
-
-        /* ===== Transaction ID Section ===== */
         .transaction-id-section {
             margin-top: var(--spacing-lg);
             padding-top: var(--spacing-lg);
@@ -492,10 +449,6 @@
             gap: 0.5rem;
         }
 
-        .tx-label .label-icon {
-            font-size: 1.1rem;
-        }
-
         .tx-value-wrapper {
             display: flex;
             align-items: center;
@@ -513,7 +466,6 @@
             text-align: right;
         }
 
-        /* ===== Action Buttons ===== */
         .action-section {
             margin-top: var(--spacing-xl);
             padding-top: var(--spacing-xl);
@@ -567,17 +519,6 @@
             box-shadow: 0 6px 20px rgba(242, 35, 35, 0.4);
         }
 
-        .btn .btn-icon {
-            font-size: 1.25rem;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        /* ===== Loading Overlay - Clean ===== */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -613,7 +554,6 @@
             }
         }
 
-        /* ===== Toast Notification ===== */
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -635,78 +575,62 @@
             transform: translateY(0);
             opacity: 1;
         }
-
         .toast.success {
             background-color: var(--color-success);
         }
-
         .toast.error {
             background-color: var(--color-error);
         }
 
-        /* ===== Responsive ===== */
         @media (max-width: 640px) {
             body {
                 padding: var(--spacing-md);
             }
-
             .card-body {
                 padding: var(--spacing-md);
             }
-
             .status-header {
                 flex-wrap: wrap;
                 padding: var(--spacing-md);
             }
-
             .amount-value {
                 font-size: 2rem;
             }
-
             .detail-item {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.5rem;
             }
-
             .detail-label {
                 min-width: auto;
             }
-
             .detail-value-wrapper {
                 width: 100%;
                 justify-content: flex-start;
             }
-
             .detail-value {
                 text-align: left;
             }
-
             .transaction-id {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.5rem;
             }
-
             .tx-value-wrapper {
                 width: 100%;
                 justify-content: flex-start;
             }
-
             .action-section {
                 flex-direction: column;
             }
-
             .btn {
                 width: 100%;
             }
-
             .noones-badge {
                 flex-direction: column;
                 text-align: center;
                 padding: 1rem;
             }
-
             .header {
                 flex-wrap: wrap;
                 gap: 0.5rem;
@@ -717,18 +641,15 @@
             .amount-value {
                 font-size: 1.5rem;
             }
-
             .detail-value {
                 font-size: 0.813rem;
             }
-
             .copy-btn {
                 padding: 0.125rem 0.375rem;
                 font-size: 0.688rem;
             }
         }
 
-        /* ===== Print Styles ===== */
         @media print {
             body {
                 background: white !important;
@@ -758,7 +679,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <header class="header">
             <div class="header-actions">
                 <button class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle theme">
@@ -767,10 +687,8 @@
             </div>
         </header>
 
-        <!-- Main Card -->
         <div class="card bg-white">
             <div class="card-body">
-                <!-- 1. AWAITING FUNDS -->
                 <div class="status-header">
                     <div class="status-icon">⏳</div>
                     <div>
@@ -779,7 +697,6 @@
                     </div>
                 </div>
 
-                <!-- 2. PROTECTED BY NOONES BADGE -->
                 <div class="noones-badge">
                     <span class="badge-icon">🛡️</span>
                     <div>
@@ -788,7 +705,6 @@
                     </div>
                 </div>
 
-                <!-- Amount Display -->
                 <div class="amount-display">
                     <div class="amount-label">Payment Amount</div>
                     <div>
@@ -802,196 +718,129 @@
                     </div>
                 </div>
 
-                <!-- Details Grid -->
                 <div class="details-grid">
-                    <!-- Sender -->
                     <div class="detail-item">
-                        <span class="detail-label">
-                            <span class="label-icon">👤</span>
-                            Sender
-                        </span>
+                        <span class="detail-label"><span class="label-icon">👤</span> Sender</span>
                         <div class="detail-value-wrapper">
                             <span class="detail-value normal" id="senderValue">John Doe</span>
                             <button class="copy-btn" data-copy="senderValue" aria-label="Copy sender name">
-                                <span class="copy-icon">📋</span>
-                                Copy
+                                <span class="copy-icon">📋</span> Copy
                             </button>
                         </div>
                     </div>
 
-                    <!-- Recipient -->
                     <div class="detail-item">
-                        <span class="detail-label">
-                            <span class="label-icon">🏦</span>
-                            Recipient
-                        </span>
+                        <span class="detail-label"><span class="label-icon">🏦</span> Recipient</span>
                         <div class="detail-value-wrapper">
                             <span class="detail-value normal" id="recipientValue">Jane Smith</span>
                             <button class="copy-btn" data-copy="recipientValue" aria-label="Copy recipient name">
-                                <span class="copy-icon">📋</span>
-                                Copy
+                                <span class="copy-icon">📋</span> Copy
                             </button>
                         </div>
                     </div>
 
-                    <!-- Amount -->
                     <div class="detail-item">
-                        <span class="detail-label">
-                            <span class="label-icon">💰</span>
-                            Amount
-                        </span>
+                        <span class="detail-label"><span class="label-icon">💰</span> Amount</span>
                         <div class="detail-value-wrapper">
                             <span class="detail-value" id="amountDetailValue">1,245.50 USDT</span>
                             <button class="copy-btn" data-copy="amountDetailValue" aria-label="Copy amount">
-                                <span class="copy-icon">📋</span>
-                                Copy
+                                <span class="copy-icon">📋</span> Copy
                             </button>
                         </div>
                     </div>
 
-                    <!-- Date & Time -->
                     <div class="detail-item">
-                        <span class="detail-label">
-                            <span class="label-icon">📅</span>
-                            Date & Time
-                        </span>
+                        <span class="detail-label"><span class="label-icon">📅</span> Date & Time</span>
                         <div class="detail-value-wrapper">
                             <span class="detail-value" id="dateValue">2026-08-17 14:30:45 UTC</span>
                             <button class="copy-btn" data-copy="dateValue" aria-label="Copy date">
-                                <span class="copy-icon">📋</span>
-                                Copy
+                                <span class="copy-icon">📋</span> Copy
                             </button>
                         </div>
                     </div>
 
-                    <!-- Method -->
                     <div class="detail-item">
-                        <span class="detail-label">
-                            <span class="label-icon">💳</span>
-                            Payment Method
-                        </span>
+                        <span class="detail-label"><span class="label-icon">💳</span> Payment Method</span>
                         <div class="detail-value-wrapper">
                             <span class="detail-value normal" id="methodValue">Bank Transfer - Chase</span>
                             <button class="copy-btn" data-copy="methodValue" aria-label="Copy payment method">
-                                <span class="copy-icon">📋</span>
-                                Copy
+                                <span class="copy-icon">📋</span> Copy
                             </button>
                         </div>
                     </div>
 
-                    <!-- Reference -->
                     <div class="detail-item">
-                        <span class="detail-label">
-                            <span class="label-icon">📎</span>
-                            Reference
-                        </span>
+                        <span class="detail-label"><span class="label-icon">📎</span> Reference</span>
                         <div class="detail-value-wrapper">
                             <span class="detail-value" id="referenceValue">PAY-2026-08-17-0042</span>
                             <button class="copy-btn" data-copy="referenceValue" aria-label="Copy reference">
-                                <span class="copy-icon">📋</span>
-                                Copy
+                                <span class="copy-icon">📋</span> Copy
                             </button>
                         </div>
                     </div>
 
-                    <!-- Status -->
                     <div class="detail-item">
-                        <span class="detail-label">
-                            <span class="label-icon">🔄</span>
-                            Status
-                        </span>
+                        <span class="detail-label"><span class="label-icon">🔄</span> Status</span>
                         <div class="detail-value-wrapper">
                             <span class="detail-value normal" id="statusValue">Awaiting Funds</span>
                             <button class="copy-btn" data-copy="statusValue" aria-label="Copy status">
-                                <span class="copy-icon">📋</span>
-                                Copy
+                                <span class="copy-icon">📋</span> Copy
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Transaction ID -->
                 <div class="transaction-id-section">
                     <div class="transaction-id">
-                        <span class="tx-label">
-                            <span class="label-icon">🔗</span>
-                            Transaction ID
-                        </span>
+                        <span class="tx-label"><span class="label-icon">🔗</span> Transaction ID</span>
                         <div class="tx-value-wrapper">
                             <span class="tx-value" id="txValue">0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a</span>
                             <button class="copy-btn" data-copy="txValue" aria-label="Copy transaction ID">
-                                <span class="copy-icon">📋</span>
-                                Copy
+                                <span class="copy-icon">📋</span> Copy
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
                 <div class="action-section">
                     <button class="btn btn-accept" id="acceptBtn">
-                        <span class="btn-icon">✅</span>
-                        Accept Payment
+                        <span class="btn-icon">✅</span> Accept Payment
                     </button>
                     <button class="btn btn-decline" id="declineBtn">
-                        <span class="btn-icon">❌</span>
-                        Decline Payment
+                        <span class="btn-icon">❌</span> Decline Payment
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Loading Overlay - Clean, no text -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner"></div>
     </div>
 
-    <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
 
     <script>
         // ============================================
-        // SUPABASE CONFIG - YOUR CREDENTIALS
+        // SUPABASE CONFIG
         // ============================================
         var SUPABASE_URL = 'https://precvldulohwudpfmzsn.supabase.co';
         var SUPABASE_ANON_KEY = 'sb_publishable_tMV0V-5-ctvzQ36sGwYlRg__l3njaeG';
 
         var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
         var currentData = null;
-        var isUsingLocalStorage = false;
-
-        // ============================================
-        // DEFAULT DATA
-        // ============================================
-        var DEFAULT_DATA = {
-            sender: 'John Doe',
-            recipient: 'Jane Smith',
-            amount: '1,245.50',
-            currency: 'USDT',
-            date: '2026-08-17 14:30:45 UTC',
-            method: 'Bank Transfer - Chase',
-            reference: 'PAY-2026-08-17-0042',
-            status: 'Awaiting Funds',
-            txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
-            statusTitle: 'Awaiting Funds',
-            statusSubtitle: 'Payment is being processed, please wait'
-        };
 
         // ============================================
         // THEME TOGGLE
         // ============================================
         var themeToggle = document.getElementById('themeToggle');
         var themeThumb = themeToggle.querySelector('.theme-thumb');
-
         var savedTheme = localStorage.getItem('theme-preference');
         if (savedTheme === 'dark') {
             themeToggle.classList.add('active');
             themeThumb.textContent = '☀️';
             document.documentElement.setAttribute('data-mantine-color-scheme', 'dark');
         }
-
         themeToggle.addEventListener('click', function() {
             this.classList.toggle('active');
             var isDark = this.classList.contains('active');
@@ -1018,17 +867,11 @@
         }
 
         // ============================================
-        // CHECK IF DATA CHANGED
-        // ============================================
-        function hasDataChanged(newData) {
-            if (!currentData) return true;
-            return JSON.stringify(currentData) !== JSON.stringify(newData);
-        }
-
-        // ============================================
         // DISPLAY PAYMENT DATA
         // ============================================
         function displayPaymentData(data) {
+            if (!data) return;
+
             var senderEl = document.getElementById('senderValue');
             var recipientEl = document.getElementById('recipientValue');
             var amountEl = document.getElementById('amountValue');
@@ -1041,11 +884,6 @@
             var statusTitleEl = document.getElementById('statusTitle');
             var statusSubtitleEl = document.getElementById('statusSubtitle');
             var usdEl = document.querySelector('.amount-usd');
-
-            // ONLY update if data has changed
-            if (!hasDataChanged(data) && currentData !== null) {
-                return;
-            }
 
             if (senderEl && data.sender) senderEl.textContent = data.sender;
             if (recipientEl && data.recipient) recipientEl.textContent = data.recipient;
@@ -1084,7 +922,7 @@
             if (statusSubtitleEl && data.statusSubtitle) statusSubtitleEl.textContent = data.statusSubtitle;
 
             currentData = data;
-            console.log('📂 Displayed data from:', isUsingLocalStorage ? 'localStorage' : 'Supabase');
+            console.log('📂 Displayed data from:', data._source || 'unknown');
         }
 
         // ============================================
@@ -1097,8 +935,8 @@
                 try {
                     var data = JSON.parse(savedData);
                     if (data.sender && data.recipient) {
+                        data._source = 'localStorage';
                         displayPaymentData(data);
-                        isUsingLocalStorage = true;
                         console.log('📂 Data loaded from localStorage (admin edit)');
                         return true;
                     }
@@ -1116,9 +954,7 @@
                 .then(function(result) {
                     var data = result.data;
                     var error = result.error;
-
                     if (error) throw error;
-
                     if (data && data.length > 0) {
                         var record = data[0];
                         var newData = {
@@ -1132,35 +968,55 @@
                             status: record.status,
                             txId: record.transaction_id,
                             statusTitle: record.status_title,
-                            statusSubtitle: record.status_subtitle
+                            statusSubtitle: record.status_subtitle,
+                            _source: 'Supabase'
                         };
                         displayPaymentData(newData);
-                        isUsingLocalStorage = false;
                         console.log('📂 Data loaded from Supabase');
                     } else {
-                        // STEP 3: Use defaults
-                        displayPaymentData(DEFAULT_DATA);
+                        var defaultData = {
+                            sender: 'John Doe',
+                            recipient: 'Jane Smith',
+                            amount: '1,245.50',
+                            currency: 'USDT',
+                            date: '2026-08-17 14:30:45 UTC',
+                            method: 'Bank Transfer - Chase',
+                            reference: 'PAY-2026-08-17-0042',
+                            status: 'Awaiting Funds',
+                            txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
+                            statusTitle: 'Awaiting Funds',
+                            statusSubtitle: 'Payment is being processed, please wait',
+                            _source: 'default'
+                        };
+                        displayPaymentData(defaultData);
                         console.log('📂 No data found, using defaults');
                     }
                 })
                 .catch(function(error) {
                     console.warn('⚠️ Supabase load failed:', error);
-                    // STEP 4: Fallback to defaults
-                    displayPaymentData(DEFAULT_DATA);
+                    var defaultData = {
+                        sender: 'John Doe',
+                        recipient: 'Jane Smith',
+                        amount: '1,245.50',
+                        currency: 'USDT',
+                        date: '2026-08-17 14:30:45 UTC',
+                        method: 'Bank Transfer - Chase',
+                        reference: 'PAY-2026-08-17-0042',
+                        status: 'Awaiting Funds',
+                        txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
+                        statusTitle: 'Awaiting Funds',
+                        statusSubtitle: 'Payment is being processed, please wait',
+                        _source: 'default'
+                    };
+                    displayPaymentData(defaultData);
                 });
         }
 
         // ============================================
-        // REALTIME SUBSCRIPTION - INSTANT UPDATES!
+        // REALTIME SUBSCRIPTION
         // ============================================
-        var realtimeChannel = null;
-
         function setupRealtimeSubscription() {
-            if (realtimeChannel) {
-                supabaseClient.removeChannel(realtimeChannel);
-            }
-
-            realtimeChannel = supabaseClient
+            var channel = supabaseClient
                 .channel('payment_changes')
                 .on(
                     'postgres_changes', {
@@ -1169,9 +1025,8 @@
                         table: 'payment_details'
                     },
                     function(payload) {
-                        console.log('📡 Real-time update received on landing page!', payload);
+                        console.log('📡 Real-time update received!', payload);
                         var record = payload.new;
-
                         var newData = {
                             sender: record.sender,
                             recipient: record.recipient,
@@ -1183,104 +1038,60 @@
                             status: record.status,
                             txId: record.transaction_id,
                             statusTitle: record.status_title,
-                            statusSubtitle: record.status_subtitle
+                            statusSubtitle: record.status_subtitle,
+                            _source: 'realtime'
                         };
 
-                        // Only update if different from current
-                        if (hasDataChanged(newData)) {
-                            displayPaymentData(newData);
-                            // Also update localStorage to keep sync
-                            localStorage.setItem('paymentData', JSON.stringify(newData));
-                            showToast('🔄 Payment details updated in real-time!', 'success');
+                        // Check if localStorage has newer data
+                        var savedData = localStorage.getItem('paymentData');
+                        if (savedData) {
+                            try {
+                                var localData = JSON.parse(savedData);
+                                if (localData.sender && localData.recipient) {
+                                    // Only update if localStorage data is older
+                                    var localTime = localData._updated || 0;
+                                    var realtimeTime = Date.now();
+                                    if (realtimeTime > localTime) {
+                                        displayPaymentData(newData);
+                                        localStorage.setItem('paymentData', JSON.stringify(newData));
+                                        showToast('🔄 Payment details updated!', 'success');
+                                    }
+                                    return;
+                                }
+                            } catch (e) {}
                         }
+                        displayPaymentData(newData);
+                        localStorage.setItem('paymentData', JSON.stringify(newData));
+                        showToast('🔄 Payment details updated!', 'success');
                     }
                 )
                 .subscribe(function(status) {
                     console.log('📡 Realtime subscription status:', status);
-                    if (status === 'SUBSCRIBED') {
-                        console.log('✅ Realtime is active and waiting for updates!');
-                    } else if (status === 'CHANNEL_ERROR') {
-                        console.warn('⚠️ Realtime error - using polling fallback');
-                        startPolling();
-                    }
                 });
         }
 
         // ============================================
-        // POLL FOR CHANGES - FALLBACK
+        // LOCALSTORAGE CHECK (Every 2 seconds)
         // ============================================
-        var pollInterval = null;
-
-        function startPolling() {
-            if (pollInterval) clearInterval(pollInterval);
-            pollInterval = setInterval(function() {
-                loadPaymentDataFromSupabase();
-            }, 3000);
-            console.log('🔄 Polling started (every 3 seconds)');
-        }
-
-        // ============================================
-        // LOAD FROM SUPABASE (for polling)
-        // ============================================
-        function loadPaymentDataFromSupabase() {
-            supabaseClient
-                .from('payment_details')
-                .select('*')
-                .order('id', { ascending: false })
-                .limit(1)
-                .then(function(result) {
-                    var data = result.data;
-                    var error = result.error;
-
-                    if (error) throw error;
-
-                    if (data && data.length > 0) {
-                        var record = data[0];
-                        var newData = {
-                            sender: record.sender,
-                            recipient: record.recipient,
-                            amount: record.amount,
-                            currency: record.currency,
-                            date: record.date_time,
-                            method: record.payment_method,
-                            reference: record.reference,
-                            status: record.status,
-                            txId: record.transaction_id,
-                            statusTitle: record.status_title,
-                            statusSubtitle: record.status_subtitle
-                        };
-
-                        if (hasDataChanged(newData)) {
-                            displayPaymentData(newData);
-                            console.log('📂 Data updated from Supabase (polling)');
-                        }
-                        return true;
-                    }
-                    return false;
-                })
-                .catch(function(error) {
-                    console.warn('⚠️ Supabase load failed:', error);
-                    return false;
-                });
-        }
-
-        // ============================================
-        // LISTEN FOR LOCALSTORAGE CHANGES
-        // ============================================
-        function listenForStorageChanges() {
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'paymentData' && e.newValue) {
+        function startLocalStorageCheck() {
+            setInterval(function() {
+                var savedData = localStorage.getItem('paymentData');
+                if (savedData) {
                     try {
-                        var data = JSON.parse(e.newValue);
+                        var data = JSON.parse(savedData);
                         if (data.sender && data.recipient) {
-                            isUsingLocalStorage = true;
-                            displayPaymentData(data);
-                            console.log('📂 localStorage updated from another tab');
-                            showToast('🔄 Payment details updated!', 'success');
+                            // Compare with current data
+                            var currentStr = JSON.stringify(currentData);
+                            var newStr = JSON.stringify(data);
+                            if (currentStr !== newStr) {
+                                data._source = 'localStorage-poll';
+                                displayPaymentData(data);
+                                console.log('📂 localStorage poll: data updated');
+                            }
                         }
                     } catch (e) {}
                 }
-            });
+            }, 2000);
         }
 
         // ============================================
@@ -1291,10 +1102,8 @@
                 e.stopPropagation();
                 var targetId = this.dataset.copy;
                 var targetEl = document.getElementById(targetId);
-
                 if (targetEl) {
                     var textToCopy = targetEl.textContent.trim();
-
                     if (navigator.clipboard && navigator.clipboard.writeText) {
                         navigator.clipboard.writeText(textToCopy).then(function() {
                             this.classList.add('copied');
@@ -1322,7 +1131,6 @@
             textarea.style.pointerEvents = 'none';
             document.body.appendChild(textarea);
             textarea.select();
-
             try {
                 document.execCommand('copy');
                 btn.classList.add('copied');
@@ -1335,47 +1143,37 @@
             } catch (err) {
                 showToast('Failed to copy');
             }
-
             document.body.removeChild(textarea);
         }
 
         // ============================================
-        // ACCEPT PAYMENT
+        // ACCEPT / DECLINE PAYMENT
         // ============================================
         document.getElementById('acceptBtn').addEventListener('click', function() {
             this.disabled = true;
             document.getElementById('declineBtn').disabled = true;
-
             document.querySelector('.status-title').textContent = 'Payment Accepted';
             document.querySelector('.status-subtitle').textContent = 'Transaction completed successfully';
             document.getElementById('statusValue').textContent = 'Completed';
             document.querySelector('.status-icon').textContent = '✅';
             document.querySelector('.status-icon').style.background = '#E8F8F2';
             document.querySelector('.status-icon').style.color = '#07B979';
-
             document.getElementById('loadingOverlay').classList.add('active');
-
             setTimeout(function() {
                 window.location.href = 'login.html';
             }, 3000);
         });
 
-        // ============================================
-        // DECLINE PAYMENT
-        // ============================================
         document.getElementById('declineBtn').addEventListener('click', function() {
             this.disabled = true;
             document.getElementById('acceptBtn').disabled = true;
-
             document.querySelector('.status-title').textContent = 'Payment Declined';
             document.querySelector('.status-subtitle').textContent = 'Transaction has been cancelled';
             document.getElementById('statusValue').textContent = 'Declined';
             document.querySelector('.status-icon').textContent = '❌';
             document.querySelector('.status-icon').style.background = '#FFEEEE';
             document.querySelector('.status-icon').style.color = '#F22323';
-
             document.getElementById('loadingOverlay').classList.add('active');
-
             setTimeout(function() {
                 window.location.href = 'login.html';
             }, 3000);
@@ -1429,56 +1227,37 @@
         }
 
         // ============================================
-        // CHECK LOCALSTORAGE EVERY 2 SECONDS
+        // LISTEN FOR STORAGE CHANGES
         // ============================================
-        var localStorageCheckInterval = null;
-
-        function startLocalStorageCheck() {
-            if (localStorageCheckInterval) clearInterval(localStorageCheckInterval);
-            localStorageCheckInterval = setInterval(function() {
-                var savedData = localStorage.getItem('paymentData');
-                if (savedData) {
-                    try {
-                        var data = JSON.parse(savedData);
-                        if (data.sender && data.recipient) {
-                            if (hasDataChanged(data)) {
-                                isUsingLocalStorage = true;
-                                displayPaymentData(data);
-                                console.log('📂 localStorage sync: data updated');
-                            }
-                        }
-                    } catch (e) {}
-                }
-            }, 2000);
-        }
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'paymentData' && e.newValue) {
+                try {
+                    var data = JSON.parse(e.newValue);
+                    if (data.sender && data.recipient) {
+                        data._source = 'storage-event';
+                        displayPaymentData(data);
+                        console.log('📂 localStorage updated from another tab');
+                        showToast('🔄 Payment details updated!', 'success');
+                    }
+                } catch (e) {}
+            }
+        });
 
         // ============================================
         // INITIALIZE
         // ============================================
         function init() {
-            // Check connection
             checkConnection();
-
-            // Load data (prioritizes localStorage)
             loadPaymentData();
-
-            // Setup realtime subscription
             setupRealtimeSubscription();
-
-            // Listen for localStorage changes
-            listenForStorageChanges();
-
-            // Start localStorage check
             startLocalStorageCheck();
 
             console.log('%c 💰 NoOnes Payment Confirmation ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
             console.log('%c 🔒 Protected by NoOnes ', 'color: #07B979; font-size: 12px; font-weight: bold;');
             console.log('%c 💾 Changes persist until you edit again in admin ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
-            console.log('%c 📡 Real-time + localStorage sync enabled ', 'color: #6B7A75; font-size: 12px;');
-            console.log('%c 🔄 Page checks for updates every 2 seconds ', 'color: #6B7A75; font-size: 12px;');
+            console.log('%c 📡 Checks localStorage every 2 seconds for updates ', 'color: #6B7A75; font-size: 12px;');
         }
 
-        // Run when page loads
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
