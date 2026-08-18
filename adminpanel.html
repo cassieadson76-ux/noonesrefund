@@ -35,8 +35,8 @@
             --color-error: #F22323;
             --color-success: #07B979;
             --color-warning: #FF8C00;
-            --shadow-md: 0 0.25rem 1rem rgba(0,0,0,0.08);
-            --shadow-lg: 0 0.5rem 2rem rgba(0,0,0,0.12);
+            --shadow-md: 0 0.25rem 1rem rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 0.5rem 2rem rgba(0, 0, 0, 0.12);
             --font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
         }
 
@@ -742,16 +742,16 @@
         // ============================================
         // SUPABASE CONFIG
         // ============================================
-        const SUPABASE_URL = 'https://precvldulohwudpfmzsn.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_tMV0V-5-ctvzQ36sGwYlRg__l3njaeG';
+        var SUPABASE_URL = 'https://precvldulohwudpfmzsn.supabase.co';
+        var SUPABASE_ANON_KEY = 'sb_publishable_tMV0V-5-ctvzQ36sGwYlRg__l3njaeG';
 
         // Initialize Supabase
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         console.log('✅ Supabase client initialized');
 
         // ============================================
-        // SESSION CHECK - FIXED: No return outside function
+        // SESSION CHECK
         // ============================================
         function checkSession() {
             var session = sessionStorage.getItem('adminSession');
@@ -895,9 +895,6 @@
         // LOAD FROM SUPABASE
         // ============================================
         function loadFromSupabase() {
-            var btn = document.getElementById('saveBtn');
-            var spinner = document.getElementById('saveSpinner');
-
             showToast('📂 Loading from Supabase...', '');
 
             supabaseClient
@@ -938,7 +935,7 @@
         }
 
         // ============================================
-        // SAVE TO SUPABASE
+        // SAVE TO SUPABASE - UPDATES LANDING PAGE
         // ============================================
         function saveToSupabase() {
             var btn = document.getElementById('saveBtn');
@@ -952,7 +949,7 @@
 
             btn.disabled = true;
             spinner.classList.add('active');
-            showToast('💾 Saving...', '');
+            showToast('💾 Saving to Supabase...', '');
 
             // Update Live Preview immediately
             updateLivePreview();
@@ -997,9 +994,14 @@
                     var error = result.error;
                     if (error) throw error;
 
+                    // Update Live Preview
                     updateLivePreview();
+
+                    // Save to localStorage as backup
                     localStorage.setItem('paymentData', JSON.stringify(data));
-                    showToast('✅ Saved! Landing page updated instantly.', 'success');
+
+                    // Show success message - LANDING PAGE WILL UPDATE AUTOMATICALLY via Realtime!
+                    showToast('✅ Saved! Landing page updated instantly via Realtime.', 'success');
 
                     btn.disabled = false;
                     spinner.classList.remove('active');
@@ -1009,6 +1011,49 @@
                     showToast('❌ Error: ' + (error.message || 'Unknown error'), 'error');
                     btn.disabled = false;
                     spinner.classList.remove('active');
+                });
+        }
+
+        // ============================================
+        // REALTIME SUBSCRIPTION - LISTEN FOR CHANGES
+        // ============================================
+        function setupRealtimeSubscription() {
+            var channel = supabaseClient
+                .channel('payment_changes')
+                .on(
+                    'postgres_changes', {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'payment_details'
+                    },
+                    function(payload) {
+                        console.log('📡 Real-time update received in Admin Panel!', payload);
+                        var record = payload.new;
+
+                        // Update the form with new data
+                        document.getElementById('senderInput').value = record.sender || '';
+                        document.getElementById('recipientInput').value = record.recipient || '';
+                        document.getElementById('amountInput').value = record.amount || '';
+                        document.getElementById('currencyInput').value = record.currency || 'USDT';
+                        document.getElementById('dateInput').value = record.date_time || '';
+                        document.getElementById('methodInput').value = record.payment_method || '';
+                        document.getElementById('referenceInput').value = record.reference || '';
+                        document.getElementById('statusInput').value = record.status || 'Awaiting Funds';
+                        document.getElementById('txInput').value = record.transaction_id || '';
+                        document.getElementById('statusTitleInput').value = record.status_title || 'Awaiting Funds';
+                        document.getElementById('statusSubtitleInput').value = record.status_subtitle || '';
+
+                        updateLivePreview();
+                        showToast('🔄 Data updated from another source!', 'warning');
+                    }
+                )
+                .subscribe(function(status) {
+                    console.log('📡 Realtime subscription status:', status);
+                    if (status === 'SUBSCRIBED') {
+                        var dot = document.getElementById('dbStatusDot');
+                        dot.className = 'dot realtime';
+                        document.getElementById('dbStatusText').textContent = 'Supabase: Live 🔴';
+                    }
                 });
         }
 
@@ -1105,10 +1150,11 @@
             checkConnection();
             loadFromSupabase();
             updateLivePreview();
+            setupRealtimeSubscription();
 
             console.log('%c ⚙️ NoOnes Admin Panel ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
             console.log('%c 👁️ Live Preview updates instantly on input change ', 'color: #6B7A75; font-size: 12px;');
-            console.log('%c 💾 Save & Push updates landing page in real-time ', 'color: #07B979; font-size: 12px; font-weight: bold;');
+            console.log('%c 📡 Save & Push updates landing page via Realtime ', 'color: #07B979; font-size: 12px; font-weight: bold;');
             console.log('%c 💡 Press Ctrl+S to save quickly ', 'color: #6B7A75; font-size: 12px;');
         }
 
