@@ -661,7 +661,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <header class="header">
             <div>
                 <h1>⚙️ Admin <span>Panel</span></h1>
@@ -682,10 +681,7 @@
             </div>
         </header>
 
-        <!-- Two Column Layout: Edit Form | Live Preview -->
         <div class="admin-layout">
-
-            <!-- LEFT: Edit Form -->
             <div class="card">
                 <div class="card-title">
                     📝 Edit Payment Details
@@ -770,7 +766,6 @@
                 </form>
             </div>
 
-            <!-- RIGHT: Live Preview -->
             <div class="card">
                 <div class="card-title">
                     👁️ Live Preview
@@ -779,7 +774,6 @@
                 </div>
 
                 <div class="preview-card">
-                    <!-- Status Header -->
                     <div class="preview-status-header">
                         <div class="preview-status-icon" id="previewStatusIcon">⏳</div>
                         <div>
@@ -789,7 +783,6 @@
                         <span class="preview-status-badge" id="previewStatusBadge">Awaiting Funds</span>
                     </div>
 
-                    <!-- Amount Display -->
                     <div class="preview-amount">
                         <div style="font-size:0.75rem; color:var(--color-text-secondary); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.25rem;">Payment Amount</div>
                         <span class="amount" id="previewAmountValue">1,245.50</span>
@@ -798,7 +791,6 @@
                         <div class="protected-badge" id="previewProtectedBadge">✅ Protected by NoOnes</div>
                     </div>
 
-                    <!-- Details Grid -->
                     <div class="preview-grid">
                         <div class="preview-item">
                             <span class="label">👤 Sender</span>
@@ -826,7 +818,6 @@
                         </div>
                     </div>
 
-                    <!-- Transaction ID -->
                     <div class="preview-tx-section">
                         <div class="preview-tx">
                             <span class="label">🔗 Transaction ID</span>
@@ -835,7 +826,6 @@
                     </div>
                 </div>
 
-                <!-- Sync Status -->
                 <div class="sync-status">
                     <span class="dot synced" id="syncDot"></span>
                     <span id="syncText">Synced with Supabase ✅</span>
@@ -861,8 +851,6 @@
         var SUPABASE_ANON_KEY = 'sb_publishable_tMV0V-5-ctvzQ36sGwYlRg__l3njaeG';
 
         var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        console.log('✅ Supabase client initialized');
 
         // ============================================
         // SESSION CHECK
@@ -1022,7 +1010,8 @@
 
                         updateLivePreview();
                         // Also save to localStorage to keep sync
-                        localStorage.setItem('paymentData', JSON.stringify(getFormData()));
+                        var dataToSave = getFormData();
+                        localStorage.setItem('paymentData', JSON.stringify(dataToSave));
                         showToast('✅ Data loaded from Supabase!', 'success');
                     } else {
                         showToast('ℹ️ No data found, using defaults', '');
@@ -1166,7 +1155,7 @@
                     // Keep localStorage in sync
                     localStorage.setItem('paymentData', JSON.stringify(data));
 
-                    showToast('✅ Saved! Landing page will update in real-time.', 'success');
+                    showToast('✅ Saved! Landing page will update instantly.', 'success');
                     console.log('📡 Data saved to Supabase and localStorage');
 
                     btn.disabled = false;
@@ -1331,4 +1320,4 @@
         init();
     </script>
 </body>
-</html>sss
+</html>
