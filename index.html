@@ -152,7 +152,7 @@
         .header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-end;
             margin-bottom: var(--spacing-xl);
             padding-bottom: var(--spacing-md);
             border-bottom: 1px solid var(--color-border);
@@ -162,25 +162,6 @@
             display: flex;
             align-items: center;
             gap: var(--spacing-md);
-        }
-
-        .admin-link {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.375rem 0.875rem;
-            background: var(--color-light-grey);
-            border-radius: 0.5rem;
-            color: var(--color-text-secondary);
-            text-decoration: none;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .admin-link:hover {
-            background: var(--color-border);
-            color: var(--color-green);
         }
 
         .theme-toggle {
@@ -217,30 +198,6 @@
 
         .theme-toggle.active .theme-thumb {
             transform: translateX(1.25rem);
-        }
-
-        /* ===== DB Status ===== */
-        .db-status {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.688rem;
-            color: var(--color-text-secondary);
-            padding: 0.25rem 0.5rem;
-            background: var(--color-light-grey);
-            border-radius: 0.375rem;
-        }
-
-        .db-status .dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 9999px;
-            background: var(--color-green);
-            display: inline-block;
-        }
-
-        .db-status .dot.offline {
-            background: var(--color-error);
         }
 
         /* ===== Main Card ===== */
@@ -793,12 +750,6 @@
             .loading-overlay {
                 display: none !important;
             }
-            .admin-link {
-                display: none !important;
-            }
-            .db-status {
-                display: none !important;
-            }
         }
     </style>
 </head>
@@ -806,14 +757,7 @@
     <div class="container">
         <!-- Header -->
         <header class="header">
-            <div>
-                <div class="db-status">
-                    <span class="dot" id="dbStatusDot"></span>
-                    <span id="dbStatusText">Supabase: Connecting...</span>
-                </div>
-            </div>
             <div class="header-actions">
-                <a href="admin-login.html" class="admin-link">⚙️ Admin</a>
                 <button class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle theme">
                     <span class="theme-thumb">🌙</span>
                 </button>
@@ -1051,35 +995,6 @@
         }
 
         // ============================================
-        // SUPABASE CONNECTION CHECK
-        // ============================================
-        let dbConnected = false;
-
-        async function checkSupabaseConnection() {
-            const dot = document.getElementById('dbStatusDot');
-            const text = document.getElementById('dbStatusText');
-            try {
-                const { data, error } = await supabaseClient
-                    .from('payment_details')
-                    .select('id')
-                    .limit(1);
-                
-                if (error) throw error;
-                
-                dbConnected = true;
-                dot.className = 'dot';
-                text.textContent = 'Supabase: Connected ✅';
-                return true;
-            } catch (error) {
-                dbConnected = false;
-                dot.className = 'dot offline';
-                text.textContent = 'Supabase: Offline ❌';
-                console.error('❌ Supabase connection error:', error);
-                return false;
-            }
-        }
-
-        // ============================================
         // LOAD PAYMENT DATA FROM SUPABASE
         // ============================================
         async function loadPaymentDataFromSupabase() {
@@ -1144,7 +1059,6 @@
             if (data.date) {
                 const dateEl = document.getElementById('dateValue');
                 if (dateEl) {
-                    // Format date nicely if it's a timestamp
                     try {
                         const d = new Date(data.date);
                         if (!isNaN(d.getTime())) {
@@ -1296,9 +1210,6 @@
         // INITIALIZE - Load from Supabase on page load
         // ============================================
         document.addEventListener('DOMContentLoaded', async function() {
-            // Check connection
-            await checkSupabaseConnection();
-            
             // Try Supabase first
             const loaded = await loadPaymentDataFromSupabase();
             
@@ -1318,7 +1229,6 @@
 
         console.log('%c 💰 NoOnes Payment Confirmation ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
         console.log('%c 🔒 Protected by NoOnes ', 'color: #07B979; font-size: 12px; font-weight: bold;');
-        console.log('%c 🗄️ Connected to Supabase: precvldulohwudpfmzsn ', 'color: #6B7A75; font-size: 12px;');
         console.log('%c ⏳ Awaiting funds - please wait for confirmation. ', 'color: #6B7A75; font-size: 12px;');
     </script>
 </body>
