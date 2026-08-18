@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta property="og:title" content="Admin Login | NoOnes" />
-    <meta name="description" content="Secure admin access for NoOnes payment management." />
+    <meta name="description" content="Secure admin access to control payment details." />
     <title>Admin Login | NoOnes</title>
 
     <!-- Google Fonts -->
@@ -378,7 +378,7 @@
                         <span class="label-icon">👤</span>
                         Username
                     </label>
-                    <input type="text" id="usernameInput" placeholder="Enter your username" />
+                    <input type="text" id="usernameInput" placeholder="Enter your username" value="admin" />
                 </div>
 
                 <div class="form-group">
@@ -387,7 +387,7 @@
                         Password
                     </label>
                     <div class="password-wrapper">
-                        <input type="password" id="passwordInput" placeholder="Enter your password" />
+                        <input type="password" id="passwordInput" placeholder="Enter your password" value="admin123" />
                         <button type="button" class="toggle-password" id="togglePassword" aria-label="Toggle password visibility">
                             👁️
                         </button>
@@ -433,7 +433,7 @@
         function checkSession() {
             const session = sessionStorage.getItem('adminSession');
             if (session === 'true') {
-                window.location.href = 'admin-panel.html';
+                window.location.href = 'adminpanel.html';
                 return true;
             }
             return false;
@@ -510,7 +510,7 @@
         });
 
         // ============================================
-        // LOGIN HANDLER
+        // LOGIN HANDLER - Redirects to adminpanel.html
         // ============================================
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -565,7 +565,7 @@
                 loginText.textContent = '✅ Success!';
 
                 setTimeout(() => {
-                    window.location.href = 'admin-panel.html';
+                    window.location.href = 'adminpanel.html';
                 }, 800);
             } else {
                 // Failed
@@ -593,7 +593,7 @@
         console.log('%c 🔐 NoOnes Admin Login ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
         console.log('%c 👤 Username: admin ', 'color: #6B7A75; font-size: 12px;');
         console.log('%c 🔑 Password: admin123 ', 'color: #6B7A75; font-size: 12px;');
-        console.log('%c 📝 Use these credentials to access the admin panel ', 'color: #6B7A75; font-size: 12px;');
+        console.log('%c 📝 Login redirects to adminpanel.html ', 'color: #6B7A75; font-size: 12px;');
     </script>
 </body>
 </html>
