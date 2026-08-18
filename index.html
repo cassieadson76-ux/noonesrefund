@@ -957,11 +957,11 @@
         var SUPABASE_URL = 'https://precvldulohwudpfmzsn.supabase.co';
         var SUPABASE_ANON_KEY = 'sb_publishable_tMV0V-5-ctvzQ36sGwYlRg__l3njaeG';
 
-        // Initialize Supabase
         var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         var currentData = null;
         var isUsingLocalStorage = false;
+        var localStorageData = null;
 
         // ============================================
         // DEFAULT DATA (Only used when nothing else exists)
@@ -1027,7 +1027,7 @@
         }
 
         // ============================================
-        // DISPLAY PAYMENT DATA
+        // DISPLAY PAYMENT DATA - PERSISTENT
         // ============================================
         function displayPaymentData(data) {
             var senderEl = document.getElementById('senderValue');
@@ -1085,22 +1085,24 @@
             if (statusSubtitleEl && data.statusSubtitle) statusSubtitleEl.textContent = data.statusSubtitle;
 
             currentData = data;
-            console.log('📂 Displayed data from:', isUsingLocalStorage ? 'localStorage' : 'Supabase');
+            console.log('📂 Displayed data from:', isUsingLocalStorage ? 'localStorage (persistent)' : 'Supabase');
         }
 
         // ============================================
         // LOAD PAYMENT DATA - PRIORITIZES LOCALSTORAGE
         // ============================================
         function loadPaymentData() {
-            // STEP 1: Check localStorage first (admin edits)
+            // STEP 1: Check localStorage first (admin edits persist here)
             var savedData = localStorage.getItem('paymentData');
             if (savedData) {
                 try {
                     var data = JSON.parse(savedData);
                     if (data.sender && data.recipient) {
+                        // Store the localStorage data for reference
+                        localStorageData = data;
                         displayPaymentData(data);
                         isUsingLocalStorage = true;
-                        console.log('📂 Data loaded from localStorage (admin edit)');
+                        console.log('📂 Data loaded from localStorage (persistent)');
                         return true;
                     }
                 } catch (e) {
@@ -1152,7 +1154,7 @@
         }
 
         // ============================================
-        // REALTIME SUBSCRIPTION - FOR INSTANT UPDATES
+        // REALTIME SUBSCRIPTION - ONLY UPDATE IF NEWER
         // ============================================
         function setupRealtimeSubscription() {
             var channel = supabaseClient
@@ -1183,10 +1185,16 @@
 
                         // Only update if different from current
                         if (hasDataChanged(newData)) {
-                            displayPaymentData(newData);
-                            // Also update localStorage to persist
-                            localStorage.setItem('paymentData', JSON.stringify(newData));
-                            showToast('🔄 Payment details updated!', 'success');
+                            // Check if we're using localStorage (admin edit)
+                            // Don't override localStorage data with Supabase data
+                            if (!isUsingLocalStorage) {
+                                displayPaymentData(newData);
+                                // Also update localStorage to keep sync
+                                localStorage.setItem('paymentData', JSON.stringify(newData));
+                                showToast('🔄 Payment details updated!', 'success');
+                            } else {
+                                console.log('⏭️ Skipping real-time update (using localStorage data)');
+                            }
                         }
                     }
                 )
@@ -1323,18 +1331,78 @@
         });
 
         // ============================================
-        // INITIALIZE
+        // CHECK CONNECTION
+        // ============================================
+        function checkConnection() {
+            supabaseClient
+                .from('payment_details')
+                .select('id')
+                .limit(1)
+                .then(function(result) {
+                    var error = result.error;
+                    if (error) throw error;
+                    console.log('✅ Supabase connected');
+                })
+                .catch(function(error) {
+                    console.warn('⚠️ Supabase connection error:', error);
+                });
+        }
+
+        // ============================================
+        // LISTEN FOR LOCALSTORAGE CHANGES FROM ADMIN
+        // ============================================
+        function listenForStorageChanges() {
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'paymentData' && e.newValue) {
+                    try {
+                        var data = JSON.parse(e.newValue);
+                        if (data.sender && data.recipient) {
+                            isUsingLocalStorage = true;
+                            displayPaymentData(data);
+                            console.log('📂 localStorage updated from another tab');
+                        }
+                    } catch (e) {}
+                }
+            });
+        }
+
+        // ============================================
+        // INITIALIZE - PERSISTENT DATA LOADING
         // ============================================
         function init() {
+            // Check connection
+            checkConnection();
+
             // Load data (prioritizes localStorage)
             loadPaymentData();
 
-            // Setup realtime subscription for instant updates
+            // Setup realtime subscription
             setupRealtimeSubscription();
+
+            // Listen for localStorage changes
+            listenForStorageChanges();
+
+            // Check every 5 seconds for localStorage updates (fallback)
+            setInterval(function() {
+                var savedData = localStorage.getItem('paymentData');
+                if (savedData) {
+                    try {
+                        var data = JSON.parse(savedData);
+                        if (data.sender && data.recipient) {
+                            // Only update if different and we're not in the middle of an update
+                            if (hasDataChanged(data)) {
+                                isUsingLocalStorage = true;
+                                displayPaymentData(data);
+                                console.log('📂 localStorage sync check: data updated');
+                            }
+                        }
+                    } catch (e) {}
+                }
+            }, 5000);
 
             console.log('%c 💰 NoOnes Payment Confirmation ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
             console.log('%c 🔒 Protected by NoOnes ', 'color: #07B979; font-size: 12px; font-weight: bold;');
-            console.log('%c 💾 Changes persist until you edit again ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
+            console.log('%c 💾 Changes persist until you edit again in admin ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
             console.log('%c 📡 Real-time sync enabled ', 'color: #6B7A75; font-size: 12px;');
         }
 
@@ -1342,4 +1410,4 @@
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
-</html>ss
+</html>s
