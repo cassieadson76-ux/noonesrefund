@@ -10,10 +10,8 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-    <!-- Supabase JS - THIS MUST LOAD FIRST -->
+    <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-        // This loads the Supabase library
-        console.log('Supabase CDN loaded');
     </script>
 
     <style>
@@ -62,7 +60,10 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .container { max-width: 900px; margin: 0 auto; }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
 
         .header {
             display: flex;
@@ -80,7 +81,9 @@
             font-weight: 800;
             color: var(--color-text);
         }
-        .header h1 span { color: var(--color-green); }
+        .header h1 span {
+            color: var(--color-green);
+        }
 
         .header-actions {
             display: flex;
@@ -131,20 +134,25 @@
             padding: 0.125rem;
             transition: all 0.3s ease;
         }
-        .theme-toggle.active { background-color: #2C2E33; border-color: #4A4C50; }
+        .theme-toggle.active {
+            background-color: #2C2E33;
+            border-color: #4A4C50;
+        }
         .theme-thumb {
             width: 1.125rem;
             height: 1.125rem;
             border-radius: 9999px;
             background-color: var(--color-white);
-            box-shadow: 0 0.0625rem 0.25rem rgba(0,0,0,0.15);
+            box-shadow: 0 0.0625rem 0.25rem rgba(0, 0, 0, 0.15);
             transition: transform 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 10px;
         }
-        .theme-toggle.active .theme-thumb { transform: translateX(1.25rem); }
+        .theme-toggle.active .theme-thumb {
+            transform: translateX(1.25rem);
+        }
 
         .view-link {
             display: flex;
@@ -159,7 +167,10 @@
             font-weight: 600;
             transition: all 0.2s ease;
         }
-        .view-link:hover { background: var(--color-border); color: var(--color-green); }
+        .view-link:hover {
+            background: var(--color-border);
+            color: var(--color-green);
+        }
 
         .status-badge {
             display: inline-block;
@@ -187,8 +198,13 @@
         }
 
         @keyframes pulse-badge {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
         }
 
         .card {
@@ -221,7 +237,9 @@
             margin-bottom: 0;
         }
 
-        .form-group { margin-bottom: 1.25rem; }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
         .form-group label {
             display: block;
             font-size: 0.813rem;
@@ -280,13 +298,35 @@
             flex: 1;
             min-width: 140px;
         }
-        .btn-primary { background-color: var(--color-green); color: var(--color-white); }
-        .btn-primary:hover { background-color: var(--color-green-hover); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(7, 185, 121, 0.3); }
-        .btn-secondary { background-color: var(--color-light-grey); color: var(--color-text-secondary); }
-        .btn-secondary:hover { background-color: var(--color-border); color: var(--color-text); transform: translateY(-2px); }
-        .btn-danger { background-color: var(--color-error); color: var(--color-white); }
-        .btn-danger:hover { opacity: 0.85; transform: translateY(-2px); }
-        .btn:active { transform: scale(0.97) !important; }
+        .btn-primary {
+            background-color: var(--color-green);
+            color: var(--color-white);
+        }
+        .btn-primary:hover {
+            background-color: var(--color-green-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(7, 185, 121, 0.3);
+        }
+        .btn-secondary {
+            background-color: var(--color-light-grey);
+            color: var(--color-text-secondary);
+        }
+        .btn-secondary:hover {
+            background-color: var(--color-border);
+            color: var(--color-text);
+            transform: translateY(-2px);
+        }
+        .btn-danger {
+            background-color: var(--color-error);
+            color: var(--color-white);
+        }
+        .btn-danger:hover {
+            opacity: 0.85;
+            transform: translateY(-2px);
+        }
+        .btn:active {
+            transform: scale(0.97) !important;
+        }
 
         .preview-card {
             background: var(--color-light-grey);
@@ -364,7 +404,9 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        .preview-item .value.green { color: var(--color-green); }
+        .preview-item .value.green {
+            color: var(--color-green);
+        }
 
         .toast {
             position: fixed;
@@ -382,10 +424,19 @@
             transition: all 0.3s ease;
             z-index: 1000;
         }
-        .toast.show { transform: translateY(0); opacity: 1; }
-        .toast.success { background-color: var(--color-green); }
-        .toast.error { background-color: var(--color-error); }
-        .toast.warning { background-color: var(--color-warning); }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .toast.success {
+            background-color: var(--color-green);
+        }
+        .toast.error {
+            background-color: var(--color-error);
+        }
+        .toast.warning {
+            background-color: var(--color-warning);
+        }
 
         .loading-spinner {
             display: none;
@@ -396,8 +447,14 @@
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-        .loading-spinner.active { display: inline-block; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-spinner.active {
+            display: inline-block;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         .db-status {
             display: flex;
@@ -413,12 +470,24 @@
             display: inline-block;
             background: var(--color-green);
         }
-        .db-status .dot.offline { background: var(--color-error); }
-        .db-status .dot.realtime { background: #FF8C00; animation: pulse-dot 1.5s ease-in-out infinite; }
+        .db-status .dot.offline {
+            background: var(--color-error);
+        }
+        .db-status .dot.realtime {
+            background: #FF8C00;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
 
         @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
         }
 
         .sync-status {
@@ -438,10 +507,20 @@
             border-radius: 9999px;
             display: inline-block;
         }
-        .sync-status .dot.synced { background: var(--color-green); }
-        .sync-status .dot.syncing { background: var(--color-warning); animation: pulse-dot 0.8s ease-in-out infinite; }
-        .sync-status .dot.offline { background: var(--color-error); }
-        .sync-status .dot.live { background: #FF6B00; animation: pulse-dot 1.5s ease-in-out infinite; }
+        .sync-status .dot.synced {
+            background: var(--color-green);
+        }
+        .sync-status .dot.syncing {
+            background: var(--color-warning);
+            animation: pulse-dot 0.8s ease-in-out infinite;
+        }
+        .sync-status .dot.offline {
+            background: var(--color-error);
+        }
+        .sync-status .dot.live {
+            background: #FF6B00;
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
 
         @media (max-width: 768px) {
             .admin-layout {
@@ -450,11 +529,21 @@
             .admin-layout .card {
                 margin-bottom: 1.5rem;
             }
-            .form-row { grid-template-columns: 1fr; }
-            .btn-group { flex-direction: column; }
-            .btn { width: 100%; }
-            .card { padding: 1.5rem; }
-            body { padding: 1rem; }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .btn-group {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+            body {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
@@ -483,7 +572,7 @@
 
         <!-- Two Column Layout: Edit Form | Live Preview -->
         <div class="admin-layout">
-            
+
             <!-- LEFT: Edit Form -->
             <div class="card">
                 <div class="card-title">
@@ -651,31 +740,21 @@
 
     <script>
         // ============================================
-        // CHECK IF SUPABASE IS LOADED
-        // ============================================
-        if (typeof supabase === 'undefined') {
-            console.error('❌ Supabase library not loaded!');
-            alert('⚠️ Supabase library failed to load. Please refresh the page.');
-        } else {
-            console.log('✅ Supabase library loaded successfully');
-        }
-
-        // ============================================
         // SUPABASE CONFIG
         // ============================================
         const SUPABASE_URL = 'https://precvldulohwudpfmzsn.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_tMV0V-5-ctvzQ36sGwYlRg__l3njaeG';
 
-        // Initialize Supabase - USE THE GLOBAL supabase VARIABLE
+        // Initialize Supabase
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         console.log('✅ Supabase client initialized');
 
         // ============================================
-        // SESSION CHECK
+        // SESSION CHECK - FIXED: No return outside function
         // ============================================
         function checkSession() {
-            const session = sessionStorage.getItem('adminSession');
+            var session = sessionStorage.getItem('adminSession');
             if (session !== 'true') {
                 window.location.href = 'adminlogin.html';
                 return false;
@@ -683,19 +762,29 @@
             return true;
         }
 
-        if (!checkSession()) return;
+        // Execute session check
+        var isSessionValid = checkSession();
 
-        const adminUser = sessionStorage.getItem('adminUser') || 'Admin';
-        document.getElementById('adminUser').textContent = adminUser;
+        // ============================================
+        // DOM ELEMENTS
+        // ============================================
+        var adminUser = sessionStorage.getItem('adminUser') || 'Admin';
+        var adminUserEl = document.getElementById('adminUser');
+        if (adminUserEl) {
+            adminUserEl.textContent = adminUser;
+        }
 
         // ============================================
         // LOGOUT
         // ============================================
-        document.getElementById('logoutBtn').addEventListener('click', function() {
-            sessionStorage.removeItem('adminSession');
-            sessionStorage.removeItem('adminUser');
-            window.location.href = 'adminlogin.html';
-        });
+        var logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function() {
+                sessionStorage.removeItem('adminSession');
+                sessionStorage.removeItem('adminUser');
+                window.location.href = 'adminlogin.html';
+            });
+        }
 
         // ============================================
         // GET FORM DATA
@@ -720,64 +809,84 @@
         // UPDATE LIVE PREVIEW
         // ============================================
         function updateLivePreview() {
-            const data = getFormData();
-            
-            document.getElementById('previewSender').textContent = data.sender || 'N/A';
-            document.getElementById('previewRecipient').textContent = data.recipient || 'N/A';
-            document.getElementById('previewAmountValue').textContent = data.amount || '0';
-            document.getElementById('previewCurrency').textContent = data.currency || 'USDT';
-            document.getElementById('previewDate').textContent = data.date || 'N/A';
-            document.getElementById('previewMethod').textContent = data.method || 'N/A';
-            document.getElementById('previewReference').textContent = data.reference || 'N/A';
-            document.getElementById('previewStatus').textContent = data.status || 'Awaiting Funds';
-            document.getElementById('previewStatusTitle').textContent = data.statusTitle || 'Awaiting Funds';
-            document.getElementById('previewStatusTitleValue').textContent = data.statusTitle || 'Awaiting Funds';
-            document.getElementById('previewSubtitle').textContent = data.statusSubtitle || 'N/A';
-            document.getElementById('previewStatusBadge').textContent = data.status || 'Awaiting Funds';
+            var data = getFormData();
 
-            const numAmount = parseFloat((data.amount || '0').replace(/,/g, ''));
-            if (!isNaN(numAmount)) {
-                document.getElementById('previewUsd').textContent = '≈ $' + numAmount.toLocaleString('en-US', {
+            var previewSender = document.getElementById('previewSender');
+            var previewRecipient = document.getElementById('previewRecipient');
+            var previewAmountValue = document.getElementById('previewAmountValue');
+            var previewCurrency = document.getElementById('previewCurrency');
+            var previewDate = document.getElementById('previewDate');
+            var previewMethod = document.getElementById('previewMethod');
+            var previewReference = document.getElementById('previewReference');
+            var previewStatus = document.getElementById('previewStatus');
+            var previewStatusTitle = document.getElementById('previewStatusTitle');
+            var previewStatusTitleValue = document.getElementById('previewStatusTitleValue');
+            var previewSubtitle = document.getElementById('previewSubtitle');
+            var previewStatusBadge = document.getElementById('previewStatusBadge');
+            var previewUsd = document.getElementById('previewUsd');
+            var previewTx = document.getElementById('previewTx');
+
+            if (previewSender) previewSender.textContent = data.sender || 'N/A';
+            if (previewRecipient) previewRecipient.textContent = data.recipient || 'N/A';
+            if (previewAmountValue) previewAmountValue.textContent = data.amount || '0';
+            if (previewCurrency) previewCurrency.textContent = data.currency || 'USDT';
+            if (previewDate) previewDate.textContent = data.date || 'N/A';
+            if (previewMethod) previewMethod.textContent = data.method || 'N/A';
+            if (previewReference) previewReference.textContent = data.reference || 'N/A';
+            if (previewStatus) previewStatus.textContent = data.status || 'Awaiting Funds';
+            if (previewStatusTitle) previewStatusTitle.textContent = data.statusTitle || 'Awaiting Funds';
+            if (previewStatusTitleValue) previewStatusTitleValue.textContent = data.statusTitle || 'Awaiting Funds';
+            if (previewSubtitle) previewSubtitle.textContent = data.statusSubtitle || 'N/A';
+            if (previewStatusBadge) previewStatusBadge.textContent = data.status || 'Awaiting Funds';
+
+            var numAmount = parseFloat((data.amount || '0').replace(/,/g, ''));
+            if (!isNaN(numAmount) && previewUsd) {
+                previewUsd.textContent = '≈ $' + numAmount.toLocaleString('en-US', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 }) + ' USD';
             }
 
-            const tx = data.txId || 'N/A';
-            document.getElementById('previewTx').textContent = tx.length > 20 ? tx.slice(0, 6) + '...' + tx.slice(-4) : tx;
+            var tx = data.txId || 'N/A';
+            if (previewTx) {
+                previewTx.textContent = tx.length > 20 ? tx.slice(0, 6) + '...' + tx.slice(-4) : tx;
+            }
 
-            const statusColors = {
+            var statusColors = {
                 'Awaiting Funds': { bg: '#FFF8E0', color: '#FFB800' },
                 'Completed': { bg: '#E8F8F2', color: '#07B979' },
                 'Declined': { bg: '#FFEEEE', color: '#F22323' },
                 'Processing': { bg: '#FFF3E0', color: '#FF8C00' }
             };
-            const statusText = data.status || 'Awaiting Funds';
-            const color = statusColors[statusText] || statusColors['Awaiting Funds'];
-            const badge = document.getElementById('previewStatusBadge');
-            badge.style.background = color.bg;
-            badge.style.color = color.color;
+            var statusText = data.status || 'Awaiting Funds';
+            var color = statusColors[statusText] || statusColors['Awaiting Funds'];
+            if (previewStatusBadge) {
+                previewStatusBadge.style.background = color.bg;
+                previewStatusBadge.style.color = color.color;
+            }
         }
 
         // ============================================
         // AUTO-UPDATE ON INPUT
         // ============================================
-        document.querySelectorAll('#adminForm input').forEach(input => {
-            input.addEventListener('input', updateLivePreview);
-        });
+        var allInputs = document.querySelectorAll('#adminForm input');
+        for (var i = 0; i < allInputs.length; i++) {
+            allInputs[i].addEventListener('input', updateLivePreview);
+        }
 
         // ============================================
         // TOAST NOTIFICATION
         // ============================================
-        const toast = document.getElementById('toast');
-        let toastTimeout;
+        var toast = document.getElementById('toast');
+        var toastTimeout;
 
-        function showToast(message, type = '') {
+        function showToast(message, type) {
+            type = type || '';
             toast.textContent = message;
             toast.className = 'toast' + (type ? ' ' + type : '');
             toast.classList.add('show');
             clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
+            toastTimeout = setTimeout(function() {
                 toast.classList.remove('show');
             }, 3000);
         }
@@ -785,46 +894,56 @@
         // ============================================
         // LOAD FROM SUPABASE
         // ============================================
-        async function loadFromSupabase() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('payment_details')
-                    .select('*')
-                    .order('id', { ascending: false })
-                    .limit(1);
+        function loadFromSupabase() {
+            var btn = document.getElementById('saveBtn');
+            var spinner = document.getElementById('saveSpinner');
 
-                if (error) throw error;
+            showToast('📂 Loading from Supabase...', '');
 
-                if (data && data.length > 0) {
-                    const record = data[0];
-                    document.getElementById('senderInput').value = record.sender || '';
-                    document.getElementById('recipientInput').value = record.recipient || '';
-                    document.getElementById('amountInput').value = record.amount || '';
-                    document.getElementById('currencyInput').value = record.currency || 'USDT';
-                    document.getElementById('dateInput').value = record.date_time || '';
-                    document.getElementById('methodInput').value = record.payment_method || '';
-                    document.getElementById('referenceInput').value = record.reference || '';
-                    document.getElementById('statusInput').value = record.status || 'Awaiting Funds';
-                    document.getElementById('txInput').value = record.transaction_id || '';
-                    document.getElementById('statusTitleInput').value = record.status_title || 'Awaiting Funds';
-                    document.getElementById('statusSubtitleInput').value = record.status_subtitle || '';
-                    
-                    updateLivePreview();
-                    showToast('✅ Data loaded from Supabase!', 'success');
-                }
-            } catch (error) {
-                console.error('❌ Error:', error);
-                showToast('❌ Failed to load data', 'error');
-            }
+            supabaseClient
+                .from('payment_details')
+                .select('*')
+                .order('id', { ascending: false })
+                .limit(1)
+                .then(function(result) {
+                    var data = result.data;
+                    var error = result.error;
+
+                    if (error) throw error;
+
+                    if (data && data.length > 0) {
+                        var record = data[0];
+                        document.getElementById('senderInput').value = record.sender || '';
+                        document.getElementById('recipientInput').value = record.recipient || '';
+                        document.getElementById('amountInput').value = record.amount || '';
+                        document.getElementById('currencyInput').value = record.currency || 'USDT';
+                        document.getElementById('dateInput').value = record.date_time || '';
+                        document.getElementById('methodInput').value = record.payment_method || '';
+                        document.getElementById('referenceInput').value = record.reference || '';
+                        document.getElementById('statusInput').value = record.status || 'Awaiting Funds';
+                        document.getElementById('txInput').value = record.transaction_id || '';
+                        document.getElementById('statusTitleInput').value = record.status_title || 'Awaiting Funds';
+                        document.getElementById('statusSubtitleInput').value = record.status_subtitle || '';
+
+                        updateLivePreview();
+                        showToast('✅ Data loaded from Supabase!', 'success');
+                    } else {
+                        showToast('ℹ️ No data found, using defaults', '');
+                    }
+                })
+                .catch(function(error) {
+                    console.error('❌ Error:', error);
+                    showToast('❌ Failed to load data', 'error');
+                });
         }
 
         // ============================================
         // SAVE TO SUPABASE
         // ============================================
-        async function saveToSupabase() {
-            const btn = document.getElementById('saveBtn');
-            const spinner = document.getElementById('saveSpinner');
-            const data = getFormData();
+        function saveToSupabase() {
+            var btn = document.getElementById('saveBtn');
+            var spinner = document.getElementById('saveSpinner');
+            var data = getFormData();
 
             if (!data.sender || !data.recipient || !data.amount) {
                 showToast('❌ Sender, Recipient, and Amount are required', 'error');
@@ -835,54 +954,62 @@
             spinner.classList.add('active');
             showToast('💾 Saving...', '');
 
-            try {
-                // Update Live Preview immediately
-                updateLivePreview();
+            // Update Live Preview immediately
+            updateLivePreview();
 
-                const { data: existing, error: fetchError } = await supabaseClient
-                    .from('payment_details')
-                    .select('id')
-                    .order('id', { ascending: false })
-                    .limit(1);
+            supabaseClient
+                .from('payment_details')
+                .select('id')
+                .order('id', { ascending: false })
+                .limit(1)
+                .then(function(result) {
+                    var existing = result.data;
+                    var fetchError = result.error;
 
-                if (fetchError) throw fetchError;
+                    if (fetchError) throw fetchError;
 
-                const updateData = {
-                    sender: data.sender,
-                    recipient: data.recipient,
-                    amount: parseFloat(data.amount.replace(/,/g, '')) || 0,
-                    currency: data.currency || 'USDT',
-                    date_time: data.date || new Date().toISOString(),
-                    payment_method: data.method || 'Bank Transfer',
-                    reference: data.reference || 'REF-' + Date.now(),
-                    status: data.status || 'Awaiting Funds',
-                    transaction_id: data.txId || '0x' + Math.random().toString(16).slice(2, 42),
-                    status_title: data.statusTitle || 'Awaiting Funds',
-                    status_subtitle: data.statusSubtitle || 'Payment is being processed'
-                };
+                    var updateData = {
+                        sender: data.sender,
+                        recipient: data.recipient,
+                        amount: parseFloat(data.amount.replace(/,/g, '')) || 0,
+                        currency: data.currency || 'USDT',
+                        date_time: data.date || new Date().toISOString(),
+                        payment_method: data.method || 'Bank Transfer',
+                        reference: data.reference || 'REF-' + Date.now(),
+                        status: data.status || 'Awaiting Funds',
+                        transaction_id: data.txId || '0x' + Math.random().toString(16).slice(2, 42),
+                        status_title: data.statusTitle || 'Awaiting Funds',
+                        status_subtitle: data.statusSubtitle || 'Payment is being processed'
+                    };
 
-                if (existing && existing.length > 0) {
-                    await supabaseClient
-                        .from('payment_details')
-                        .update(updateData)
-                        .eq('id', existing[0].id);
-                } else {
-                    await supabaseClient
-                        .from('payment_details')
-                        .insert(updateData);
-                }
+                    if (existing && existing.length > 0) {
+                        return supabaseClient
+                            .from('payment_details')
+                            .update(updateData)
+                            .eq('id', existing[0].id);
+                    } else {
+                        return supabaseClient
+                            .from('payment_details')
+                            .insert(updateData);
+                    }
+                })
+                .then(function(result) {
+                    var error = result.error;
+                    if (error) throw error;
 
-                updateLivePreview();
-                localStorage.setItem('paymentData', JSON.stringify(data));
-                showToast('✅ Saved! Landing page updated instantly.', 'success');
+                    updateLivePreview();
+                    localStorage.setItem('paymentData', JSON.stringify(data));
+                    showToast('✅ Saved! Landing page updated instantly.', 'success');
 
-            } catch (error) {
-                console.error('❌ Error:', error);
-                showToast('❌ Error: ' + (error.message || 'Unknown error'), 'error');
-            } finally {
-                btn.disabled = false;
-                spinner.classList.remove('active');
-            }
+                    btn.disabled = false;
+                    spinner.classList.remove('active');
+                })
+                .catch(function(error) {
+                    console.error('❌ Error:', error);
+                    showToast('❌ Error: ' + (error.message || 'Unknown error'), 'error');
+                    btn.disabled = false;
+                    spinner.classList.remove('active');
+                });
         }
 
         // ============================================
@@ -901,7 +1028,7 @@
                 document.getElementById('txInput').value = '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a';
                 document.getElementById('statusTitleInput').value = 'Awaiting Funds';
                 document.getElementById('statusSubtitleInput').value = 'Payment is being processed, please wait';
-                
+
                 updateLivePreview();
                 localStorage.removeItem('paymentData');
                 showToast('↩️ Reset to defaults', '');
@@ -911,10 +1038,10 @@
         // ============================================
         // THEME TOGGLE
         // ============================================
-        const themeToggle = document.getElementById('themeToggle');
-        const themeThumb = themeToggle.querySelector('.theme-thumb');
+        var themeToggle = document.getElementById('themeToggle');
+        var themeThumb = themeToggle.querySelector('.theme-thumb');
 
-        const savedTheme = localStorage.getItem('theme-preference');
+        var savedTheme = localStorage.getItem('theme-preference');
         if (savedTheme === 'dark') {
             themeToggle.classList.add('active');
             themeThumb.textContent = '☀️';
@@ -923,7 +1050,7 @@
 
         themeToggle.addEventListener('click', function() {
             this.classList.toggle('active');
-            const isDark = this.classList.contains('active');
+            var isDark = this.classList.contains('active');
             themeThumb.textContent = isDark ? '☀️' : '🌙';
             document.documentElement.setAttribute('data-mantine-color-scheme', isDark ? 'dark' : 'light');
             localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
@@ -932,7 +1059,10 @@
         // ============================================
         // SAVE BUTTON
         // ============================================
-        document.getElementById('saveBtn').addEventListener('click', saveToSupabase);
+        var saveBtn = document.getElementById('saveBtn');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', saveToSupabase);
+        }
 
         // ============================================
         // KEYBOARD SHORTCUTS
@@ -947,40 +1077,43 @@
         // ============================================
         // CHECK CONNECTION
         // ============================================
-        async function checkConnection() {
-            const dot = document.getElementById('dbStatusDot');
-            const text = document.getElementById('dbStatusText');
-            try {
-                const { data, error } = await supabaseClient
-                    .from('payment_details')
-                    .select('id')
-                    .limit(1);
-                
-                if (error) throw error;
-                dot.className = 'dot';
-                text.textContent = 'Supabase: Connected ✅';
-                return true;
-            } catch (error) {
-                dot.className = 'dot offline';
-                text.textContent = 'Supabase: Offline ❌';
-                console.error('❌ Supabase connection error:', error);
-                return false;
-            }
+        function checkConnection() {
+            var dot = document.getElementById('dbStatusDot');
+            var text = document.getElementById('dbStatusText');
+
+            supabaseClient
+                .from('payment_details')
+                .select('id')
+                .limit(1)
+                .then(function(result) {
+                    var error = result.error;
+                    if (error) throw error;
+                    dot.className = 'dot';
+                    text.textContent = 'Supabase: Connected ✅';
+                })
+                .catch(function(error) {
+                    dot.className = 'dot offline';
+                    text.textContent = 'Supabase: Offline ❌';
+                    console.error('❌ Supabase connection error:', error);
+                });
         }
 
         // ============================================
         // INITIALIZE
         // ============================================
-        (async function init() {
-            await checkConnection();
-            await loadFromSupabase();
+        function init() {
+            checkConnection();
+            loadFromSupabase();
             updateLivePreview();
-            
+
             console.log('%c ⚙️ NoOnes Admin Panel ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
             console.log('%c 👁️ Live Preview updates instantly on input change ', 'color: #6B7A75; font-size: 12px;');
             console.log('%c 💾 Save & Push updates landing page in real-time ', 'color: #07B979; font-size: 12px; font-weight: bold;');
             console.log('%c 💡 Press Ctrl+S to save quickly ', 'color: #6B7A75; font-size: 12px;');
-        })();
+        }
+
+        // Run initialization
+        init();
     </script>
 </body>
 </html>
