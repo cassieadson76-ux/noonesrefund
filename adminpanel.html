@@ -10,8 +10,11 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-    <!-- Supabase JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase JS - THIS MUST LOAD FIRST -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+        // This loads the Supabase library
+        console.log('Supabase CDN loaded');
+    </script>
 
     <style>
         * {
@@ -648,12 +651,25 @@
 
     <script>
         // ============================================
+        // CHECK IF SUPABASE IS LOADED
+        // ============================================
+        if (typeof supabase === 'undefined') {
+            console.error('❌ Supabase library not loaded!');
+            alert('⚠️ Supabase library failed to load. Please refresh the page.');
+        } else {
+            console.log('✅ Supabase library loaded successfully');
+        }
+
+        // ============================================
         // SUPABASE CONFIG
         // ============================================
         const SUPABASE_URL = 'https://precvldulohwudpfmzsn.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_tMV0V-5-ctvzQ36sGwYlRg__l3njaeG';
 
+        // Initialize Supabase - USE THE GLOBAL supabase VARIABLE
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        console.log('✅ Supabase client initialized');
 
         // ============================================
         // SESSION CHECK
@@ -803,7 +819,7 @@
         }
 
         // ============================================
-        // SAVE TO SUPABASE + INSTANT UPDATE
+        // SAVE TO SUPABASE
         // ============================================
         async function saveToSupabase() {
             const btn = document.getElementById('saveBtn');
@@ -820,10 +836,9 @@
             showToast('💾 Saving...', '');
 
             try {
-                // 1. UPDATE LIVE PREVIEW IMMEDIATELY
+                // Update Live Preview immediately
                 updateLivePreview();
 
-                // 2. Get existing record
                 const { data: existing, error: fetchError } = await supabaseClient
                     .from('payment_details')
                     .select('id')
@@ -857,11 +872,8 @@
                         .insert(updateData);
                 }
 
-                // 3. Update preview again after save
                 updateLivePreview();
-                
                 localStorage.setItem('paymentData', JSON.stringify(data));
-                
                 showToast('✅ Saved! Landing page updated instantly.', 'success');
 
             } catch (error) {
@@ -971,4 +983,4 @@
         })();
     </script>
 </body>
-</html>ss
+</html>
