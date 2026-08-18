@@ -493,60 +493,60 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>👤 Sender</label>
-                            <input type="text" id="senderInput" placeholder="John Doe" />
+                            <input type="text" id="senderInput" placeholder="John Doe" value="John Doe" />
                         </div>
                         <div class="form-group">
                             <label>🏦 Recipient</label>
-                            <input type="text" id="recipientInput" placeholder="Jane Smith" />
+                            <input type="text" id="recipientInput" placeholder="Jane Smith" value="Jane Smith" />
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label>💰 Amount</label>
-                            <input type="text" id="amountInput" placeholder="1,245.50" />
+                            <input type="text" id="amountInput" placeholder="1,245.50" value="1,245.50" />
                         </div>
                         <div class="form-group">
                             <label>💱 Currency</label>
-                            <input type="text" id="currencyInput" placeholder="USDT" />
+                            <input type="text" id="currencyInput" placeholder="USDT" value="USDT" />
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label>📅 Date & Time</label>
-                            <input type="text" id="dateInput" placeholder="2026-08-17 14:30:45 UTC" />
+                            <input type="text" id="dateInput" placeholder="2026-08-17 14:30:45 UTC" value="2026-08-17 14:30:45 UTC" />
                         </div>
                         <div class="form-group">
                             <label>💳 Payment Method</label>
-                            <input type="text" id="methodInput" placeholder="Bank Transfer - Chase" />
+                            <input type="text" id="methodInput" placeholder="Bank Transfer - Chase" value="Bank Transfer - Chase" />
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label>📎 Reference</label>
-                            <input type="text" id="referenceInput" placeholder="PAY-2026-08-17-0042" />
+                            <input type="text" id="referenceInput" placeholder="PAY-2026-08-17-0042" value="PAY-2026-08-17-0042" />
                         </div>
                         <div class="form-group">
                             <label>🔄 Status</label>
-                            <input type="text" id="statusInput" placeholder="Awaiting Funds" />
+                            <input type="text" id="statusInput" placeholder="Awaiting Funds" value="Awaiting Funds" />
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label>🔗 Transaction ID</label>
-                        <input type="text" id="txInput" placeholder="0x7a3f..." />
+                        <input type="text" id="txInput" placeholder="0x7a3f..." value="0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a" />
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label>📌 Status Title</label>
-                            <input type="text" id="statusTitleInput" placeholder="Awaiting Funds" />
+                            <input type="text" id="statusTitleInput" placeholder="Awaiting Funds" value="Awaiting Funds" />
                         </div>
                         <div class="form-group">
                             <label>📝 Status Subtitle</label>
-                            <input type="text" id="statusSubtitleInput" placeholder="Payment is being processed..." />
+                            <input type="text" id="statusSubtitleInput" placeholder="Payment is being processed..." value="Payment is being processed, please wait" />
                         </div>
                     </div>
 
@@ -682,98 +682,60 @@
         });
 
         // ============================================
-        // DEFAULT DATA - "Awaiting Funds" restored
+        // GET FORM DATA
         // ============================================
-        const DEFAULT_DATA = {
-            sender: 'John Doe',
-            recipient: 'Jane Smith',
-            amount: '1,245.50',
-            currency: 'USDT',
-            date: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
-            method: 'Bank Transfer - Chase',
-            reference: 'PAY-2026-08-17-0042',
-            status: 'Awaiting Funds',
-            txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
-            statusTitle: 'Awaiting Funds',
-            statusSubtitle: 'Payment is being processed, please wait'
-        };
+        function getFormData() {
+            return {
+                sender: document.getElementById('senderInput').value.trim(),
+                recipient: document.getElementById('recipientInput').value.trim(),
+                amount: document.getElementById('amountInput').value.trim(),
+                currency: document.getElementById('currencyInput').value.trim(),
+                date: document.getElementById('dateInput').value.trim(),
+                method: document.getElementById('methodInput').value.trim(),
+                reference: document.getElementById('referenceInput').value.trim(),
+                status: document.getElementById('statusInput').value.trim(),
+                txId: document.getElementById('txInput').value.trim(),
+                statusTitle: document.getElementById('statusTitleInput').value.trim(),
+                statusSubtitle: document.getElementById('statusSubtitleInput').value.trim()
+            };
+        }
 
         // ============================================
-        // DOM REFERENCES - Form Inputs
-        // ============================================
-        const fields = {
-            sender: document.getElementById('senderInput'),
-            recipient: document.getElementById('recipientInput'),
-            amount: document.getElementById('amountInput'),
-            currency: document.getElementById('currencyInput'),
-            date: document.getElementById('dateInput'),
-            method: document.getElementById('methodInput'),
-            reference: document.getElementById('referenceInput'),
-            status: document.getElementById('statusInput'),
-            txId: document.getElementById('txInput'),
-            statusTitle: document.getElementById('statusTitleInput'),
-            statusSubtitle: document.getElementById('statusSubtitleInput')
-        };
-
-        // ============================================
-        // DOM REFERENCES - Live Preview
-        // ============================================
-        const preview = {
-            sender: document.getElementById('previewSender'),
-            recipient: document.getElementById('previewRecipient'),
-            amount: document.getElementById('previewAmountValue'),
-            currency: document.getElementById('previewCurrency'),
-            usd: document.getElementById('previewUsd'),
-            date: document.getElementById('previewDate'),
-            method: document.getElementById('previewMethod'),
-            reference: document.getElementById('previewReference'),
-            status: document.getElementById('previewStatus'),
-            tx: document.getElementById('previewTx'),
-            statusTitle: document.getElementById('previewStatusTitle'),
-            statusTitleValue: document.getElementById('previewStatusTitleValue'),
-            subtitle: document.getElementById('previewSubtitle'),
-            badge: document.getElementById('previewStatusBadge')
-        };
-
-        const syncDot = document.getElementById('syncDot');
-        const syncText = document.getElementById('syncText');
-
-        // ============================================
-        // UPDATE LIVE PREVIEW (Instant on input)
+        // UPDATE LIVE PREVIEW - THIS IS THE KEY FUNCTION
         // ============================================
         function updateLivePreview() {
             const data = getFormData();
             
-            // Update preview fields
-            preview.sender.textContent = data.sender || 'N/A';
-            preview.recipient.textContent = data.recipient || 'N/A';
-            preview.amount.textContent = data.amount || '0';
-            preview.currency.textContent = data.currency || 'USDT';
-            preview.date.textContent = data.date || 'N/A';
-            preview.method.textContent = data.method || 'N/A';
-            preview.reference.textContent = data.reference || 'N/A';
-            preview.status.textContent = data.status || 'Awaiting Funds';
-            preview.statusTitle.textContent = data.statusTitle || 'Awaiting Funds';
-            preview.statusTitleValue.textContent = data.statusTitle || 'Awaiting Funds';
-            preview.subtitle.textContent = data.statusSubtitle || 'N/A';
-            preview.badge.textContent = data.status || 'Awaiting Funds';
+            console.log('🔄 Updating Live Preview with:', data);
+            
+            // Update all preview fields
+            document.getElementById('previewSender').textContent = data.sender || 'N/A';
+            document.getElementById('previewRecipient').textContent = data.recipient || 'N/A';
+            document.getElementById('previewAmountValue').textContent = data.amount || '0';
+            document.getElementById('previewCurrency').textContent = data.currency || 'USDT';
+            document.getElementById('previewDate').textContent = data.date || 'N/A';
+            document.getElementById('previewMethod').textContent = data.method || 'N/A';
+            document.getElementById('previewReference').textContent = data.reference || 'N/A';
+            document.getElementById('previewStatus').textContent = data.status || 'Awaiting Funds';
+            document.getElementById('previewStatusTitle').textContent = data.statusTitle || 'Awaiting Funds';
+            document.getElementById('previewStatusTitleValue').textContent = data.statusTitle || 'Awaiting Funds';
+            document.getElementById('previewSubtitle').textContent = data.statusSubtitle || 'N/A';
+            document.getElementById('previewStatusBadge').textContent = data.status || 'Awaiting Funds';
 
             // Update USD
             const numAmount = parseFloat((data.amount || '0').replace(/,/g, ''));
             if (!isNaN(numAmount)) {
-                preview.usd.textContent = '≈ $' + numAmount.toLocaleString('en-US', {
+                document.getElementById('previewUsd').textContent = '≈ $' + numAmount.toLocaleString('en-US', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 }) + ' USD';
-            } else {
-                preview.usd.textContent = '≈ $0.00 USD';
             }
 
             // Update TX ID (shortened)
             const tx = data.txId || 'N/A';
-            preview.tx.textContent = tx.length > 20 ? tx.slice(0, 6) + '...' + tx.slice(-4) : tx;
+            document.getElementById('previewTx').textContent = tx.length > 20 ? tx.slice(0, 6) + '...' + tx.slice(-4) : tx;
 
-            // Update badge color based on status
+            // Update badge color
             const statusColors = {
                 'Awaiting Funds': { bg: '#FFF8E0', color: '#FFB800' },
                 'Completed': { bg: '#E8F8F2', color: '#07B979' },
@@ -782,48 +744,27 @@
             };
             const statusText = data.status || 'Awaiting Funds';
             const color = statusColors[statusText] || statusColors['Awaiting Funds'];
-            preview.badge.style.background = color.bg;
-            preview.badge.style.color = color.color;
-        }
+            const badge = document.getElementById('previewStatusBadge');
+            badge.style.background = color.bg;
+            badge.style.color = color.color;
 
-        function getFormData() {
-            return {
-                sender: fields.sender.value.trim(),
-                recipient: fields.recipient.value.trim(),
-                amount: fields.amount.value.trim(),
-                currency: fields.currency.value.trim(),
-                date: fields.date.value.trim(),
-                method: fields.method.value.trim(),
-                reference: fields.reference.value.trim(),
-                status: fields.status.value.trim(),
-                txId: fields.txId.value.trim(),
-                statusTitle: fields.statusTitle.value.trim(),
-                statusSubtitle: fields.statusSubtitle.value.trim()
-            };
-        }
-
-        function loadDataToForm(data) {
-            fields.sender.value = data.sender || '';
-            fields.recipient.value = data.recipient || '';
-            fields.amount.value = data.amount || '';
-            fields.currency.value = data.currency || 'USDT';
-            fields.date.value = data.date || '';
-            fields.method.value = data.method || '';
-            fields.reference.value = data.reference || '';
-            fields.status.value = data.status || 'Awaiting Funds';
-            fields.txId.value = data.txId || '';
-            fields.statusTitle.value = data.statusTitle || 'Awaiting Funds';
-            fields.statusSubtitle.value = data.statusSubtitle || '';
-            updateLivePreview();
+            // Update sync status
+            document.getElementById('syncDot').className = 'dot synced';
+            document.getElementById('syncText').textContent = 'Live preview updated ✅';
         }
 
         // ============================================
-        // SYNC STATUS UPDATES
+        // AUTO-UPDATE ON INPUT - THIS MAKES IT LIVE
         // ============================================
-        function setSyncStatus(status, text) {
-            syncDot.className = 'dot ' + status;
-            syncText.textContent = text;
-        }
+        document.querySelectorAll('#adminForm input').forEach(input => {
+            input.addEventListener('input', function() {
+                updateLivePreview();
+            });
+            // Also trigger on change for good measure
+            input.addEventListener('change', function() {
+                updateLivePreview();
+            });
+        });
 
         // ============================================
         // TOAST NOTIFICATION
@@ -840,16 +781,6 @@
                 toast.classList.remove('show');
             }, 3000);
         }
-
-        // ============================================
-        // AUTO-UPDATE LIVE PREVIEW ON INPUT
-        // ============================================
-        document.querySelectorAll('#adminForm input').forEach(input => {
-            input.addEventListener('input', function() {
-                updateLivePreview();
-                setSyncStatus('synced', 'Live preview updated ✅');
-            });
-        });
 
         // ============================================
         // SUPABASE FUNCTIONS
@@ -870,17 +801,30 @@
                 dbConnected = true;
                 dot.className = 'dot';
                 text.textContent = 'Supabase: Connected ✅';
-                setSyncStatus('synced', 'Synced with Supabase ✅');
                 return true;
             } catch (error) {
                 dbConnected = false;
                 dot.className = 'dot offline';
                 text.textContent = 'Supabase: Offline ❌';
-                setSyncStatus('offline', 'Offline ❌');
                 console.error('❌ Supabase connection error:', error);
                 showToast('⚠️ Cannot connect to Supabase. Check your credentials.', 'error');
                 return false;
             }
+        }
+
+        function loadDataToForm(data) {
+            document.getElementById('senderInput').value = data.sender || '';
+            document.getElementById('recipientInput').value = data.recipient || '';
+            document.getElementById('amountInput').value = data.amount || '';
+            document.getElementById('currencyInput').value = data.currency || 'USDT';
+            document.getElementById('dateInput').value = data.date || '';
+            document.getElementById('methodInput').value = data.method || '';
+            document.getElementById('referenceInput').value = data.reference || '';
+            document.getElementById('statusInput').value = data.status || 'Awaiting Funds';
+            document.getElementById('txInput').value = data.txId || '';
+            document.getElementById('statusTitleInput').value = data.statusTitle || 'Awaiting Funds';
+            document.getElementById('statusSubtitleInput').value = data.statusSubtitle || '';
+            updateLivePreview();
         }
 
         async function loadFromSupabase() {
@@ -896,7 +840,6 @@
                 showToast('📂 Loading from Supabase...', '');
                 btn.disabled = true;
                 spinner.classList.add('active');
-                setSyncStatus('syncing', 'Loading...');
 
                 const { data, error } = await supabaseClient
                     .from('payment_details')
@@ -922,32 +865,31 @@
                         statusSubtitle: record.status_subtitle
                     });
                     showToast('✅ Data loaded from Supabase!', 'success');
-                    setSyncStatus('synced', 'Synced with Supabase ✅');
                 } else {
                     showToast('ℹ️ No data found, using defaults', '');
-                    loadDataToForm(DEFAULT_DATA);
-                    setSyncStatus('synced', 'Defaults loaded');
+                    loadDataToForm({
+                        sender: 'John Doe',
+                        recipient: 'Jane Smith',
+                        amount: '1,245.50',
+                        currency: 'USDT',
+                        date: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
+                        method: 'Bank Transfer - Chase',
+                        reference: 'PAY-2026-08-17-0042',
+                        status: 'Awaiting Funds',
+                        txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
+                        statusTitle: 'Awaiting Funds',
+                        statusSubtitle: 'Payment is being processed, please wait'
+                    });
                 }
             } catch (error) {
                 console.error('❌ Error loading from Supabase:', error);
                 showToast('❌ Failed to load data from Supabase', 'error');
-                setSyncStatus('offline', 'Error loading');
-                const saved = localStorage.getItem('paymentData');
-                if (saved) {
-                    try {
-                        loadDataToForm(JSON.parse(saved));
-                        showToast('📂 Loaded from localStorage (fallback)', '');
-                    } catch (e) {}
-                }
             } finally {
                 btn.disabled = false;
                 spinner.classList.remove('active');
             }
         }
 
-        // ============================================
-        // SAVE TO SUPABASE - Updates Live Preview instantly
-        // ============================================
         async function saveToSupabase() {
             const btn = document.querySelector('#saveBtn');
             const spinner = document.getElementById('saveSpinner');
@@ -955,15 +897,13 @@
 
             console.log('📝 Data to save:', data);
 
-            // Validate required fields
             if (!data.sender || !data.recipient || !data.amount) {
                 showToast('❌ Sender, Recipient, and Amount are required', 'error');
                 return;
             }
 
-            // Update Live Preview immediately
+            // UPDATE LIVE PREVIEW IMMEDIATELY
             updateLivePreview();
-            setSyncStatus('syncing', 'Saving to Supabase...');
             showToast('💾 Saving to Supabase...', '');
 
             if (!dbConnected) {
@@ -971,8 +911,6 @@
                 if (!dbConnected) {
                     localStorage.setItem('paymentData', JSON.stringify(data));
                     showToast('⚠️ Saved to localStorage (Supabase offline)', 'error');
-                    setSyncStatus('offline', 'Saved locally only');
-                    updateLivePreview();
                     return;
                 }
             }
@@ -981,7 +919,6 @@
                 btn.disabled = true;
                 spinner.classList.add('active');
 
-                // Get latest record
                 const { data: existing, error: fetchError } = await supabaseClient
                     .from('payment_details')
                     .select('*')
@@ -991,7 +928,6 @@
                 if (fetchError) throw fetchError;
 
                 if (existing && existing.length > 0) {
-                    // Update existing record
                     const updateData = {
                         sender: data.sender,
                         recipient: data.recipient,
@@ -1013,7 +949,6 @@
 
                     if (updateError) throw updateError;
                 } else {
-                    // Insert new record
                     const insertData = {
                         sender: data.sender,
                         recipient: data.recipient,
@@ -1035,89 +970,38 @@
                     if (insertError) throw insertError;
                 }
 
-                // Save to localStorage as backup
                 localStorage.setItem('paymentData', JSON.stringify(data));
-
-                // Update Live Preview again
                 updateLivePreview();
-                setSyncStatus('synced', 'Saved & Synced ✅');
-                showToast('✅ Saved to Supabase!', 'success');
-                
+                showToast('✅ Saved to Supabase successfully!', 'success');
                 console.log('🎉 Data saved successfully!');
             } catch (error) {
                 console.error('❌ Error saving to Supabase:', error);
                 localStorage.setItem('paymentData', JSON.stringify(data));
-                showToast('⚠️ Error: ' + (error.message || 'Check console for details'), 'error');
-                setSyncStatus('offline', 'Error saving');
-                updateLivePreview();
+                showToast('⚠️ Error: ' + (error.message || 'Check console'), 'error');
             } finally {
                 btn.disabled = false;
                 spinner.classList.remove('active');
             }
         }
 
-        // ============================================
-        // RESET FORM
-        // ============================================
         function resetForm() {
             if (confirm('Reset all fields to default values?')) {
-                loadDataToForm(DEFAULT_DATA);
+                loadDataToForm({
+                    sender: 'John Doe',
+                    recipient: 'Jane Smith',
+                    amount: '1,245.50',
+                    currency: 'USDT',
+                    date: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
+                    method: 'Bank Transfer - Chase',
+                    reference: 'PAY-2026-08-17-0042',
+                    status: 'Awaiting Funds',
+                    txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
+                    statusTitle: 'Awaiting Funds',
+                    statusSubtitle: 'Payment is being processed, please wait'
+                });
                 localStorage.removeItem('paymentData');
                 showToast('↩️ Reset to defaults', '');
-                setSyncStatus('synced', 'Reset to defaults');
             }
-        }
-
-        // ============================================
-        // REALTIME SUBSCRIPTION
-        // ============================================
-        let realtimeChannel = null;
-
-        function setupRealtimeSubscription() {
-            if (realtimeChannel) {
-                supabaseClient.removeChannel(realtimeChannel);
-            }
-
-            realtimeChannel = supabaseClient
-                .channel('payment_changes')
-                .on(
-                    'postgres_changes',
-                    {
-                        event: 'UPDATE',
-                        schema: 'public',
-                        table: 'payment_details'
-                    },
-                    (payload) => {
-                        console.log('📡 Real-time update received in Admin Panel!', payload);
-                        const record = payload.new;
-                        
-                        loadDataToForm({
-                            sender: record.sender,
-                            recipient: record.recipient,
-                            amount: record.amount,
-                            currency: record.currency,
-                            date: record.date_time,
-                            method: record.payment_method,
-                            reference: record.reference,
-                            status: record.status || 'Awaiting Funds',
-                            txId: record.transaction_id,
-                            statusTitle: record.status_title || 'Awaiting Funds',
-                            statusSubtitle: record.status_subtitle
-                        });
-                        
-                        setSyncStatus('live', 'Live update received! 🔄');
-                        showToast('🔄 Data updated from another source!', 'warning');
-                        setTimeout(() => setSyncStatus('synced', 'Synced with Supabase ✅'), 3000);
-                    }
-                )
-                .subscribe((status) => {
-                    console.log('📡 Realtime subscription status:', status);
-                    if (status === 'SUBSCRIBED') {
-                        const dot = document.getElementById('dbStatusDot');
-                        dot.className = 'dot realtime';
-                        document.getElementById('dbStatusText').textContent = 'Supabase: Live 🔴';
-                    }
-                });
         }
 
         // ============================================
@@ -1157,17 +1041,47 @@
         });
 
         // ============================================
-        // INITIALIZE
+        // INITIALIZE - Load data and setup realtime
         // ============================================
         (async function init() {
             await checkSupabaseConnection();
             await loadFromSupabase();
-            setupRealtimeSubscription();
+            
+            // Setup realtime subscription for updates
+            const channel = supabaseClient
+                .channel('payment_changes')
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'payment_details'
+                    },
+                    (payload) => {
+                        console.log('📡 Real-time update received!', payload);
+                        const record = payload.new;
+                        loadDataToForm({
+                            sender: record.sender,
+                            recipient: record.recipient,
+                            amount: record.amount,
+                            currency: record.currency,
+                            date: record.date_time,
+                            method: record.payment_method,
+                            reference: record.reference,
+                            status: record.status || 'Awaiting Funds',
+                            txId: record.transaction_id,
+                            statusTitle: record.status_title || 'Awaiting Funds',
+                            statusSubtitle: record.status_subtitle
+                        });
+                        showToast('🔄 Data updated from another source!', 'warning');
+                    }
+                )
+                .subscribe();
         })();
 
         console.log('%c ⚙️ NoOnes Admin Panel ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
         console.log('%c 👁️ Live Preview updates instantly on input change ', 'color: #6B7A75; font-size: 12px;');
-        console.log('%c 📡 Save & Push updates Live Preview AND Landing Page ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
+        console.log('%c 📡 Save & Push updates the Landing Page in real-time ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
         console.log('%c 💡 Press Ctrl+S to save quickly ', 'color: #6B7A75; font-size: 12px;');
     </script>
 </body>
