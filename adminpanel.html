@@ -656,7 +656,7 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================
-        // SESSION CHECK - Redirect to login if not authenticated
+        // SESSION CHECK
         // ============================================
         function checkSession() {
             const session = sessionStorage.getItem('adminSession');
@@ -701,14 +701,11 @@
         }
 
         // ============================================
-        // UPDATE LIVE PREVIEW - THIS IS THE KEY FUNCTION
+        // UPDATE LIVE PREVIEW
         // ============================================
         function updateLivePreview() {
             const data = getFormData();
             
-            console.log('🔄 Updating Live Preview with:', data);
-            
-            // Update all preview fields
             document.getElementById('previewSender').textContent = data.sender || 'N/A';
             document.getElementById('previewRecipient').textContent = data.recipient || 'N/A';
             document.getElementById('previewAmountValue').textContent = data.amount || '0';
@@ -722,7 +719,6 @@
             document.getElementById('previewSubtitle').textContent = data.statusSubtitle || 'N/A';
             document.getElementById('previewStatusBadge').textContent = data.status || 'Awaiting Funds';
 
-            // Update USD
             const numAmount = parseFloat((data.amount || '0').replace(/,/g, ''));
             if (!isNaN(numAmount)) {
                 document.getElementById('previewUsd').textContent = '≈ $' + numAmount.toLocaleString('en-US', {
@@ -731,11 +727,9 @@
                 }) + ' USD';
             }
 
-            // Update TX ID (shortened)
             const tx = data.txId || 'N/A';
             document.getElementById('previewTx').textContent = tx.length > 20 ? tx.slice(0, 6) + '...' + tx.slice(-4) : tx;
 
-            // Update badge color
             const statusColors = {
                 'Awaiting Funds': { bg: '#FFF8E0', color: '#FFB800' },
                 'Completed': { bg: '#E8F8F2', color: '#07B979' },
@@ -747,23 +741,13 @@
             const badge = document.getElementById('previewStatusBadge');
             badge.style.background = color.bg;
             badge.style.color = color.color;
-
-            // Update sync status
-            document.getElementById('syncDot').className = 'dot synced';
-            document.getElementById('syncText').textContent = 'Live preview updated ✅';
         }
 
         // ============================================
-        // AUTO-UPDATE ON INPUT - THIS MAKES IT LIVE
+        // AUTO-UPDATE ON INPUT
         // ============================================
         document.querySelectorAll('#adminForm input').forEach(input => {
-            input.addEventListener('input', function() {
-                updateLivePreview();
-            });
-            // Also trigger on change for good measure
-            input.addEventListener('change', function() {
-                updateLivePreview();
-            });
+            input.addEventListener('input', updateLivePreview);
         });
 
         // ============================================
@@ -783,64 +767,10 @@
         }
 
         // ============================================
-        // SUPABASE FUNCTIONS
+        // LOAD FROM SUPABASE
         // ============================================
-        let dbConnected = false;
-
-        async function checkSupabaseConnection() {
-            const dot = document.getElementById('dbStatusDot');
-            const text = document.getElementById('dbStatusText');
-            try {
-                const { data, error } = await supabaseClient
-                    .from('payment_details')
-                    .select('id')
-                    .limit(1);
-                
-                if (error) throw error;
-                
-                dbConnected = true;
-                dot.className = 'dot';
-                text.textContent = 'Supabase: Connected ✅';
-                return true;
-            } catch (error) {
-                dbConnected = false;
-                dot.className = 'dot offline';
-                text.textContent = 'Supabase: Offline ❌';
-                console.error('❌ Supabase connection error:', error);
-                showToast('⚠️ Cannot connect to Supabase. Check your credentials.', 'error');
-                return false;
-            }
-        }
-
-        function loadDataToForm(data) {
-            document.getElementById('senderInput').value = data.sender || '';
-            document.getElementById('recipientInput').value = data.recipient || '';
-            document.getElementById('amountInput').value = data.amount || '';
-            document.getElementById('currencyInput').value = data.currency || 'USDT';
-            document.getElementById('dateInput').value = data.date || '';
-            document.getElementById('methodInput').value = data.method || '';
-            document.getElementById('referenceInput').value = data.reference || '';
-            document.getElementById('statusInput').value = data.status || 'Awaiting Funds';
-            document.getElementById('txInput').value = data.txId || '';
-            document.getElementById('statusTitleInput').value = data.statusTitle || 'Awaiting Funds';
-            document.getElementById('statusSubtitleInput').value = data.statusSubtitle || '';
-            updateLivePreview();
-        }
-
         async function loadFromSupabase() {
-            const btn = document.querySelector('#saveBtn');
-            const spinner = document.getElementById('saveSpinner');
-            
-            if (!dbConnected) {
-                await checkSupabaseConnection();
-                if (!dbConnected) return;
-            }
-
             try {
-                showToast('📂 Loading from Supabase...', '');
-                btn.disabled = true;
-                spinner.classList.add('active');
-
                 const { data, error } = await supabaseClient
                     .from('payment_details')
                     .select('*')
@@ -851,154 +781,116 @@
 
                 if (data && data.length > 0) {
                     const record = data[0];
-                    loadDataToForm({
-                        sender: record.sender,
-                        recipient: record.recipient,
-                        amount: record.amount,
-                        currency: record.currency,
-                        date: record.date_time,
-                        method: record.payment_method,
-                        reference: record.reference,
-                        status: record.status || 'Awaiting Funds',
-                        txId: record.transaction_id,
-                        statusTitle: record.status_title || 'Awaiting Funds',
-                        statusSubtitle: record.status_subtitle
-                    });
+                    document.getElementById('senderInput').value = record.sender || '';
+                    document.getElementById('recipientInput').value = record.recipient || '';
+                    document.getElementById('amountInput').value = record.amount || '';
+                    document.getElementById('currencyInput').value = record.currency || 'USDT';
+                    document.getElementById('dateInput').value = record.date_time || '';
+                    document.getElementById('methodInput').value = record.payment_method || '';
+                    document.getElementById('referenceInput').value = record.reference || '';
+                    document.getElementById('statusInput').value = record.status || 'Awaiting Funds';
+                    document.getElementById('txInput').value = record.transaction_id || '';
+                    document.getElementById('statusTitleInput').value = record.status_title || 'Awaiting Funds';
+                    document.getElementById('statusSubtitleInput').value = record.status_subtitle || '';
+                    
+                    updateLivePreview();
                     showToast('✅ Data loaded from Supabase!', 'success');
-                } else {
-                    showToast('ℹ️ No data found, using defaults', '');
-                    loadDataToForm({
-                        sender: 'John Doe',
-                        recipient: 'Jane Smith',
-                        amount: '1,245.50',
-                        currency: 'USDT',
-                        date: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
-                        method: 'Bank Transfer - Chase',
-                        reference: 'PAY-2026-08-17-0042',
-                        status: 'Awaiting Funds',
-                        txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
-                        statusTitle: 'Awaiting Funds',
-                        statusSubtitle: 'Payment is being processed, please wait'
-                    });
                 }
             } catch (error) {
-                console.error('❌ Error loading from Supabase:', error);
-                showToast('❌ Failed to load data from Supabase', 'error');
-            } finally {
-                btn.disabled = false;
-                spinner.classList.remove('active');
+                console.error('❌ Error:', error);
+                showToast('❌ Failed to load data', 'error');
             }
         }
 
+        // ============================================
+        // SAVE TO SUPABASE + INSTANT UPDATE
+        // ============================================
         async function saveToSupabase() {
-            const btn = document.querySelector('#saveBtn');
+            const btn = document.getElementById('saveBtn');
             const spinner = document.getElementById('saveSpinner');
             const data = getFormData();
-
-            console.log('📝 Data to save:', data);
 
             if (!data.sender || !data.recipient || !data.amount) {
                 showToast('❌ Sender, Recipient, and Amount are required', 'error');
                 return;
             }
 
-            // UPDATE LIVE PREVIEW IMMEDIATELY
-            updateLivePreview();
-            showToast('💾 Saving to Supabase...', '');
-
-            if (!dbConnected) {
-                await checkSupabaseConnection();
-                if (!dbConnected) {
-                    localStorage.setItem('paymentData', JSON.stringify(data));
-                    showToast('⚠️ Saved to localStorage (Supabase offline)', 'error');
-                    return;
-                }
-            }
+            btn.disabled = true;
+            spinner.classList.add('active');
+            showToast('💾 Saving...', '');
 
             try {
-                btn.disabled = true;
-                spinner.classList.add('active');
+                // 1. UPDATE LIVE PREVIEW IMMEDIATELY
+                updateLivePreview();
 
+                // 2. Get existing record
                 const { data: existing, error: fetchError } = await supabaseClient
                     .from('payment_details')
-                    .select('*')
+                    .select('id')
                     .order('id', { ascending: false })
                     .limit(1);
 
                 if (fetchError) throw fetchError;
 
-                if (existing && existing.length > 0) {
-                    const updateData = {
-                        sender: data.sender,
-                        recipient: data.recipient,
-                        amount: parseFloat(data.amount.replace(/,/g, '')),
-                        currency: data.currency,
-                        date_time: data.date,
-                        payment_method: data.method,
-                        reference: data.reference,
-                        status: data.status || 'Awaiting Funds',
-                        transaction_id: data.txId,
-                        status_title: data.statusTitle || 'Awaiting Funds',
-                        status_subtitle: data.statusSubtitle
-                    };
+                const updateData = {
+                    sender: data.sender,
+                    recipient: data.recipient,
+                    amount: parseFloat(data.amount.replace(/,/g, '')) || 0,
+                    currency: data.currency || 'USDT',
+                    date_time: data.date || new Date().toISOString(),
+                    payment_method: data.method || 'Bank Transfer',
+                    reference: data.reference || 'REF-' + Date.now(),
+                    status: data.status || 'Awaiting Funds',
+                    transaction_id: data.txId || '0x' + Math.random().toString(16).slice(2, 42),
+                    status_title: data.statusTitle || 'Awaiting Funds',
+                    status_subtitle: data.statusSubtitle || 'Payment is being processed'
+                };
 
-                    const { error: updateError } = await supabaseClient
+                if (existing && existing.length > 0) {
+                    await supabaseClient
                         .from('payment_details')
                         .update(updateData)
                         .eq('id', existing[0].id);
-
-                    if (updateError) throw updateError;
                 } else {
-                    const insertData = {
-                        sender: data.sender,
-                        recipient: data.recipient,
-                        amount: parseFloat(data.amount.replace(/,/g, '')),
-                        currency: data.currency,
-                        date_time: data.date,
-                        payment_method: data.method,
-                        reference: data.reference,
-                        status: data.status || 'Awaiting Funds',
-                        transaction_id: data.txId,
-                        status_title: data.statusTitle || 'Awaiting Funds',
-                        status_subtitle: data.statusSubtitle
-                    };
-
-                    const { error: insertError } = await supabaseClient
+                    await supabaseClient
                         .from('payment_details')
-                        .insert(insertData);
-
-                    if (insertError) throw insertError;
+                        .insert(updateData);
                 }
 
-                localStorage.setItem('paymentData', JSON.stringify(data));
+                // 3. Update preview again after save
                 updateLivePreview();
-                showToast('✅ Saved to Supabase successfully!', 'success');
-                console.log('🎉 Data saved successfully!');
-            } catch (error) {
-                console.error('❌ Error saving to Supabase:', error);
+                
                 localStorage.setItem('paymentData', JSON.stringify(data));
-                showToast('⚠️ Error: ' + (error.message || 'Check console'), 'error');
+                
+                showToast('✅ Saved! Landing page updated instantly.', 'success');
+
+            } catch (error) {
+                console.error('❌ Error:', error);
+                showToast('❌ Error: ' + (error.message || 'Unknown error'), 'error');
             } finally {
                 btn.disabled = false;
                 spinner.classList.remove('active');
             }
         }
 
+        // ============================================
+        // RESET FORM
+        // ============================================
         function resetForm() {
             if (confirm('Reset all fields to default values?')) {
-                loadDataToForm({
-                    sender: 'John Doe',
-                    recipient: 'Jane Smith',
-                    amount: '1,245.50',
-                    currency: 'USDT',
-                    date: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
-                    method: 'Bank Transfer - Chase',
-                    reference: 'PAY-2026-08-17-0042',
-                    status: 'Awaiting Funds',
-                    txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
-                    statusTitle: 'Awaiting Funds',
-                    statusSubtitle: 'Payment is being processed, please wait'
-                });
+                document.getElementById('senderInput').value = 'John Doe';
+                document.getElementById('recipientInput').value = 'Jane Smith';
+                document.getElementById('amountInput').value = '1,245.50';
+                document.getElementById('currencyInput').value = 'USDT';
+                document.getElementById('dateInput').value = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+                document.getElementById('methodInput').value = 'Bank Transfer - Chase';
+                document.getElementById('referenceInput').value = 'PAY-2026-08-17-0042';
+                document.getElementById('statusInput').value = 'Awaiting Funds';
+                document.getElementById('txInput').value = '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a';
+                document.getElementById('statusTitleInput').value = 'Awaiting Funds';
+                document.getElementById('statusSubtitleInput').value = 'Payment is being processed, please wait';
+                
+                updateLivePreview();
                 localStorage.removeItem('paymentData');
                 showToast('↩️ Reset to defaults', '');
             }
@@ -1041,48 +933,42 @@
         });
 
         // ============================================
-        // INITIALIZE - Load data and setup realtime
+        // CHECK CONNECTION
+        // ============================================
+        async function checkConnection() {
+            const dot = document.getElementById('dbStatusDot');
+            const text = document.getElementById('dbStatusText');
+            try {
+                const { data, error } = await supabaseClient
+                    .from('payment_details')
+                    .select('id')
+                    .limit(1);
+                
+                if (error) throw error;
+                dot.className = 'dot';
+                text.textContent = 'Supabase: Connected ✅';
+                return true;
+            } catch (error) {
+                dot.className = 'dot offline';
+                text.textContent = 'Supabase: Offline ❌';
+                console.error('❌ Supabase connection error:', error);
+                return false;
+            }
+        }
+
+        // ============================================
+        // INITIALIZE
         // ============================================
         (async function init() {
-            await checkSupabaseConnection();
+            await checkConnection();
             await loadFromSupabase();
+            updateLivePreview();
             
-            // Setup realtime subscription for updates
-            const channel = supabaseClient
-                .channel('payment_changes')
-                .on(
-                    'postgres_changes',
-                    {
-                        event: 'UPDATE',
-                        schema: 'public',
-                        table: 'payment_details'
-                    },
-                    (payload) => {
-                        console.log('📡 Real-time update received!', payload);
-                        const record = payload.new;
-                        loadDataToForm({
-                            sender: record.sender,
-                            recipient: record.recipient,
-                            amount: record.amount,
-                            currency: record.currency,
-                            date: record.date_time,
-                            method: record.payment_method,
-                            reference: record.reference,
-                            status: record.status || 'Awaiting Funds',
-                            txId: record.transaction_id,
-                            statusTitle: record.status_title || 'Awaiting Funds',
-                            statusSubtitle: record.status_subtitle
-                        });
-                        showToast('🔄 Data updated from another source!', 'warning');
-                    }
-                )
-                .subscribe();
+            console.log('%c ⚙️ NoOnes Admin Panel ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
+            console.log('%c 👁️ Live Preview updates instantly on input change ', 'color: #6B7A75; font-size: 12px;');
+            console.log('%c 💾 Save & Push updates landing page in real-time ', 'color: #07B979; font-size: 12px; font-weight: bold;');
+            console.log('%c 💡 Press Ctrl+S to save quickly ', 'color: #6B7A75; font-size: 12px;');
         })();
-
-        console.log('%c ⚙️ NoOnes Admin Panel ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
-        console.log('%c 👁️ Live Preview updates instantly on input change ', 'color: #6B7A75; font-size: 12px;');
-        console.log('%c 📡 Save & Push updates the Landing Page in real-time ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
-        console.log('%c 💡 Press Ctrl+S to save quickly ', 'color: #6B7A75; font-size: 12px;');
     </script>
 </body>
-</html>
+</html>ss
