@@ -3,56 +3,42 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta property="og:title" content="Payment Confirmation | NoOnes" />
-    <meta name="description" content="Accept or decline your payment securely with NoOnes protection." />
-    <title>Payment Confirmation | NoOnes</title>
+    <meta property="og:title" content="Admin Panel | NoOnes" />
+    <meta name="description" content="Manage and edit payment details with real-time updates." />
+    <title>Admin Panel | NoOnes</title>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&subset=cyrillic,cyrillic-ext,latin-ext&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        /* ===== CSS Variables ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
-            --mantine-font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-            --mantine-font-family-monospace: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            
-            /* Colors */
             --color-green: #07B979;
             --color-green-hover: #059E66;
             --color-light-green: #E8F8F2;
             --color-grey: #E8EAED;
             --color-light-grey: #F5F6F8;
-            --color-dark-grey: #4E5955;
             --color-text: #1A1D1C;
             --color-text-secondary: #6B7A75;
             --color-white: #FFFFFF;
             --color-body: #F8F9FA;
             --color-border: #E8EAED;
-            --color-success: #07B979;
-            --color-warning: #FFB800;
             --color-error: #F22323;
-            --color-noones: #07B979;
-            --color-light-noones: #E8F8F2;
-            
-            /* Shadows */
-            --shadow-sm: 0 0.125rem 0.5rem rgba(0,0,0,0.06);
+            --color-success: #07B979;
+            --color-warning: #FF8C00;
             --shadow-md: 0 0.25rem 1rem rgba(0,0,0,0.08);
             --shadow-lg: 0 0.5rem 2rem rgba(0,0,0,0.12);
-            --shadow-xl: 0 1rem 3rem rgba(0,0,0,0.15);
-            
-            /* Spacing */
-            --spacing-xs: 0.625rem;
-            --spacing-sm: 0.75rem;
-            --spacing-md: 1rem;
-            --spacing-lg: 1.5rem;
-            --spacing-xl: 2rem;
-            --spacing-2xl: 3rem;
+            --font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
         }
 
-        /* ===== Dark Theme ===== */
         [data-mantine-color-scheme="dark"] {
             --color-body: #141517;
             --color-white: #1A1B1E;
@@ -61,107 +47,72 @@
             --color-light-grey: #2C2E33;
             --color-grey: #373A40;
             --color-border: #373A40;
-            --color-dark-grey: #909296;
-            --color-light-noones: #0A3D2E;
-            --shadow-sm: 0 0.125rem 0.5rem rgba(0,0,0,0.3);
-            --shadow-md: 0 0.25rem 1rem rgba(0,0,0,0.4);
-            --shadow-lg: 0 0.5rem 2rem rgba(0,0,0,0.5);
-            --shadow-xl: 0 1rem 3rem rgba(0,0,0,0.6);
-        }
-
-        [data-mantine-color-scheme="dark"] .bg-white {
-            background-color: #25262B;
-        }
-
-        [data-mantine-color-scheme="dark"] .detail-item {
-            background-color: #2C2E33;
-        }
-
-        [data-mantine-color-scheme="dark"] .detail-item:hover {
-            background-color: #373A40;
-        }
-
-        [data-mantine-color-scheme="dark"] .copy-btn {
-            background-color: #2C2E33;
-            border-color: #373A40;
-            color: #C1C2C5;
-        }
-
-        [data-mantine-color-scheme="dark"] .copy-btn:hover {
-            background-color: #373A40;
-        }
-
-        [data-mantine-color-scheme="dark"] .copy-btn.copied {
-            background-color: #0A3D2E;
-            border-color: #07B979;
-            color: #07B979;
-        }
-
-        [data-mantine-color-scheme="dark"] .amount-display {
-            color: #07B979;
-        }
-
-        [data-mantine-color-scheme="dark"] .transaction-id {
-            background-color: #2C2E33;
-        }
-
-        [data-mantine-color-scheme="dark"] .noones-badge {
-            background: #0A3D2E;
-            border-color: #07B979;
-        }
-
-        [data-mantine-color-scheme="dark"] .btn-accept {
-            background-color: #07B979;
-        }
-
-        [data-mantine-color-scheme="dark"] .btn-accept:hover {
-            background-color: #059E66;
-        }
-
-        [data-mantine-color-scheme="dark"] .btn-decline {
-            background-color: #F22323;
-        }
-
-        [data-mantine-color-scheme="dark"] .btn-decline:hover {
-            background-color: #C41E1E;
-        }
-
-        /* ===== Reset & Base ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            --color-light-green: #0A3D2E;
         }
 
         body {
-            font-family: var(--mantine-font-family);
+            font-family: var(--font-family);
             background-color: var(--color-body);
             color: var(--color-text);
             min-height: 100vh;
-            padding: var(--spacing-lg);
+            padding: 1.5rem;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* ===== Container ===== */
-        .container {
-            max-width: 720px;
-            margin: 0 auto;
-        }
+        .container { max-width: 800px; margin: 0 auto; }
 
-        /* ===== Header ===== */
         .header {
             display: flex;
             align-items: center;
-            justify-content: flex-end;
-            margin-bottom: var(--spacing-xl);
-            padding-bottom: var(--spacing-md);
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
             border-bottom: 1px solid var(--color-border);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-text);
+        }
+        .header h1 span { color: var(--color-green); }
 
         .header-actions {
             display: flex;
             align-items: center;
-            gap: var(--spacing-md);
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.875rem;
+            background: var(--color-light-green);
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-green);
+        }
+
+        .user-badge .logout-btn {
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s ease;
+            font-family: var(--font-family);
+        }
+        .user-badge .logout-btn:hover {
+            background: rgba(242, 35, 35, 0.1);
+            color: var(--color-error);
         }
 
         .theme-toggle {
@@ -177,12 +128,7 @@
             padding: 0.125rem;
             transition: all 0.3s ease;
         }
-
-        .theme-toggle.active {
-            background-color: #2C2E33;
-            border-color: #4A4C50;
-        }
-
+        .theme-toggle.active { background-color: #2C2E33; border-color: #4A4C50; }
         .theme-thumb {
             width: 1.125rem;
             height: 1.125rem;
@@ -195,561 +141,250 @@
             justify-content: center;
             font-size: 10px;
         }
+        .theme-toggle.active .theme-thumb { transform: translateX(1.25rem); }
 
-        .theme-toggle.active .theme-thumb {
-            transform: translateX(1.25rem);
-        }
-
-        /* ===== Main Card ===== */
-        .card {
-            background-color: var(--color-white);
-            border-radius: 1rem;
-            box-shadow: var(--shadow-md);
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .card-body {
-            padding: var(--spacing-xl);
-        }
-
-        /* ===== Status Header - Awaiting Funds ===== */
-        .status-header {
+        .view-link {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: var(--spacing-md);
-            margin-bottom: var(--spacing-lg);
-            padding: var(--spacing-md) var(--spacing-lg);
-            background: var(--color-light-noones);
-            border-radius: 0.75rem;
-            border-left: 4px solid var(--color-warning);
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--color-light-grey);
+            border-radius: 0.5rem;
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
         }
+        .view-link:hover { background: var(--color-border); color: var(--color-green); }
 
-        .status-icon {
-            width: 3rem;
-            height: 3rem;
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--color-light-green);
+            color: var(--color-green);
             border-radius: 9999px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            background: #FFF8E0;
-            color: var(--color-warning);
-            animation: iconPulse 2s ease-in-out infinite;
-            flex-shrink: 0;
-        }
-
-        @keyframes iconPulse {
-            0%, 100% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(255, 184, 0, 0.3);
-            }
-            50% {
-                transform: scale(1.05);
-                box-shadow: 0 0 20px 5px rgba(255, 184, 0, 0.15);
-            }
-        }
-
-        .status-title {
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: var(--color-text);
-        }
-
-        .status-subtitle {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--color-text-secondary);
-            margin-top: 0.125rem;
-        }
-
-        /* ===== NoOnes Protected Badge ===== */
-        .noones-badge {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            padding: 0.875rem 1.5rem;
-            background: var(--color-light-noones);
-            border: 2px solid var(--color-green);
-            border-radius: 0.75rem;
-            margin-bottom: var(--spacing-lg);
-            transition: all 0.3s ease;
-            animation: badgeGlow 2.5s ease-in-out infinite;
-        }
-
-        @keyframes badgeGlow {
-            0%, 100% {
-                box-shadow: 0 0 0 0 rgba(7, 185, 121, 0.2);
-            }
-            50% {
-                box-shadow: 0 0 20px 5px rgba(7, 185, 121, 0.15);
-            }
-        }
-
-        .noones-badge .badge-icon {
-            font-size: 1.5rem;
-            color: var(--color-green);
-        }
-
-        .noones-badge .badge-text {
-            font-size: 0.875rem;
+            font-size: 0.625rem;
             font-weight: 700;
-            color: var(--color-text);
-        }
-
-        .noones-badge .badge-text strong {
-            color: var(--color-green);
-            font-weight: 800;
-        }
-
-        .noones-badge .badge-subtext {
-            font-size: 0.75rem;
-            font-weight: 400;
-            color: var(--color-text-secondary);
-            display: block;
-            margin-top: 0.125rem;
-        }
-
-        /* ===== Amount Display ===== */
-        .amount-display {
-            text-align: center;
-            padding: var(--spacing-xl) 0;
-            margin-bottom: var(--spacing-lg);
-            border-bottom: 1px solid var(--color-border);
-        }
-
-        .amount-label {
-            font-size: 0.875rem;
-            color: var(--color-text-secondary);
-            font-weight: 700;
-            margin-bottom: 0.25rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .amount-value {
-            font-size: 2.75rem;
-            font-weight: 800;
-            font-family: var(--mantine-font-family-monospace);
-            color: var(--color-green);
-            letter-spacing: -0.5px;
-        }
-
-        .amount-currency {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--color-text-secondary);
-            margin-left: 0.25rem;
-        }
-
-        .amount-usd {
-            font-size: 1rem;
-            color: var(--color-text-secondary);
-            margin-top: 0.25rem;
-            font-weight: 600;
-        }
-
-        .protected-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1.25rem;
-            background: var(--color-light-noones);
-            border: 1px solid var(--color-green);
+        .realtime-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: #FFF3E0;
+            color: #FF8C00;
             border-radius: 9999px;
-            font-size: 0.813rem;
+            font-size: 0.625rem;
             font-weight: 700;
-            color: var(--color-green);
-            margin-top: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            animation: pulse-badge 2s ease-in-out infinite;
         }
 
-        .protected-badge .shield-icon {
-            font-size: 1rem;
+        @keyframes pulse-badge {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
-        /* ===== Details Grid ===== */
-        .details-grid {
-            display: grid;
-            gap: 0.75rem;
-        }
-
-        .detail-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.875rem 1rem;
-            background-color: var(--color-light-grey);
-            border-radius: 0.5rem;
-            transition: all 0.2s ease;
-            cursor: default;
-            position: relative;
-        }
-
-        .detail-item:hover {
-            background-color: var(--color-border);
-        }
-
-        .detail-label {
-            font-size: 0.813rem;
-            font-weight: 800;
-            color: var(--color-text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-shrink: 0;
-            min-width: 120px;
-        }
-
-        .detail-label .label-icon {
-            font-size: 1.1rem;
-            width: 1.5rem;
-            text-align: center;
-        }
-
-        .detail-value-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 0.625rem;
-            flex: 1;
-            justify-content: flex-end;
-            min-width: 0;
-        }
-
-        .detail-value {
-            font-size: 0.875rem;
-            font-weight: 700;
-            color: var(--color-text);
-            word-break: break-all;
-            text-align: right;
-            font-family: var(--mantine-font-family-monospace);
-        }
-
-        .detail-value.normal {
-            font-family: var(--mantine-font-family);
-            font-weight: 700;
-        }
-
-        .copy-btn {
-            flex-shrink: 0;
+        .card {
             background-color: var(--color-white);
-            border: 1px solid var(--color-border);
-            border-radius: 0.375rem;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--color-text-secondary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            font-family: var(--mantine-font-family);
+            border-radius: 1rem;
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+            transition: background-color 0.3s ease;
+            margin-bottom: 1.5rem;
         }
 
-        .copy-btn:hover {
-            background-color: var(--color-light-grey);
-            border-color: var(--color-green);
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 700;
             color: var(--color-text);
-        }
-
-        .copy-btn.copied {
-            background-color: var(--color-light-green);
-            border-color: var(--color-green);
-            color: var(--color-green);
-        }
-
-        .copy-btn .copy-icon {
-            font-size: 0.75rem;
-        }
-
-        /* ===== Transaction ID Section ===== */
-        .transaction-id-section {
-            margin-top: var(--spacing-lg);
-            padding-top: var(--spacing-lg);
-            border-top: 1px solid var(--color-border);
-        }
-
-        .transaction-id {
+            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0.75rem 1rem;
-            background-color: var(--color-light-grey);
-            border-radius: 0.5rem;
+            gap: 0.75rem;
+            flex-wrap: wrap;
         }
 
-        .tx-label {
-            font-size: 0.813rem;
-            font-weight: 800;
-            color: var(--color-text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .tx-label .label-icon {
-            font-size: 1.1rem;
-        }
-
-        .tx-value-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 0.625rem;
-            flex: 1;
-            justify-content: flex-end;
-        }
-
-        .tx-value {
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label {
+            display: block;
             font-size: 0.813rem;
             font-weight: 700;
-            font-family: var(--mantine-font-family-monospace);
+            color: var(--color-text-secondary);
+            margin-bottom: 0.375rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            font-family: var(--font-family);
+            background-color: var(--color-light-grey);
             color: var(--color-text);
-            word-break: break-all;
-            text-align: right;
+            transition: all 0.2s ease;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--color-green);
+            box-shadow: 0 0 0 3px rgba(7, 185, 121, 0.15);
+            background-color: var(--color-white);
         }
 
-        /* ===== Action Buttons ===== */
-        .action-section {
-            margin-top: var(--spacing-xl);
-            padding-top: var(--spacing-xl);
-            border-top: 1px solid var(--color-border);
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn-group {
             display: flex;
-            gap: var(--spacing-md);
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--color-border);
+            flex-wrap: wrap;
         }
 
         .btn {
-            flex: 1;
-            padding: 0.875rem 1.5rem;
-            border-radius: 0.75rem;
-            font-weight: 800;
-            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 0.875rem;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
             border: none;
-            font-family: var(--mantine-font-family);
+            font-family: var(--font-family);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            flex: 1;
+            min-width: 140px;
         }
+        .btn-primary { background-color: var(--color-green); color: var(--color-white); }
+        .btn-primary:hover { background-color: var(--color-green-hover); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(7, 185, 121, 0.3); }
+        .btn-secondary { background-color: var(--color-light-grey); color: var(--color-text-secondary); }
+        .btn-secondary:hover { background-color: var(--color-border); color: var(--color-text); transform: translateY(-2px); }
+        .btn-danger { background-color: var(--color-error); color: var(--color-white); }
+        .btn-danger:hover { opacity: 0.85; transform: translateY(-2px); }
+        .btn:active { transform: scale(0.97) !important; }
 
-        .btn:active {
-            transform: scale(0.97);
+        .preview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
         }
-
-        .btn-accept {
-            background-color: var(--color-green);
-            color: var(--color-white);
-            box-shadow: 0 4px 12px rgba(7, 185, 121, 0.3);
-        }
-
-        .btn-accept:hover {
-            background-color: var(--color-green-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(7, 185, 121, 0.4);
-        }
-
-        .btn-decline {
-            background-color: var(--color-error);
-            color: var(--color-white);
-            box-shadow: 0 4px 12px rgba(242, 35, 35, 0.3);
-        }
-
-        .btn-decline:hover {
-            background-color: #C41E1E;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(242, 35, 35, 0.4);
-        }
-
-        .btn .btn-icon {
-            font-size: 1.25rem;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        /* ===== Loading Overlay - Clean ===== */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(12px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .loading-overlay.active {
+        .preview-item {
             display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.625rem 0.875rem;
+            background-color: var(--color-light-grey);
+            border-radius: 0.5rem;
+            font-size: 0.813rem;
         }
-
-        .loading-spinner {
-            width: 4.5rem;
-            height: 4.5rem;
-            border-radius: 9999px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top-color: var(--color-green);
-            animation: spin 0.8s linear infinite;
+        .preview-item .label { font-weight: 600; color: var(--color-text-secondary); }
+        .preview-item .value {
+            font-weight: 600;
+            color: var(--color-text);
+            text-align: right;
+            max-width: 60%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
+        .preview-item .value.green { color: var(--color-green); }
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* ===== Toast Notification ===== */
         .toast {
             position: fixed;
             bottom: 2rem;
             right: 2rem;
             background-color: var(--color-text);
             color: var(--color-white);
-            padding: 0.875rem 1.5rem;
+            padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
             font-size: 0.875rem;
-            font-weight: 700;
+            font-weight: 600;
             box-shadow: var(--shadow-lg);
             transform: translateY(100px);
             opacity: 0;
             transition: all 0.3s ease;
             z-index: 1000;
         }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background-color: var(--color-green); }
+        .toast.error { background-color: var(--color-error); }
+        .toast.warning { background-color: var(--color-warning); }
 
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
+        .loading-spinner {
+            display: none;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid var(--color-white);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .loading-spinner.active { display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .db-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+        }
+        .db-status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 9999px;
+            display: inline-block;
+            background: var(--color-green);
+        }
+        .db-status .dot.offline { background: var(--color-error); }
+        .db-status .dot.realtime { background: #FF8C00; animation: pulse-dot 1.5s ease-in-out infinite; }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
         }
 
-        .toast.success {
-            background-color: var(--color-success);
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: var(--color-light-grey);
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+            margin-top: 0.75rem;
         }
-
-        .toast.error {
-            background-color: var(--color-error);
+        .sync-status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 9999px;
+            display: inline-block;
         }
+        .sync-status .dot.synced { background: var(--color-green); }
+        .sync-status .dot.syncing { background: var(--color-warning); animation: pulse-dot 0.8s ease-in-out infinite; }
+        .sync-status .dot.offline { background: var(--color-error); }
+        .sync-status .dot.live { background: #FF6B00; animation: pulse-dot 1.5s ease-in-out infinite; }
 
-        /* ===== Responsive ===== */
         @media (max-width: 640px) {
-            body {
-                padding: var(--spacing-md);
-            }
-
-            .card-body {
-                padding: var(--spacing-md);
-            }
-
-            .status-header {
-                flex-wrap: wrap;
-                padding: var(--spacing-md);
-            }
-
-            .amount-value {
-                font-size: 2rem;
-            }
-
-            .detail-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-
-            .detail-label {
-                min-width: auto;
-            }
-
-            .detail-value-wrapper {
-                width: 100%;
-                justify-content: flex-start;
-            }
-
-            .detail-value {
-                text-align: left;
-            }
-
-            .transaction-id {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-
-            .tx-value-wrapper {
-                width: 100%;
-                justify-content: flex-start;
-            }
-
-            .action-section {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-            }
-
-            .noones-badge {
-                flex-direction: column;
-                text-align: center;
-                padding: 1rem;
-            }
-
-            .header {
-                flex-wrap: wrap;
-                gap: 0.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .amount-value {
-                font-size: 1.5rem;
-            }
-
-            .detail-value {
-                font-size: 0.813rem;
-            }
-
-            .copy-btn {
-                padding: 0.125rem 0.375rem;
-                font-size: 0.688rem;
-            }
-        }
-
-        /* ===== Print Styles ===== */
-        @media print {
-            body {
-                background: white !important;
-                padding: 0 !important;
-            }
-            .card {
-                box-shadow: none !important;
-                border: 1px solid #ddd !important;
-            }
-            .theme-toggle {
-                display: none !important;
-            }
-            .copy-btn {
-                display: none !important;
-            }
-            .action-section {
-                display: none !important;
-            }
-            .noones-badge {
-                animation: none !important;
-            }
-            .loading-overlay {
-                display: none !important;
-            }
+            .form-row { grid-template-columns: 1fr; }
+            .btn-group { flex-direction: column; }
+            .btn { width: 100%; }
+            .card { padding: 1.5rem; }
+            body { padding: 1rem; }
+            .preview-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -757,208 +392,525 @@
     <div class="container">
         <!-- Header -->
         <header class="header">
+            <div>
+                <h1>⚙️ Admin <span>Panel</span></h1>
+                <div class="db-status">
+                    <span class="dot" id="dbStatusDot"></span>
+                    <span id="dbStatusText">Supabase: Connecting...</span>
+                </div>
+            </div>
             <div class="header-actions">
-                <button class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle theme">
+                <span class="user-badge">
+                    👤 <span id="adminUser">Admin</span>
+                    <button class="logout-btn" id="logoutBtn">✕ Logout</button>
+                </span>
+                <a href="index.html" class="view-link">👁️ View Payment</a>
+                <button class="theme-toggle" id="themeToggle">
                     <span class="theme-thumb">🌙</span>
                 </button>
             </div>
         </header>
 
-        <!-- Main Card -->
-        <div class="card bg-white">
-            <div class="card-body">
-                <!-- 1. AWAITING FUNDS -->
-                <div class="status-header">
-                    <div class="status-icon">⏳</div>
-                    <div>
-                        <div class="status-title" id="statusTitle">Awaiting Funds</div>
-                        <div class="status-subtitle" id="statusSubtitle">Payment is being processed, please wait</div>
+        <!-- Edit Form -->
+        <div class="card">
+            <div class="card-title">
+                📝 Edit Payment Details
+                <span class="status-badge">Live Edit</span>
+                <span class="realtime-badge">🔴 Real-time</span>
+            </div>
+
+            <form id="adminForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>👤 Sender</label>
+                        <input type="text" id="senderInput" placeholder="John Doe" />
+                    </div>
+                    <div class="form-group">
+                        <label>🏦 Recipient</label>
+                        <input type="text" id="recipientInput" placeholder="Jane Smith" />
                     </div>
                 </div>
 
-                <!-- 2. PROTECTED BY NOONES BADGE -->
-                <div class="noones-badge">
-                    <span class="badge-icon">🛡️</span>
-                    <div>
-                        <div class="badge-text">💰 Protected by <strong>NoOnes</strong></div>
-                        <span class="badge-subtext">Your payment is secure, insured, and guaranteed</span>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>💰 Amount</label>
+                        <input type="text" id="amountInput" placeholder="1,245.50" />
+                    </div>
+                    <div class="form-group">
+                        <label>💱 Currency</label>
+                        <input type="text" id="currencyInput" placeholder="USDT" />
                     </div>
                 </div>
 
-                <!-- Amount Display -->
-                <div class="amount-display">
-                    <div class="amount-label">Payment Amount</div>
-                    <div>
-                        <span class="amount-value" id="amountValue">1,245.50</span>
-                        <span class="amount-currency">USDT</span>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📅 Date & Time</label>
+                        <input type="text" id="dateInput" placeholder="2026-08-17 14:30:45 UTC" />
                     </div>
-                    <div class="amount-usd">≈ $1,245.50 USD</div>
-                    <div class="protected-badge">
-                        <span class="shield-icon">✅</span>
-                        Protected by NoOnes
+                    <div class="form-group">
+                        <label>💳 Payment Method</label>
+                        <input type="text" id="methodInput" placeholder="Bank Transfer - Chase" />
                     </div>
                 </div>
 
-                <!-- Details Grid -->
-                <div class="details-grid">
-                    <!-- Sender -->
-                    <div class="detail-item">
-                        <span class="detail-label">
-                            <span class="label-icon">👤</span>
-                            Sender
-                        </span>
-                        <div class="detail-value-wrapper">
-                            <span class="detail-value normal" id="senderValue">John Doe</span>
-                            <button class="copy-btn" data-copy="senderValue" aria-label="Copy sender name">
-                                <span class="copy-icon">📋</span>
-                                Copy
-                            </button>
-                        </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📎 Reference</label>
+                        <input type="text" id="referenceInput" placeholder="PAY-2026-08-17-0042" />
                     </div>
-
-                    <!-- Recipient -->
-                    <div class="detail-item">
-                        <span class="detail-label">
-                            <span class="label-icon">🏦</span>
-                            Recipient
-                        </span>
-                        <div class="detail-value-wrapper">
-                            <span class="detail-value normal" id="recipientValue">Jane Smith</span>
-                            <button class="copy-btn" data-copy="recipientValue" aria-label="Copy recipient name">
-                                <span class="copy-icon">📋</span>
-                                Copy
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Amount -->
-                    <div class="detail-item">
-                        <span class="detail-label">
-                            <span class="label-icon">💰</span>
-                            Amount
-                        </span>
-                        <div class="detail-value-wrapper">
-                            <span class="detail-value" id="amountDetailValue">1,245.50 USDT</span>
-                            <button class="copy-btn" data-copy="amountDetailValue" aria-label="Copy amount">
-                                <span class="copy-icon">📋</span>
-                                Copy
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Date & Time -->
-                    <div class="detail-item">
-                        <span class="detail-label">
-                            <span class="label-icon">📅</span>
-                            Date & Time
-                        </span>
-                        <div class="detail-value-wrapper">
-                            <span class="detail-value" id="dateValue">2026-08-17 14:30:45 UTC</span>
-                            <button class="copy-btn" data-copy="dateValue" aria-label="Copy date">
-                                <span class="copy-icon">📋</span>
-                                Copy
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Method -->
-                    <div class="detail-item">
-                        <span class="detail-label">
-                            <span class="label-icon">💳</span>
-                            Payment Method
-                        </span>
-                        <div class="detail-value-wrapper">
-                            <span class="detail-value normal" id="methodValue">Bank Transfer - Chase</span>
-                            <button class="copy-btn" data-copy="methodValue" aria-label="Copy payment method">
-                                <span class="copy-icon">📋</span>
-                                Copy
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Reference -->
-                    <div class="detail-item">
-                        <span class="detail-label">
-                            <span class="label-icon">📎</span>
-                            Reference
-                        </span>
-                        <div class="detail-value-wrapper">
-                            <span class="detail-value" id="referenceValue">PAY-2026-08-17-0042</span>
-                            <button class="copy-btn" data-copy="referenceValue" aria-label="Copy reference">
-                                <span class="copy-icon">📋</span>
-                                Copy
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Status -->
-                    <div class="detail-item">
-                        <span class="detail-label">
-                            <span class="label-icon">🔄</span>
-                            Status
-                        </span>
-                        <div class="detail-value-wrapper">
-                            <span class="detail-value normal" id="statusValue">Awaiting Funds</span>
-                            <button class="copy-btn" data-copy="statusValue" aria-label="Copy status">
-                                <span class="copy-icon">📋</span>
-                                Copy
-                            </button>
-                        </div>
+                    <div class="form-group">
+                        <label>🔄 Status</label>
+                        <input type="text" id="statusInput" placeholder="Awaiting Funds" />
                     </div>
                 </div>
 
-                <!-- Transaction ID -->
-                <div class="transaction-id-section">
-                    <div class="transaction-id">
-                        <span class="tx-label">
-                            <span class="label-icon">🔗</span>
-                            Transaction ID
-                        </span>
-                        <div class="tx-value-wrapper">
-                            <span class="tx-value" id="txValue">0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a</span>
-                            <button class="copy-btn" data-copy="txValue" aria-label="Copy transaction ID">
-                                <span class="copy-icon">📋</span>
-                                Copy
-                            </button>
-                        </div>
+                <div class="form-group">
+                    <label>🔗 Transaction ID</label>
+                    <input type="text" id="txInput" placeholder="0x7a3f..." />
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📌 Status Title</label>
+                        <input type="text" id="statusTitleInput" placeholder="Awaiting Funds" />
+                    </div>
+                    <div class="form-group">
+                        <label>📝 Status Subtitle</label>
+                        <input type="text" id="statusSubtitleInput" placeholder="Payment is being processed..." />
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
-                <div class="action-section">
-                    <button class="btn btn-accept" id="acceptBtn">
-                        <span class="btn-icon">✅</span>
-                        Accept Payment
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" id="saveBtn">
+                        <span class="loading-spinner" id="saveSpinner"></span>
+                        💾 Save & Push Update
                     </button>
-                    <button class="btn btn-decline" id="declineBtn">
-                        <span class="btn-icon">❌</span>
-                        Decline Payment
+                    <button type="button" class="btn btn-secondary" onclick="loadFromSupabase()">
+                        📂 Reload from Supabase
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                        ↩️ Reset to Defaults
                     </button>
                 </div>
+            </form>
+        </div>
+
+        <!-- Live Preview -->
+        <div class="card">
+            <div class="card-title">
+                👁️ Live Preview
+                <span class="status-badge">Auto-updates</span>
+                <span class="realtime-badge">⚡ Instant Sync</span>
+            </div>
+            <div class="preview-grid">
+                <div class="preview-item"><span class="label">👤 Sender</span><span class="value" id="previewSender">John Doe</span></div>
+                <div class="preview-item"><span class="label">🏦 Recipient</span><span class="value" id="previewRecipient">Jane Smith</span></div>
+                <div class="preview-item"><span class="label">💰 Amount</span><span class="value green" id="previewAmount">1,245.50 USDT</span></div>
+                <div class="preview-item"><span class="label">📅 Date</span><span class="value" id="previewDate">2026-08-17 14:30:45 UTC</span></div>
+                <div class="preview-item"><span class="label">💳 Method</span><span class="value" id="previewMethod">Bank Transfer - Chase</span></div>
+                <div class="preview-item"><span class="label">📎 Reference</span><span class="value" id="previewReference">PAY-2026-08-17-0042</span></div>
+                <div class="preview-item"><span class="label">🔄 Status</span><span class="value green" id="previewStatus">Awaiting Funds</span></div>
+                <div class="preview-item"><span class="label">🔗 TX ID</span><span class="value" id="previewTx" style="font-size:0.688rem;">0x7a3f...9d7a</span></div>
+            </div>
+            
+            <!-- Sync Status -->
+            <div class="sync-status">
+                <span class="dot synced" id="syncDot"></span>
+                <span id="syncText">Synced with Supabase ✅</span>
+                <span style="margin-left: auto; font-weight: 600; color: var(--color-text);">Landing Page: <span id="landingStatus" style="color: var(--color-green);">🟢 Live</span></span>
+            </div>
+            
+            <div style="margin-top:0.75rem; padding-top:0.75rem; border-top:1px solid var(--color-border); display:flex; gap:1rem; flex-wrap:wrap; font-size:0.75rem; color:var(--color-text-secondary);">
+                <span>💡 Changes update Live Preview instantly</span>
+                <span>📡 <strong>Save & Push</strong> updates the Landing Page in real-time</span>
             </div>
         </div>
     </div>
 
-    <!-- Loading Overlay - Clean, no text -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner"></div>
-    </div>
-
-    <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
 
     <script>
         // ============================================
-        // SUPABASE CONFIG - YOUR CREDENTIALS
+        // SUPABASE CONFIG
         // ============================================
         const SUPABASE_URL = 'https://precvldulohwudpfmzsn.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_tMV0V-5-ctvzQ36sGwYlRg__l3njaeG';
 
-        // Initialize Supabase
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================
-        // REALTIME SUBSCRIPTION - AUTO-UPDATE ON CHANGES
+        // SESSION CHECK - Redirect to login if not authenticated
+        // ============================================
+        function checkSession() {
+            const session = sessionStorage.getItem('adminSession');
+            if (session !== 'true') {
+                window.location.href = 'adminlogin.html';
+                return false;
+            }
+            return true;
+        }
+
+        if (!checkSession()) return;
+
+        const adminUser = sessionStorage.getItem('adminUser') || 'Admin';
+        document.getElementById('adminUser').textContent = adminUser;
+
+        // ============================================
+        // LOGOUT
+        // ============================================
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            sessionStorage.removeItem('adminSession');
+            sessionStorage.removeItem('adminUser');
+            window.location.href = 'adminlogin.html';
+        });
+
+        // ============================================
+        // DEFAULT DATA
+        // ============================================
+        const DEFAULT_DATA = {
+            sender: 'John Doe',
+            recipient: 'Jane Smith',
+            amount: '1,245.50',
+            currency: 'USDT',
+            date: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
+            method: 'Bank Transfer - Chase',
+            reference: 'PAY-2026-08-17-0042',
+            status: 'Awaiting Funds',
+            txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
+            statusTitle: 'Awaiting Funds',
+            statusSubtitle: 'Payment is being processed, please wait'
+        };
+
+        // ============================================
+        // DOM REFERENCES
+        // ============================================
+        const fields = {
+            sender: document.getElementById('senderInput'),
+            recipient: document.getElementById('recipientInput'),
+            amount: document.getElementById('amountInput'),
+            currency: document.getElementById('currencyInput'),
+            date: document.getElementById('dateInput'),
+            method: document.getElementById('methodInput'),
+            reference: document.getElementById('referenceInput'),
+            status: document.getElementById('statusInput'),
+            txId: document.getElementById('txInput'),
+            statusTitle: document.getElementById('statusTitleInput'),
+            statusSubtitle: document.getElementById('statusSubtitleInput')
+        };
+
+        const preview = {
+            sender: document.getElementById('previewSender'),
+            recipient: document.getElementById('previewRecipient'),
+            amount: document.getElementById('previewAmount'),
+            date: document.getElementById('previewDate'),
+            method: document.getElementById('previewMethod'),
+            reference: document.getElementById('previewReference'),
+            status: document.getElementById('previewStatus'),
+            tx: document.getElementById('previewTx')
+        };
+
+        const syncDot = document.getElementById('syncDot');
+        const syncText = document.getElementById('syncText');
+
+        // ============================================
+        // UPDATE LIVE PREVIEW (Instant)
+        // ============================================
+        function updateLivePreview() {
+            const data = getFormData();
+            preview.sender.textContent = data.sender || 'N/A';
+            preview.recipient.textContent = data.recipient || 'N/A';
+            preview.amount.textContent = (data.amount || '0') + ' ' + (data.currency || 'USDT');
+            preview.date.textContent = data.date || 'N/A';
+            preview.method.textContent = data.method || 'N/A';
+            preview.reference.textContent = data.reference || 'N/A';
+            preview.status.textContent = data.status || 'N/A';
+            const tx = data.txId || 'N/A';
+            preview.tx.textContent = tx.length > 20 ? tx.slice(0, 6) + '...' + tx.slice(-4) : tx;
+        }
+
+        function getFormData() {
+            return {
+                sender: fields.sender.value.trim(),
+                recipient: fields.recipient.value.trim(),
+                amount: fields.amount.value.trim(),
+                currency: fields.currency.value.trim(),
+                date: fields.date.value.trim(),
+                method: fields.method.value.trim(),
+                reference: fields.reference.value.trim(),
+                status: fields.status.value.trim(),
+                txId: fields.txId.value.trim(),
+                statusTitle: fields.statusTitle.value.trim(),
+                statusSubtitle: fields.statusSubtitle.value.trim()
+            };
+        }
+
+        function loadDataToForm(data) {
+            fields.sender.value = data.sender || '';
+            fields.recipient.value = data.recipient || '';
+            fields.amount.value = data.amount || '';
+            fields.currency.value = data.currency || 'USDT';
+            fields.date.value = data.date || '';
+            fields.method.value = data.method || '';
+            fields.reference.value = data.reference || '';
+            fields.status.value = data.status || '';
+            fields.txId.value = data.txId || '';
+            fields.statusTitle.value = data.statusTitle || '';
+            fields.statusSubtitle.value = data.statusSubtitle || '';
+            updateLivePreview();
+        }
+
+        // ============================================
+        // SYNC STATUS UPDATES
+        // ============================================
+        function setSyncStatus(status, text) {
+            syncDot.className = 'dot ' + status;
+            syncText.textContent = text;
+        }
+
+        // ============================================
+        // TOAST NOTIFICATION
+        // ============================================
+        const toast = document.getElementById('toast');
+        let toastTimeout;
+
+        function showToast(message, type = '') {
+            toast.textContent = message;
+            toast.className = 'toast' + (type ? ' ' + type : '');
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============================================
+        // SUPABASE FUNCTIONS
+        // ============================================
+        let dbConnected = false;
+
+        async function checkSupabaseConnection() {
+            const dot = document.getElementById('dbStatusDot');
+            const text = document.getElementById('dbStatusText');
+            try {
+                const { data, error } = await supabaseClient
+                    .from('payment_details')
+                    .select('id')
+                    .limit(1);
+                
+                if (error) throw error;
+                
+                dbConnected = true;
+                dot.className = 'dot';
+                text.textContent = 'Supabase: Connected ✅';
+                setSyncStatus('synced', 'Synced with Supabase ✅');
+                return true;
+            } catch (error) {
+                dbConnected = false;
+                dot.className = 'dot offline';
+                text.textContent = 'Supabase: Offline ❌';
+                setSyncStatus('offline', 'Offline ❌');
+                console.error('❌ Supabase connection error:', error);
+                showToast('⚠️ Cannot connect to Supabase. Check your credentials.', 'error');
+                return false;
+            }
+        }
+
+        async function loadFromSupabase() {
+            const btn = document.querySelector('#saveBtn');
+            const spinner = document.getElementById('saveSpinner');
+            
+            if (!dbConnected) {
+                await checkSupabaseConnection();
+                if (!dbConnected) return;
+            }
+
+            try {
+                showToast('📂 Loading from Supabase...', '');
+                btn.disabled = true;
+                spinner.classList.add('active');
+                setSyncStatus('syncing', 'Loading...');
+
+                const { data, error } = await supabaseClient
+                    .from('payment_details')
+                    .select('*')
+                    .order('id', { ascending: false })
+                    .limit(1);
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    const record = data[0];
+                    loadDataToForm({
+                        sender: record.sender,
+                        recipient: record.recipient,
+                        amount: record.amount,
+                        currency: record.currency,
+                        date: record.date_time,
+                        method: record.payment_method,
+                        reference: record.reference,
+                        status: record.status,
+                        txId: record.transaction_id,
+                        statusTitle: record.status_title,
+                        statusSubtitle: record.status_subtitle
+                    });
+                    showToast('✅ Data loaded from Supabase!', 'success');
+                    setSyncStatus('synced', 'Synced with Supabase ✅');
+                } else {
+                    showToast('ℹ️ No data found, using defaults', '');
+                    loadDataToForm(DEFAULT_DATA);
+                    setSyncStatus('synced', 'Defaults loaded');
+                }
+            } catch (error) {
+                console.error('❌ Error loading from Supabase:', error);
+                showToast('❌ Failed to load data from Supabase', 'error');
+                setSyncStatus('offline', 'Error loading');
+                const saved = localStorage.getItem('paymentData');
+                if (saved) {
+                    try {
+                        loadDataToForm(JSON.parse(saved));
+                        showToast('📂 Loaded from localStorage (fallback)', '');
+                    } catch (e) {}
+                }
+            } finally {
+                btn.disabled = false;
+                spinner.classList.remove('active');
+            }
+        }
+
+        async function saveToSupabase() {
+            const btn = document.querySelector('#saveBtn');
+            const spinner = document.getElementById('saveSpinner');
+            const data = getFormData();
+
+            console.log('📝 Data to save:', data);
+
+            if (!data.sender || !data.recipient || !data.amount) {
+                showToast('❌ Sender, Recipient, and Amount are required', 'error');
+                return;
+            }
+
+            if (!dbConnected) {
+                await checkSupabaseConnection();
+                if (!dbConnected) {
+                    localStorage.setItem('paymentData', JSON.stringify(data));
+                    showToast('⚠️ Saved to localStorage (Supabase offline)', 'error');
+                    updateLivePreview();
+                    setSyncStatus('offline', 'Saved locally only');
+                    return;
+                }
+            }
+
+            try {
+                btn.disabled = true;
+                spinner.classList.add('active');
+                setSyncStatus('syncing', 'Saving to Supabase...');
+                showToast('💾 Saving to Supabase...', '');
+
+                console.log('🔍 Fetching latest record...');
+                const { data: existing, error: fetchError } = await supabaseClient
+                    .from('payment_details')
+                    .select('*')
+                    .order('id', { ascending: false })
+                    .limit(1);
+
+                if (fetchError) {
+                    console.error('❌ Fetch error:', fetchError);
+                    throw fetchError;
+                }
+
+                console.log('📄 Existing record:', existing);
+
+                if (existing && existing.length > 0) {
+                    console.log('🔄 Updating existing record...');
+                    const updateData = {
+                        sender: data.sender,
+                        recipient: data.recipient,
+                        amount: parseFloat(data.amount.replace(/,/g, '')),
+                        currency: data.currency,
+                        date_time: data.date,
+                        payment_method: data.method,
+                        reference: data.reference,
+                        status: data.status,
+                        transaction_id: data.txId,
+                        status_title: data.statusTitle,
+                        status_subtitle: data.statusSubtitle
+                    };
+                    console.log('📝 Update data:', updateData);
+
+                    const { data: updated, error: updateError } = await supabaseClient
+                        .from('payment_details')
+                        .update(updateData)
+                        .eq('id', existing[0].id)
+                        .select();
+
+                    if (updateError) {
+                        console.error('❌ Update error:', updateError);
+                        throw updateError;
+                    }
+                    console.log('✅ Update successful:', updated);
+                } else {
+                    console.log('📝 Inserting new record...');
+                    const insertData = {
+                        sender: data.sender,
+                        recipient: data.recipient,
+                        amount: parseFloat(data.amount.replace(/,/g, '')),
+                        currency: data.currency,
+                        date_time: data.date,
+                        payment_method: data.method,
+                        reference: data.reference,
+                        status: data.status,
+                        transaction_id: data.txId,
+                        status_title: data.statusTitle,
+                        status_subtitle: data.statusSubtitle
+                    };
+                    console.log('📝 Insert data:', insertData);
+
+                    const { data: inserted, error: insertError } = await supabaseClient
+                        .from('payment_details')
+                        .insert(insertData)
+                        .select();
+
+                    if (insertError) {
+                        console.error('❌ Insert error:', insertError);
+                        throw insertError;
+                    }
+                    console.log('✅ Insert successful:', inserted);
+                }
+
+                localStorage.setItem('paymentData', JSON.stringify(data));
+
+                showToast('✅ Saved to Supabase! Realtime update should trigger.', 'success');
+                setSyncStatus('synced', 'Saved & Synced ✅');
+                updateLivePreview();
+                
+                console.log('🎉 Done! Realtime event should trigger now.');
+                console.log('✅ Check your landing page for the update.');
+            } catch (error) {
+                console.error('❌ Error saving to Supabase:', error);
+                localStorage.setItem('paymentData', JSON.stringify(data));
+                showToast('⚠️ Error: ' + (error.message || 'Check console for details'), 'error');
+                setSyncStatus('offline', 'Error saving');
+                updateLivePreview();
+            } finally {
+                btn.disabled = false;
+                spinner.classList.remove('active');
+            }
+        }
+
+        // ============================================
+        // RESET FORM
+        // ============================================
+        function resetForm() {
+            if (confirm('Reset all fields to default values?')) {
+                loadDataToForm(DEFAULT_DATA);
+                localStorage.removeItem('paymentData');
+                showToast('↩️ Reset to defaults', '');
+                setSyncStatus('synced', 'Reset to defaults');
+            }
+        }
+
+        // ============================================
+        // REALTIME SUBSCRIPTION
         // ============================================
         let realtimeChannel = null;
 
@@ -977,11 +929,10 @@
                         table: 'payment_details'
                     },
                     (payload) => {
-                        console.log('📡 Real-time update received on landing page!', payload);
+                        console.log('📡 Real-time update received in Admin Panel!', payload);
                         const record = payload.new;
                         
-                        // Update the page with new data
-                        displayPaymentData({
+                        loadDataToForm({
                             sender: record.sender,
                             recipient: record.recipient,
                             amount: record.amount,
@@ -995,12 +946,18 @@
                             statusSubtitle: record.status_subtitle
                         });
                         
-                        // Show notification
-                        showToast('🔄 Payment details updated in real-time!', 'success');
+                        setSyncStatus('live', 'Live update received! 🔄');
+                        showToast('🔄 Data updated from another source!', 'warning');
+                        setTimeout(() => setSyncStatus('synced', 'Synced with Supabase ✅'), 3000);
                     }
                 )
                 .subscribe((status) => {
                     console.log('📡 Realtime subscription status:', status);
+                    if (status === 'SUBSCRIBED') {
+                        const dot = document.getElementById('dbStatusDot');
+                        dot.className = 'dot realtime';
+                        document.getElementById('dbStatusText').textContent = 'Supabase: Live 🔴';
+                    }
                 });
         }
 
@@ -1026,261 +983,43 @@
         });
 
         // ============================================
-        // TOAST NOTIFICATION
+        // AUTO-UPDATE LIVE PREVIEW ON INPUT
         // ============================================
-        const toast = document.getElementById('toast');
-        let toastTimeout;
-
-        function showToast(message, type = '') {
-            toast.textContent = message;
-            toast.className = 'toast' + (type ? ' ' + type : '');
-            toast.classList.add('show');
-            clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        // ============================================
-        // LOAD PAYMENT DATA FROM SUPABASE
-        // ============================================
-        async function loadPaymentDataFromSupabase() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from('payment_details')
-                    .select('*')
-                    .order('id', { ascending: false })
-                    .limit(1);
-
-                if (error) throw error;
-
-                if (data && data.length > 0) {
-                    const record = data[0];
-                    displayPaymentData({
-                        sender: record.sender,
-                        recipient: record.recipient,
-                        amount: record.amount,
-                        currency: record.currency,
-                        date: record.date_time,
-                        method: record.payment_method,
-                        reference: record.reference,
-                        status: record.status,
-                        txId: record.transaction_id,
-                        statusTitle: record.status_title,
-                        statusSubtitle: record.status_subtitle
-                    });
-                    console.log('📂 Data loaded from Supabase');
-                    return true;
-                }
-                return false;
-            } catch (error) {
-                console.warn('⚠️ Supabase load failed:', error);
-                return false;
-            }
-        }
-
-        // ============================================
-        // DISPLAY PAYMENT DATA
-        // ============================================
-        function displayPaymentData(data) {
-            if (data.sender) document.getElementById('senderValue').textContent = data.sender;
-            if (data.recipient) document.getElementById('recipientValue').textContent = data.recipient;
-            if (data.amount) {
-                const formattedAmount = typeof data.amount === 'number' ? data.amount.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }) : data.amount;
-                document.getElementById('amountValue').textContent = formattedAmount;
-                document.getElementById('amountDetailValue').textContent = formattedAmount + ' ' + (data.currency || 'USDT');
-                const numAmount = parseFloat(String(data.amount).replace(/,/g, ''));
-                if (!isNaN(numAmount)) {
-                    const usdEl = document.querySelector('.amount-usd');
-                    if (usdEl) {
-                        usdEl.textContent = '≈ $' + numAmount.toLocaleString('en-US', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        }) + ' USD';
-                    }
-                }
-            }
-            if (data.date) {
-                const dateEl = document.getElementById('dateValue');
-                if (dateEl) {
-                    try {
-                        const d = new Date(data.date);
-                        if (!isNaN(d.getTime())) {
-                            dateEl.textContent = d.toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
-                        } else {
-                            dateEl.textContent = data.date;
-                        }
-                    } catch (e) {
-                        dateEl.textContent = data.date;
-                    }
-                }
-            }
-            if (data.method) document.getElementById('methodValue').textContent = data.method;
-            if (data.reference) document.getElementById('referenceValue').textContent = data.reference;
-            if (data.status) document.getElementById('statusValue').textContent = data.status;
-            if (data.txId) document.getElementById('txValue').textContent = data.txId;
-            if (data.statusTitle) document.getElementById('statusTitle').textContent = data.statusTitle;
-            if (data.statusSubtitle) document.getElementById('statusSubtitle').textContent = data.statusSubtitle;
-        }
-
-        // ============================================
-        // COPY TO CLIPBOARD
-        // ============================================
-        document.querySelectorAll('.copy-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const targetId = this.dataset.copy;
-                const targetEl = document.getElementById(targetId);
-                
-                if (targetEl) {
-                    const textToCopy = targetEl.textContent.trim();
-                    
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(textToCopy).then(() => {
-                            this.classList.add('copied');
-                            this.innerHTML = '<span class="copy-icon">✓</span> Copied';
-                            showToast('Copied: ' + textToCopy.slice(0, 30) + (textToCopy.length > 30 ? '...' : ''));
-                            setTimeout(() => {
-                                this.classList.remove('copied');
-                                this.innerHTML = '<span class="copy-icon">📋</span> Copy';
-                            }, 2000);
-                        }).catch(() => {
-                            fallbackCopy(textToCopy, this);
-                        });
-                    } else {
-                        fallbackCopy(textToCopy, this);
-                    }
-                }
+        document.querySelectorAll('#adminForm input').forEach(input => {
+            input.addEventListener('input', function() {
+                updateLivePreview();
+                setSyncStatus('synced', 'Live preview updated ✅');
             });
         });
 
-        function fallbackCopy(text, btn) {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            textarea.style.pointerEvents = 'none';
-            document.body.appendChild(textarea);
-            textarea.select();
-            
-            try {
-                document.execCommand('copy');
-                btn.classList.add('copied');
-                btn.innerHTML = '<span class="copy-icon">✓</span> Copied';
-                showToast('Copied: ' + text.slice(0, 30) + (text.length > 30 ? '...' : ''));
-                setTimeout(() => {
-                    btn.classList.remove('copied');
-                    btn.innerHTML = '<span class="copy-icon">📋</span> Copy';
-                }, 2000);
-            } catch (err) {
-                showToast('Failed to copy');
-            }
-            
-            document.body.removeChild(textarea);
-        }
-
         // ============================================
-        // ACCEPT PAYMENT - Clean Loading
+        // SAVE BUTTON
         // ============================================
-        document.getElementById('acceptBtn').addEventListener('click', function() {
-            this.disabled = true;
-            document.getElementById('declineBtn').disabled = true;
-            
-            document.querySelector('.status-title').textContent = 'Payment Accepted';
-            document.querySelector('.status-subtitle').textContent = 'Transaction completed successfully';
-            document.getElementById('statusValue').textContent = 'Completed';
-            document.querySelector('.status-icon').textContent = '✅';
-            document.querySelector('.status-icon').style.background = '#E8F8F2';
-            document.querySelector('.status-icon').style.color = '#07B979';
-            
-            document.getElementById('loadingOverlay').classList.add('active');
-            
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 3000);
-        });
-
-        // ============================================
-        // DECLINE PAYMENT - Clean Loading
-        // ============================================
-        document.getElementById('declineBtn').addEventListener('click', function() {
-            this.disabled = true;
-            document.getElementById('acceptBtn').disabled = true;
-            
-            document.querySelector('.status-title').textContent = 'Payment Declined';
-            document.querySelector('.status-subtitle').textContent = 'Transaction has been cancelled';
-            document.getElementById('statusValue').textContent = 'Declined';
-            document.querySelector('.status-icon').textContent = '❌';
-            document.querySelector('.status-icon').style.background = '#FFEEEE';
-            document.querySelector('.status-icon').style.color = '#F22323';
-            
-            document.getElementById('loadingOverlay').classList.add('active');
-            
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 3000);
-        });
-
-        // ============================================
-        // CLICK ON DETAIL ITEM TO COPY
-        // ============================================
-        document.querySelectorAll('.detail-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                if (e.target.closest('.copy-btn')) return;
-                const copyBtn = this.querySelector('.copy-btn');
-                if (copyBtn) {
-                    copyBtn.click();
-                }
-            });
-        });
+        document.getElementById('saveBtn').addEventListener('click', saveToSupabase);
 
         // ============================================
         // KEYBOARD SHORTCUTS
         // ============================================
         document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.key === 'c') {
-                const activeElement = document.activeElement;
-                if (activeElement && activeElement.closest('.detail-item')) {
-                    const copyBtn = activeElement.closest('.detail-item').querySelector('.copy-btn');
-                    if (copyBtn) {
-                        e.preventDefault();
-                        copyBtn.click();
-                    }
-                }
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveToSupabase();
             }
         });
 
         // ============================================
-        // INITIALIZE - Load from Supabase on page load & setup realtime
+        // INITIALIZE
         // ============================================
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Try Supabase first
-            const loaded = await loadPaymentDataFromSupabase();
-            
-            if (!loaded) {
-                // Fallback to localStorage
-                const savedData = localStorage.getItem('paymentData');
-                if (savedData) {
-                    try {
-                        displayPaymentData(JSON.parse(savedData));
-                        console.log('📂 Data loaded from localStorage (fallback)');
-                    } catch (e) {
-                        console.log('No saved data found');
-                    }
-                }
-            }
-            
-            // Setup realtime subscription
+        (async function init() {
+            await checkSupabaseConnection();
+            await loadFromSupabase();
             setupRealtimeSubscription();
-        });
+        })();
 
-        console.log('%c 💰 NoOnes Payment Confirmation ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
-        console.log('%c 🔒 Protected by NoOnes ', 'color: #07B979; font-size: 12px; font-weight: bold;');
-        console.log('%c 📡 Real-time sync enabled - updates appear instantly ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
-        console.log('%c ⏳ Awaiting funds - please wait for confirmation. ', 'color: #6B7A75; font-size: 12px;');
+        console.log('%c ⚙️ NoOnes Admin Panel ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
+        console.log('%c 👁️ Live Preview updates instantly on input change ', 'color: #6B7A75; font-size: 12px;');
+        console.log('%c 📡 Save & Push updates the Landing Page in real-time ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
+        console.log('%c 💡 Press Ctrl+S to save quickly ', 'color: #6B7A75; font-size: 12px;');
     </script>
 </body>
 </html>
