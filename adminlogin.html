@@ -324,7 +324,7 @@
         }
 
         .demo-credentials {
-            margin-top: 0.5rem;
+            margin-top: 0.75rem;
             padding: 0.75rem;
             background: var(--color-light-grey);
             border-radius: 0.5rem;
@@ -351,10 +351,6 @@
                 flex-direction: column;
                 align-items: center;
                 gap: 0.75rem;
-            }
-
-            .demo-credentials {
-                font-size: 0.688rem;
             }
         }
     </style>
@@ -444,9 +440,7 @@
         }
 
         // Run on page load
-        if (!checkSession()) {
-            // If not logged in, show login page
-        }
+        checkSession();
 
         // ============================================
         // THEME TOGGLE
@@ -471,12 +465,6 @@
             localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
             updateTheme();
         });
-
-        // Also sync with main theme toggle if exists
-        const savedTheme = localStorage.getItem('theme-preference');
-        if (savedTheme === 'dark') {
-            document.documentElement.setAttribute('data-mantine-color-scheme', 'dark');
-        }
 
         // ============================================
         // TOAST NOTIFICATION
