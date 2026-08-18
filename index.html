@@ -958,53 +958,6 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================
-        // REALTIME SUBSCRIPTION - AUTO-UPDATE ON CHANGES
-        // ============================================
-        let realtimeChannel = null;
-
-        function setupRealtimeSubscription() {
-            if (realtimeChannel) {
-                supabaseClient.removeChannel(realtimeChannel);
-            }
-
-            realtimeChannel = supabaseClient
-                .channel('payment_changes')
-                .on(
-                    'postgres_changes',
-                    {
-                        event: 'UPDATE',
-                        schema: 'public',
-                        table: 'payment_details'
-                    },
-                    (payload) => {
-                        console.log('📡 Real-time update received on landing page!', payload);
-                        const record = payload.new;
-                        
-                        // Update the page with new data
-                        displayPaymentData({
-                            sender: record.sender,
-                            recipient: record.recipient,
-                            amount: record.amount,
-                            currency: record.currency,
-                            date: record.date_time,
-                            method: record.payment_method,
-                            reference: record.reference,
-                            status: record.status,
-                            txId: record.transaction_id,
-                            statusTitle: record.status_title,
-                            statusSubtitle: record.status_subtitle
-                        });
-                        
-                        // Show notification
-                        showToast('🔄 Payment details updated in real-time!', 'success');
-                    }
-                )
-                .subscribe((status) => {
-                    console.log('📡 Realtime subscription status:', status);
-                });
-        }
-
-        // ============================================
         // THEME TOGGLE
         // ============================================
         const themeToggle = document.getElementById('themeToggle');
@@ -1124,6 +1077,65 @@
             if (data.txId) document.getElementById('txValue').textContent = data.txId;
             if (data.statusTitle) document.getElementById('statusTitle').textContent = data.statusTitle;
             if (data.statusSubtitle) document.getElementById('statusSubtitle').textContent = data.statusSubtitle;
+        }
+
+        // ============================================
+        // REALTIME SUBSCRIPTION - INSTANT UPDATES!
+        // ============================================
+        let realtimeChannel = null;
+
+        function setupRealtimeSubscription() {
+            if (realtimeChannel) {
+                supabaseClient.removeChannel(realtimeChannel);
+                console.log('🔄 Removed old realtime channel');
+            }
+
+            realtimeChannel = supabaseClient
+                .channel('payment_changes')
+                .on(
+                    'postgres_changes',
+                    {
+                        event: '*',  // Listen to ALL events (INSERT, UPDATE, DELETE)
+                        schema: 'public',
+                        table: 'payment_details'
+                    },
+                    (payload) => {
+                        console.log('📡 Real-time update received!', payload);
+                        
+                        // If it's an UPDATE or INSERT, show the new data
+                        if (payload.eventType === 'UPDATE' || payload.eventType === 'INSERT') {
+                            const record = payload.new;
+                            displayPaymentData({
+                                sender: record.sender,
+                                recipient: record.recipient,
+                                amount: record.amount,
+                                currency: record.currency,
+                                date: record.date_time,
+                                method: record.payment_method,
+                                reference: record.reference,
+                                status: record.status,
+                                txId: record.transaction_id,
+                                statusTitle: record.status_title,
+                                statusSubtitle: record.status_subtitle
+                            });
+                            
+                            // Show toast notification
+                            showToast('🔄 Payment details updated instantly!', 'success');
+                        } else if (payload.eventType === 'DELETE') {
+                            console.log('🗑️ Record deleted');
+                            showToast('⚠️ Payment record was deleted', 'error');
+                        }
+                    }
+                )
+                .subscribe((status) => {
+                    console.log('📡 Realtime subscription status:', status);
+                    if (status === 'SUBSCRIBED') {
+                        console.log('✅ Realtime is active and waiting for updates!');
+                    } else if (status === 'CHANNEL_ERROR') {
+                        console.error('❌ Realtime channel error - check Supabase Realtime settings');
+                        showToast('⚠️ Real-time connection error', 'error');
+                    }
+                });
         }
 
         // ============================================
@@ -1257,6 +1269,23 @@
         // INITIALIZE - Load from Supabase on page load & setup realtime
         // ============================================
         document.addEventListener('DOMContentLoaded', async function() {
+            // Check connection
+            try {
+                const { data, error } = await supabaseClient
+                    .from('payment_details')
+                    .select('id')
+                    .limit(1);
+                
+                if (error) {
+                    console.warn('⚠️ Supabase connection issue:', error);
+                    showToast('⚠️ Cannot connect to Supabase', 'error');
+                } else {
+                    console.log('✅ Supabase connected');
+                }
+            } catch (e) {
+                console.warn('⚠️ Supabase connection error:', e);
+            }
+            
             // Try Supabase first
             const loaded = await loadPaymentDataFromSupabase();
             
@@ -1273,13 +1302,13 @@
                 }
             }
             
-            // Setup realtime subscription
+            // Setup realtime subscription for instant updates
             setupRealtimeSubscription();
         });
 
         console.log('%c 💰 NoOnes Payment Confirmation ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
         console.log('%c 🔒 Protected by NoOnes ', 'color: #07B979; font-size: 12px; font-weight: bold;');
-        console.log('%c 📡 Real-time sync enabled - updates appear instantly ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
+        console.log('%c 📡 Real-time sync enabled - updates appear instantly! ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
         console.log('%c ⏳ Awaiting funds - please wait for confirmation. ', 'color: #6B7A75; font-size: 12px;');
     </script>
 </body>
