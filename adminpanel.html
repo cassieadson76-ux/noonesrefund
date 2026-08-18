@@ -530,7 +530,7 @@
                         </div>
                         <div class="form-group">
                             <label>🔄 Status</label>
-                            <input type="text" id="statusInput" placeholder="Pending" />
+                            <input type="text" id="statusInput" placeholder="Awaiting Funds" />
                         </div>
                     </div>
 
@@ -542,7 +542,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>📌 Status Title</label>
-                            <input type="text" id="statusTitleInput" placeholder="Pending" />
+                            <input type="text" id="statusTitleInput" placeholder="Awaiting Funds" />
                         </div>
                         <div class="form-group">
                             <label>📝 Status Subtitle</label>
@@ -575,8 +575,8 @@
 
                 <div class="preview-card">
                     <div class="preview-header">
-                        <strong id="previewStatusTitle">Pending</strong>
-                        <span class="status" id="previewStatusBadge">Pending</span>
+                        <strong id="previewStatusTitle">Awaiting Funds</strong>
+                        <span class="status" id="previewStatusBadge">Awaiting Funds</span>
                     </div>
 
                     <div class="preview-amount">
@@ -612,7 +612,7 @@
                         </div>
                         <div class="preview-item">
                             <span class="label">🔄 Status</span>
-                            <span class="value green" id="previewStatus">Pending</span>
+                            <span class="value green" id="previewStatus">Awaiting Funds</span>
                         </div>
                         <div class="preview-item">
                             <span class="label">🔗 TX ID</span>
@@ -620,7 +620,7 @@
                         </div>
                         <div class="preview-item">
                             <span class="label">📌 Title</span>
-                            <span class="value" id="previewStatusTitleValue">Pending</span>
+                            <span class="value" id="previewStatusTitleValue">Awaiting Funds</span>
                         </div>
                         <div class="preview-item">
                             <span class="label">📝 Subtitle</span>
@@ -682,7 +682,7 @@
         });
 
         // ============================================
-        // DEFAULT DATA - Status Title changed to "Pending"
+        // DEFAULT DATA - "Awaiting Funds" restored
         // ============================================
         const DEFAULT_DATA = {
             sender: 'John Doe',
@@ -692,9 +692,9 @@
             date: new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC',
             method: 'Bank Transfer - Chase',
             reference: 'PAY-2026-08-17-0042',
-            status: 'Pending',
+            status: 'Awaiting Funds',
             txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
-            statusTitle: 'Pending',
+            statusTitle: 'Awaiting Funds',
             statusSubtitle: 'Payment is being processed, please wait'
         };
 
@@ -752,11 +752,11 @@
             preview.date.textContent = data.date || 'N/A';
             preview.method.textContent = data.method || 'N/A';
             preview.reference.textContent = data.reference || 'N/A';
-            preview.status.textContent = data.status || 'Pending';
-            preview.statusTitle.textContent = data.statusTitle || 'Pending';
-            preview.statusTitleValue.textContent = data.statusTitle || 'Pending';
+            preview.status.textContent = data.status || 'Awaiting Funds';
+            preview.statusTitle.textContent = data.statusTitle || 'Awaiting Funds';
+            preview.statusTitleValue.textContent = data.statusTitle || 'Awaiting Funds';
             preview.subtitle.textContent = data.statusSubtitle || 'N/A';
-            preview.badge.textContent = data.status || 'Pending';
+            preview.badge.textContent = data.status || 'Awaiting Funds';
 
             // Update USD
             const numAmount = parseFloat((data.amount || '0').replace(/,/g, ''));
@@ -775,14 +775,13 @@
 
             // Update badge color based on status
             const statusColors = {
-                'Pending': { bg: '#FFF8E0', color: '#FFB800' },
+                'Awaiting Funds': { bg: '#FFF8E0', color: '#FFB800' },
                 'Completed': { bg: '#E8F8F2', color: '#07B979' },
                 'Declined': { bg: '#FFEEEE', color: '#F22323' },
-                'Processing': { bg: '#FFF3E0', color: '#FF8C00' },
-                'Awaiting Funds': { bg: '#FFF8E0', color: '#FFB800' }
+                'Processing': { bg: '#FFF3E0', color: '#FF8C00' }
             };
-            const statusText = data.status || 'Pending';
-            const color = statusColors[statusText] || statusColors['Pending'];
+            const statusText = data.status || 'Awaiting Funds';
+            const color = statusColors[statusText] || statusColors['Awaiting Funds'];
             preview.badge.style.background = color.bg;
             preview.badge.style.color = color.color;
         }
@@ -811,9 +810,9 @@
             fields.date.value = data.date || '';
             fields.method.value = data.method || '';
             fields.reference.value = data.reference || '';
-            fields.status.value = data.status || 'Pending';
+            fields.status.value = data.status || 'Awaiting Funds';
             fields.txId.value = data.txId || '';
-            fields.statusTitle.value = data.statusTitle || 'Pending';
+            fields.statusTitle.value = data.statusTitle || 'Awaiting Funds';
             fields.statusSubtitle.value = data.statusSubtitle || '';
             updateLivePreview();
         }
@@ -917,9 +916,9 @@
                         date: record.date_time,
                         method: record.payment_method,
                         reference: record.reference,
-                        status: record.status || 'Pending',
+                        status: record.status || 'Awaiting Funds',
                         txId: record.transaction_id,
-                        statusTitle: record.status_title || 'Pending',
+                        statusTitle: record.status_title || 'Awaiting Funds',
                         statusSubtitle: record.status_subtitle
                     });
                     showToast('✅ Data loaded from Supabase!', 'success');
@@ -956,12 +955,13 @@
 
             console.log('📝 Data to save:', data);
 
+            // Validate required fields
             if (!data.sender || !data.recipient || !data.amount) {
                 showToast('❌ Sender, Recipient, and Amount are required', 'error');
                 return;
             }
 
-            // First, update the Live Preview instantly
+            // Update Live Preview immediately
             updateLivePreview();
             setSyncStatus('syncing', 'Saving to Supabase...');
             showToast('💾 Saving to Supabase...', '');
@@ -972,6 +972,7 @@
                     localStorage.setItem('paymentData', JSON.stringify(data));
                     showToast('⚠️ Saved to localStorage (Supabase offline)', 'error');
                     setSyncStatus('offline', 'Saved locally only');
+                    updateLivePreview();
                     return;
                 }
             }
@@ -980,22 +981,17 @@
                 btn.disabled = true;
                 spinner.classList.add('active');
 
-                console.log('🔍 Fetching latest record...');
+                // Get latest record
                 const { data: existing, error: fetchError } = await supabaseClient
                     .from('payment_details')
                     .select('*')
                     .order('id', { ascending: false })
                     .limit(1);
 
-                if (fetchError) {
-                    console.error('❌ Fetch error:', fetchError);
-                    throw fetchError;
-                }
-
-                console.log('📄 Existing record:', existing);
+                if (fetchError) throw fetchError;
 
                 if (existing && existing.length > 0) {
-                    console.log('🔄 Updating existing record...');
+                    // Update existing record
                     const updateData = {
                         sender: data.sender,
                         recipient: data.recipient,
@@ -1004,26 +1000,20 @@
                         date_time: data.date,
                         payment_method: data.method,
                         reference: data.reference,
-                        status: data.status || 'Pending',
+                        status: data.status || 'Awaiting Funds',
                         transaction_id: data.txId,
-                        status_title: data.statusTitle || 'Pending',
+                        status_title: data.statusTitle || 'Awaiting Funds',
                         status_subtitle: data.statusSubtitle
                     };
-                    console.log('📝 Update data:', updateData);
 
-                    const { data: updated, error: updateError } = await supabaseClient
+                    const { error: updateError } = await supabaseClient
                         .from('payment_details')
                         .update(updateData)
-                        .eq('id', existing[0].id)
-                        .select();
+                        .eq('id', existing[0].id);
 
-                    if (updateError) {
-                        console.error('❌ Update error:', updateError);
-                        throw updateError;
-                    }
-                    console.log('✅ Update successful:', updated);
+                    if (updateError) throw updateError;
                 } else {
-                    console.log('📝 Inserting new record...');
+                    // Insert new record
                     const insertData = {
                         sender: data.sender,
                         recipient: data.recipient,
@@ -1032,34 +1022,28 @@
                         date_time: data.date,
                         payment_method: data.method,
                         reference: data.reference,
-                        status: data.status || 'Pending',
+                        status: data.status || 'Awaiting Funds',
                         transaction_id: data.txId,
-                        status_title: data.statusTitle || 'Pending',
+                        status_title: data.statusTitle || 'Awaiting Funds',
                         status_subtitle: data.statusSubtitle
                     };
-                    console.log('📝 Insert data:', insertData);
 
-                    const { data: inserted, error: insertError } = await supabaseClient
+                    const { error: insertError } = await supabaseClient
                         .from('payment_details')
-                        .insert(insertData)
-                        .select();
+                        .insert(insertData);
 
-                    if (insertError) {
-                        console.error('❌ Insert error:', insertError);
-                        throw insertError;
-                    }
-                    console.log('✅ Insert successful:', inserted);
+                    if (insertError) throw insertError;
                 }
 
+                // Save to localStorage as backup
                 localStorage.setItem('paymentData', JSON.stringify(data));
 
-                // Update Live Preview again after save
+                // Update Live Preview again
                 updateLivePreview();
                 setSyncStatus('synced', 'Saved & Synced ✅');
-                showToast('✅ Saved to Supabase! Landing Page updated.', 'success');
+                showToast('✅ Saved to Supabase!', 'success');
                 
-                console.log('🎉 Done! Realtime event should trigger now.');
-                console.log('✅ Check your landing page for the update.');
+                console.log('🎉 Data saved successfully!');
             } catch (error) {
                 console.error('❌ Error saving to Supabase:', error);
                 localStorage.setItem('paymentData', JSON.stringify(data));
@@ -1115,9 +1099,9 @@
                             date: record.date_time,
                             method: record.payment_method,
                             reference: record.reference,
-                            status: record.status || 'Pending',
+                            status: record.status || 'Awaiting Funds',
                             txId: record.transaction_id,
-                            statusTitle: record.status_title || 'Pending',
+                            statusTitle: record.status_title || 'Awaiting Funds',
                             statusSubtitle: record.status_subtitle
                         });
                         
@@ -1158,7 +1142,7 @@
         });
 
         // ============================================
-        // SAVE BUTTON - Now updates Live Preview instantly
+        // SAVE BUTTON
         // ============================================
         document.getElementById('saveBtn').addEventListener('click', saveToSupabase);
 
