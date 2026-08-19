@@ -1,261 +1,136 @@
 <!doctype html>
-<html lang="en" data-mantine-color-scheme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Admin Panel | NoOnes</title>
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-
-    <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
     </script>
-
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        :root {
-            --color-green: #07B979;
-            --color-green-hover: #059E66;
-            --color-light-green: #E8F8F2;
-            --color-text: #1A1D1C;
-            --color-text-secondary: #6B7A75;
-            --color-white: #FFFFFF;
-            --color-body: #F8F9FA;
-            --color-border: #E8EAED;
-            --color-error: #F22323;
-            --shadow-md: 0 0.25rem 1rem rgba(0, 0, 0, 0.08);
-            --font-family: 'IBM Plex Sans', -apple-system, sans-serif;
-        }
-
         body {
-            font-family: var(--font-family);
-            background-color: var(--color-body);
-            color: var(--color-text);
-            min-height: 100vh;
-            padding: 1.5rem;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            padding: 2rem;
         }
-
         .container {
             max-width: 900px;
             margin: 0 auto;
         }
-
         .header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--color-border);
-            flex-wrap: wrap;
-            gap: 1rem;
         }
-
         .header h1 {
-            font-size: 1.5rem;
-            font-weight: 800;
+            color: #1A1D1C;
         }
         .header h1 span {
-            color: var(--color-green);
+            color: #07B979;
         }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
         .view-link {
+            background: #07B979;
+            color: white;
             padding: 0.5rem 1rem;
-            background: var(--color-light-green);
-            border-radius: 0.5rem;
-            color: var(--color-green);
             text-decoration: none;
-            font-size: 0.875rem;
-            font-weight: 600;
+            border-radius: 0.5rem;
         }
-
         .card {
-            background: var(--color-white);
+            background: white;
             border-radius: 1rem;
-            box-shadow: var(--shadow-md);
             padding: 2rem;
             margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
         }
-
-        .card-title {
-            font-size: 1.125rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .status-badge {
-            padding: 0.25rem 0.75rem;
-            background: var(--color-light-green);
-            color: var(--color-green);
-            border-radius: 9999px;
-            font-size: 0.625rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .admin-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        .admin-layout .card {
-            margin-bottom: 0;
-        }
-
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-        .form-group label {
-            display: block;
-            font-size: 0.813rem;
-            font-weight: 700;
-            color: var(--color-text-secondary);
-            margin-bottom: 0.375rem;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--color-border);
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            background: var(--color-body);
-            color: var(--color-text);
-            transition: all 0.2s ease;
-        }
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--color-green);
-            box-shadow: 0 0 0 3px rgba(7, 185, 121, 0.15);
-        }
-
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
+            margin-bottom: 1rem;
         }
-
-        .btn-group {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--color-border);
-            flex-wrap: wrap;
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #6B7A75;
+            margin-bottom: 0.25rem;
         }
-
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #E8EAED;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+        }
+        .form-group input:focus {
+            border-color: #07B979;
+            outline: none;
+        }
         .btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.75rem 2rem;
+            background: #07B979;
+            color: white;
+            border: none;
             border-radius: 0.5rem;
             font-weight: 700;
-            font-size: 0.875rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            font-family: var(--font-family);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            flex: 1;
-            min-width: 140px;
+            font-size: 1rem;
         }
-        .btn-primary {
-            background: var(--color-green);
-            color: white;
+        .btn:hover {
+            background: #059E66;
         }
-        .btn-primary:hover {
-            background: var(--color-green-hover);
-            transform: translateY(-2px);
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
-        .btn-secondary {
-            background: var(--color-body);
-            color: var(--color-text-secondary);
-        }
-        .btn-secondary:hover {
-            background: var(--color-border);
-        }
-
-        /* Preview */
         .preview-card {
-            background: var(--color-body);
+            background: #f8f9fa;
             border-radius: 0.75rem;
             padding: 1.25rem;
         }
-
         .preview-item {
             display: flex;
             justify-content: space-between;
             padding: 0.5rem 0.75rem;
-            background: var(--color-white);
+            background: white;
             border-radius: 0.375rem;
             margin-bottom: 0.25rem;
-            font-size: 0.813rem;
         }
-
         .preview-item .label {
+            color: #6B7A75;
             font-weight: 600;
-            color: var(--color-text-secondary);
         }
         .preview-item .value {
             font-weight: 600;
-            color: var(--color-text);
-            text-align: right;
-            max-width: 60%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
-        .preview-item .value.green {
-            color: var(--color-green);
-        }
-
         .toast {
             position: fixed;
             bottom: 2rem;
             right: 2rem;
-            background: var(--color-text);
-            color: white;
-            padding: 0.75rem 1.5rem;
+            padding: 1rem 2rem;
             border-radius: 0.5rem;
-            font-size: 0.875rem;
+            color: white;
             font-weight: 600;
-            box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.15);
             transform: translateY(100px);
             opacity: 0;
-            transition: all 0.3s ease;
-            z-index: 1000;
+            transition: all 0.3s;
         }
         .toast.show {
             transform: translateY(0);
             opacity: 1;
         }
         .toast.success {
-            background: var(--color-green);
+            background: #07B979;
         }
         .toast.error {
-            background: var(--color-error);
+            background: #F22323;
         }
-
-        .loading-spinner {
+        .spinner {
             display: none;
             width: 1rem;
             height: 1rem;
@@ -263,160 +138,120 @@
             border-top-color: transparent;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
+            margin-right: 0.5rem;
         }
-        .loading-spinner.active {
+        .spinner.active {
             display: inline-block;
         }
-
         @keyframes spin {
             to {
                 transform: rotate(360deg);
             }
         }
-
-        @media (max-width: 768px) {
-            .admin-layout {
-                grid-template-columns: 1fr;
-            }
-            .admin-layout .card {
-                margin-bottom: 1.5rem;
-            }
+        .status-badge {
+            background: #E8F8F2;
+            color: #07B979;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.625rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        @media (max-width: 640px) {
             .form-row {
                 grid-template-columns: 1fr;
             }
-            .btn-group {
-                flex-direction: column;
+            body {
+                padding: 1rem;
             }
-            .btn {
-                width: 100%;
+            .card {
+                padding: 1rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <div>
-                <h1>⚙️ Admin <span>Panel</span></h1>
-            </div>
-            <div class="header-actions">
-                <a href="index.html" class="view-link" target="_blank">👁️ View Payment</a>
-            </div>
-        </header>
+        <div class="header">
+            <h1>⚙️ Admin <span>Panel</span></h1>
+            <a href="index.html" class="view-link" target="_blank">👁️ View Payment</a>
+        </div>
 
-        <div class="admin-layout">
-            <div class="card">
-                <div class="card-title">
-                    📝 Edit Payment Details
-                    <span class="status-badge">Live Edit</span>
-                </div>
+        <div class="card">
+            <h2 style="margin-bottom:1.5rem; font-size:1.125rem;">
+                📝 Edit Payment Details
+                <span class="status-badge">Live Edit</span>
+            </h2>
 
-                <form id="adminForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>👤 Sender</label>
-                            <input type="text" id="senderInput" placeholder="John Doe" value="John Doe" />
-                        </div>
-                        <div class="form-group">
-                            <label>🏦 Recipient</label>
-                            <input type="text" id="recipientInput" placeholder="Jane Smith" value="Jane Smith" />
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>💰 Amount</label>
-                            <input type="text" id="amountInput" placeholder="1,245.50" value="1,245.50" />
-                        </div>
-                        <div class="form-group">
-                            <label>💱 Currency</label>
-                            <input type="text" id="currencyInput" placeholder="USDT" value="USDT" />
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>📅 Date & Time</label>
-                            <input type="text" id="dateInput" placeholder="2026-08-19 14:30:45 UTC" value="2026-08-19 14:30:45 UTC" />
-                        </div>
-                        <div class="form-group">
-                            <label>💳 Payment Method</label>
-                            <input type="text" id="methodInput" placeholder="Bank Transfer - Chase" value="Bank Transfer - Chase" />
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>📎 Reference</label>
-                            <input type="text" id="referenceInput" placeholder="PAY-2026-08-19-0042" value="PAY-2026-08-19-0042" />
-                        </div>
-                        <div class="form-group">
-                            <label>🔄 Status</label>
-                            <input type="text" id="statusInput" placeholder="Awaiting Funds" value="Awaiting Funds" />
-                        </div>
-                    </div>
-
+            <form id="adminForm">
+                <div class="form-row">
                     <div class="form-group">
-                        <label>🔗 Transaction ID</label>
-                        <input type="text" id="txInput" placeholder="0x7a3f..." value="0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a" />
+                        <label>👤 Sender</label>
+                        <input type="text" id="senderInput" value="John Doe" />
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>📌 Status Title</label>
-                            <input type="text" id="statusTitleInput" placeholder="Awaiting Funds" value="Awaiting Funds" />
-                        </div>
-                        <div class="form-group">
-                            <label>📝 Status Subtitle</label>
-                            <input type="text" id="statusSubtitleInput" placeholder="Payment is being processed..." value="Payment is being processed, please wait" />
-                        </div>
-                    </div>
-
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-primary" id="saveBtn">
-                            <span class="loading-spinner" id="saveSpinner"></span>
-                            💾 Save & Push Update
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="card">
-                <div class="card-title">
-                    👁️ Live Preview
-                    <span class="status-badge">Auto-updates</span>
-                </div>
-
-                <div class="preview-card">
-                    <div class="preview-item">
-                        <span class="label">👤 Sender</span>
-                        <span class="value" id="previewSender">John Doe</span>
-                    </div>
-                    <div class="preview-item">
-                        <span class="label">🏦 Recipient</span>
-                        <span class="value" id="previewRecipient">Jane Smith</span>
-                    </div>
-                    <div class="preview-item">
-                        <span class="label">💰 Amount</span>
-                        <span class="value" id="previewAmount">1,245.50 USDT</span>
-                    </div>
-                    <div class="preview-item">
-                        <span class="label">📅 Date</span>
-                        <span class="value" id="previewDate">2026-08-19 14:30:45 UTC</span>
-                    </div>
-                    <div class="preview-item">
-                        <span class="label">💳 Method</span>
-                        <span class="value" id="previewMethod">Bank Transfer - Chase</span>
-                    </div>
-                    <div class="preview-item">
-                        <span class="label">📎 Reference</span>
-                        <span class="value" id="previewReference">PAY-2026-08-19-0042</span>
-                    </div>
-                    <div class="preview-item">
-                        <span class="label">🔄 Status</span>
-                        <span class="value green" id="previewStatus">Awaiting Funds</span>
+                    <div class="form-group">
+                        <label>🏦 Recipient</label>
+                        <input type="text" id="recipientInput" value="Jane Smith" />
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>💰 Amount</label>
+                        <input type="text" id="amountInput" value="1,245.50" />
+                    </div>
+                    <div class="form-group">
+                        <label>💱 Currency</label>
+                        <input type="text" id="currencyInput" value="USDT" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📅 Date & Time</label>
+                        <input type="text" id="dateInput" value="2026-08-19 14:30:45 UTC" />
+                    </div>
+                    <div class="form-group">
+                        <label>💳 Payment Method</label>
+                        <input type="text" id="methodInput" value="Bank Transfer - Chase" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📎 Reference</label>
+                        <input type="text" id="referenceInput" value="PAY-2026-08-19-0042" />
+                    </div>
+                    <div class="form-group">
+                        <label>🔄 Status</label>
+                        <input type="text" id="statusInput" value="Awaiting Funds" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>🔗 Transaction ID</label>
+                    <input type="text" id="txInput" value="0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a" />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📌 Status Title</label>
+                        <input type="text" id="statusTitleInput" value="Awaiting Funds" />
+                    </div>
+                    <div class="form-group">
+                        <label>📝 Status Subtitle</label>
+                        <input type="text" id="statusSubtitleInput" value="Payment is being processed, please wait" />
+                    </div>
+                </div>
+                <button type="button" class="btn" id="saveBtn" style="margin-top:1rem;">
+                    <span class="spinner" id="saveSpinner"></span>
+                    💾 Save & Push Update
+                </button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2 style="margin-bottom:1.5rem; font-size:1.125rem;">👁️ Live Preview</h2>
+            <div class="preview-card">
+                <div class="preview-item"><span class="label">👤 Sender</span><span class="value" id="previewSender">John Doe</span></div>
+                <div class="preview-item"><span class="label">🏦 Recipient</span><span class="value" id="previewRecipient">Jane Smith</span></div>
+                <div class="preview-item"><span class="label">💰 Amount</span><span class="value" id="previewAmount">1,245.50 USDT</span></div>
+                <div class="preview-item"><span class="label">🔄 Status</span><span class="value" id="previewStatus" style="color:#FFB800;">Awaiting Funds</span></div>
             </div>
         </div>
     </div>
@@ -452,24 +287,18 @@
         }
 
         // ============================================
-        // UPDATE LIVE PREVIEW
+        // UPDATE PREVIEW
         // ============================================
         function updatePreview() {
             var data = getFormData();
             document.getElementById('previewSender').textContent = data.sender || 'N/A';
             document.getElementById('previewRecipient').textContent = data.recipient || 'N/A';
             document.getElementById('previewAmount').textContent = (data.amount || '0') + ' ' + (data.currency || 'USDT');
-            document.getElementById('previewDate').textContent = data.date || 'N/A';
-            document.getElementById('previewMethod').textContent = data.method || 'N/A';
-            document.getElementById('previewReference').textContent = data.reference || 'N/A';
             document.getElementById('previewStatus').textContent = data.status || 'Awaiting Funds';
         }
 
-        // ============================================
-        // AUTO-UPDATE PREVIEW ON INPUT
-        // ============================================
-        document.querySelectorAll('#adminForm input').forEach(function(input) {
-            input.addEventListener('input', updatePreview);
+        document.querySelectorAll('#adminForm input').forEach(function(el) {
+            el.addEventListener('input', updatePreview);
         });
 
         // ============================================
@@ -480,13 +309,12 @@
 
         function showToast(message, type) {
             toast.textContent = message;
-            toast.className = 'toast';
-            if (type) toast.classList.add(type);
+            toast.className = 'toast ' + (type || '');
             toast.classList.add('show');
             clearTimeout(toastTimeout);
             toastTimeout = setTimeout(function() {
                 toast.classList.remove('show');
-            }, 2500);
+            }, 3000);
         }
 
         // ============================================
@@ -520,7 +348,9 @@
                 status_subtitle: data.statusSubtitle || 'Payment is being processed'
             };
 
-            // First, check if there's existing data
+            console.log('📤 Saving to Supabase:', updateData);
+
+            // Try to update existing record, or insert new one
             supabase
                 .from('payment_details')
                 .select('id')
@@ -530,13 +360,13 @@
                     if (result.error) throw result.error;
 
                     if (result.data && result.data.length > 0) {
-                        // Update existing record
+                        console.log('📝 Updating existing record ID:', result.data[0].id);
                         return supabase
                             .from('payment_details')
                             .update(updateData)
                             .eq('id', result.data[0].id);
                     } else {
-                        // Insert new record
+                        console.log('📝 Inserting new record');
                         return supabase
                             .from('payment_details')
                             .insert(updateData);
@@ -544,16 +374,15 @@
                 })
                 .then(function(result) {
                     if (result.error) throw result.error;
-
-                    showToast('✅ Saved! Landing page updates in 2 seconds', 'success');
-                    console.log('✅ Data saved to Supabase:', updateData);
-
+                    console.log('✅ Save successful!');
+                    showToast('✅ Saved! Landing page will update in 2 seconds', 'success');
                     btn.disabled = false;
                     spinner.classList.remove('active');
+                    updatePreview();
                 })
                 .catch(function(error) {
                     console.error('❌ Save error:', error);
-                    showToast('❌ Save failed: ' + error.message, 'error');
+                    showToast('❌ Error: ' + error.message, 'error');
                     btn.disabled = false;
                     spinner.classList.remove('active');
                 });
@@ -564,7 +393,7 @@
         // ============================================
         document.getElementById('saveBtn').addEventListener('click', saveToSupabase);
 
-        // Ctrl+S shortcut
+        // Ctrl+S
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.key === 's') {
                 e.preventDefault();
@@ -573,13 +402,47 @@
         });
 
         // ============================================
-        // INITIALIZE
+        // LOAD CURRENT DATA FROM SUPABASE
+        // ============================================
+        function loadCurrentData() {
+            supabase
+                .from('payment_details')
+                .select('*')
+                .order('id', { ascending: false })
+                .limit(1)
+                .then(function(result) {
+                    if (result.error) throw result.error;
+                    if (result.data && result.data.length > 0) {
+                        var r = result.data[0];
+                        document.getElementById('senderInput').value = r.sender || '';
+                        document.getElementById('recipientInput').value = r.recipient || '';
+                        document.getElementById('amountInput').value = r.amount || '';
+                        document.getElementById('currencyInput').value = r.currency || 'USDT';
+                        document.getElementById('dateInput').value = r.date_time || '';
+                        document.getElementById('methodInput').value = r.payment_method || '';
+                        document.getElementById('referenceInput').value = r.reference || '';
+                        document.getElementById('statusInput').value = r.status || 'Awaiting Funds';
+                        document.getElementById('txInput').value = r.transaction_id || '';
+                        document.getElementById('statusTitleInput').value = r.status_title || 'Awaiting Funds';
+                        document.getElementById('statusSubtitleInput').value = r.status_subtitle || '';
+                        updatePreview();
+                        console.log('📂 Loaded data from Supabase');
+                    }
+                })
+                .catch(function(error) {
+                    console.log('ℹ️ No data in Supabase yet');
+                });
+        }
+
+        // ============================================
+        // INIT
         // ============================================
         function init() {
+            loadCurrentData();
             updatePreview();
             console.log('⚙️ Admin Panel ready');
-            console.log('🔗 Supabase URL:', SUPABASE_URL);
-            console.log('💾 Click "Save & Push Update" to save changes');
+            console.log('🔗 URL:', SUPABASE_URL);
+            console.log('💾 Edit details and click "Save & Push Update"');
         }
 
         init();
