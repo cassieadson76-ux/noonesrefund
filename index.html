@@ -822,32 +822,127 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIG - FIXED URL
+        // SUPABASE CONFIG - READS FROM SUPABASE (ALL DEVICES)
         // ============================================
         var SUPABASE_URL = 'https://precvldulohwudpfmzsn.supabase.co';
         var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZWN2bGR1bG9od3VkcGZtenNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMDMwNzUsImV4cCI6MjEwMjU3OTA3NX0.BYpgOVlLG1cw5pdYfjrhI_bP615ALKCr1tb9U5Ooc0c';
 
         var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        var currentData = null;
 
         // ============================================
-        // THEME TOGGLE
+        // DISPLAY DATA ON PAGE
         // ============================================
-        var themeToggle = document.getElementById('themeToggle');
-        var themeThumb = themeToggle.querySelector('.theme-thumb');
-        var savedTheme = localStorage.getItem('theme-preference');
-        if (savedTheme === 'dark') {
-            themeToggle.classList.add('active');
-            themeThumb.textContent = '☀️';
-            document.documentElement.setAttribute('data-mantine-color-scheme', 'dark');
+        function displayData(data) {
+            if (!data) return;
+            
+            document.getElementById('senderValue').textContent = data.sender || 'John Doe';
+            document.getElementById('recipientValue').textContent = data.recipient || 'Jane Smith';
+            document.getElementById('amountValue').textContent = data.amount || '1,245.50';
+            document.getElementById('amountDetailValue').textContent = (data.amount || '1,245.50') + ' ' + (data.currency || 'USDT');
+            document.getElementById('dateValue').textContent = data.date || '2026-08-17 14:30:45 UTC';
+            document.getElementById('methodValue').textContent = data.method || 'Bank Transfer - Chase';
+            document.getElementById('referenceValue').textContent = data.reference || 'PAY-2026-08-17-0042';
+            document.getElementById('statusValue').textContent = data.status || 'Awaiting Funds';
+            document.getElementById('txValue').textContent = data.txId || '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a';
+            document.getElementById('statusTitle').textContent = data.statusTitle || 'Awaiting Funds';
+            document.getElementById('statusSubtitle').textContent = data.statusSubtitle || 'Payment is being processed, please wait';
+
+            // Update USD amount
+            var numAmount = parseFloat(String(data.amount || '0').replace(/,/g, ''));
+            if (!isNaN(numAmount)) {
+                document.querySelector('.amount-usd').textContent = '≈ $' + numAmount.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) + ' USD';
+            }
+
+            console.log('✅ Displayed data from Supabase:', data);
         }
-        themeToggle.addEventListener('click', function() {
-            this.classList.toggle('active');
-            var isDark = this.classList.contains('active');
-            themeThumb.textContent = isDark ? '☀️' : '🌙';
-            document.documentElement.setAttribute('data-mantine-color-scheme', isDark ? 'dark' : 'light');
-            localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
-        });
+
+        // ============================================
+        // LOAD DATA FROM SUPABASE
+        // ============================================
+        function loadData() {
+            console.log('📡 Loading data from Supabase...');
+            
+            supabaseClient
+                .from('payment_details')
+                .select('*')
+                .order('id', { ascending: false })
+                .limit(1)
+                .then(function(result) {
+                    var data = result.data;
+                    var error = result.error;
+                    
+                    if (error) throw error;
+                    
+                    if (data && data.length > 0) {
+                        var record = data[0];
+                        var formattedData = {
+                            sender: record.sender,
+                            recipient: record.recipient,
+                            amount: record.amount,
+                            currency: record.currency,
+                            date: record.date_time,
+                            method: record.payment_method,
+                            reference: record.reference,
+                            status: record.status,
+                            txId: record.transaction_id,
+                            statusTitle: record.status_title,
+                            statusSubtitle: record.status_subtitle
+                        };
+                        displayData(formattedData);
+                        console.log('📂 Data loaded from Supabase successfully!');
+                    } else {
+                        console.log('ℹ️ No data found, using defaults');
+                    }
+                })
+                .catch(function(error) {
+                    console.error('❌ Supabase load failed:', error);
+                });
+        }
+
+        // ============================================
+        // REALTIME SUBSCRIPTION - AUTO-UPDATE IN REAL-TIME
+        // ============================================
+        function setupRealtimeSubscription() {
+            var channel = supabaseClient
+                .channel('payment-changes')
+                .on(
+                    'postgres_changes', {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'payment_details'
+                    },
+                    function(payload) {
+                        console.log('📡 Real-time update received!', payload);
+                        var record = payload.new;
+                        if (record) {
+                            var formattedData = {
+                                sender: record.sender,
+                                recipient: record.recipient,
+                                amount: record.amount,
+                                currency: record.currency,
+                                date: record.date_time,
+                                method: record.payment_method,
+                                reference: record.reference,
+                                status: record.status,
+                                txId: record.transaction_id,
+                                statusTitle: record.status_title,
+                                statusSubtitle: record.status_subtitle
+                            };
+                            displayData(formattedData);
+                            showToast('🔄 Payment updated in real-time!', 'success');
+                        }
+                    }
+                )
+                .subscribe(function(status) {
+                    console.log('📡 Realtime subscription status:', status);
+                    if (status === 'SUBSCRIBED') {
+                        console.log('✅ Real-time listening active!');
+                    }
+                });
+        }
 
         // ============================================
         // TOAST NOTIFICATION
@@ -867,188 +962,23 @@
         }
 
         // ============================================
-        // DISPLAY PAYMENT DATA
+        // THEME TOGGLE
         // ============================================
-        function displayPaymentData(data) {
-            if (!data) return;
-
-            var senderEl = document.getElementById('senderValue');
-            var recipientEl = document.getElementById('recipientValue');
-            var amountEl = document.getElementById('amountValue');
-            var amountDetailEl = document.getElementById('amountDetailValue');
-            var dateEl = document.getElementById('dateValue');
-            var methodEl = document.getElementById('methodValue');
-            var referenceEl = document.getElementById('referenceValue');
-            var statusEl = document.getElementById('statusValue');
-            var txEl = document.getElementById('txValue');
-            var statusTitleEl = document.getElementById('statusTitle');
-            var statusSubtitleEl = document.getElementById('statusSubtitle');
-            var usdEl = document.querySelector('.amount-usd');
-
-            if (currentData && JSON.stringify(currentData) === JSON.stringify(data)) {
-                return;
-            }
-
-            if (senderEl && data.sender) senderEl.textContent = data.sender;
-            if (recipientEl && data.recipient) recipientEl.textContent = data.recipient;
-            if (data.amount) {
-                var formattedAmount = typeof data.amount === 'number' ? data.amount.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }) : data.amount;
-                if (amountEl) amountEl.textContent = formattedAmount;
-                if (amountDetailEl) amountDetailEl.textContent = formattedAmount + ' ' + (data.currency || 'USDT');
-                var numAmount = parseFloat(String(data.amount).replace(/,/g, ''));
-                if (!isNaN(numAmount) && usdEl) {
-                    usdEl.textContent = '≈ $' + numAmount.toLocaleString('en-US', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    }) + ' USD';
-                }
-            }
-            if (dateEl && data.date) {
-                try {
-                    var d = new Date(data.date);
-                    if (!isNaN(d.getTime())) {
-                        dateEl.textContent = d.toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
-                    } else {
-                        dateEl.textContent = data.date;
-                    }
-                } catch (e) {
-                    dateEl.textContent = data.date;
-                }
-            }
-            if (methodEl && data.method) methodEl.textContent = data.method;
-            if (referenceEl && data.reference) referenceEl.textContent = data.reference;
-            if (statusEl && data.status) statusEl.textContent = data.status;
-            if (txEl && data.txId) txEl.textContent = data.txId;
-            if (statusTitleEl && data.statusTitle) statusTitleEl.textContent = data.statusTitle;
-            if (statusSubtitleEl && data.statusSubtitle) statusSubtitleEl.textContent = data.statusSubtitle;
-
-            currentData = data;
-            console.log('📂 Displayed updated data');
+        var themeToggle = document.getElementById('themeToggle');
+        var themeThumb = themeToggle.querySelector('.theme-thumb');
+        var savedTheme = localStorage.getItem('theme-preference');
+        if (savedTheme === 'dark') {
+            themeToggle.classList.add('active');
+            themeThumb.textContent = '☀️';
+            document.documentElement.setAttribute('data-mantine-color-scheme', 'dark');
         }
-
-        // ============================================
-        // LOAD PAYMENT DATA - PRIORITIZES LOCALSTORAGE
-        // ============================================
-        function loadPaymentData() {
-            var savedData = localStorage.getItem('paymentData');
-            if (savedData) {
-                try {
-                    var data = JSON.parse(savedData);
-                    if (data.sender && data.recipient) {
-                        displayPaymentData(data);
-                        console.log('📂 Data loaded from localStorage (admin edit)');
-                        return true;
-                    }
-                } catch (e) {
-                    console.log('Invalid localStorage data');
-                }
-            }
-
-            supabaseClient
-                .from('payment_details')
-                .select('*')
-                .order('id', { ascending: false })
-                .limit(1)
-                .then(function(result) {
-                    var data = result.data;
-                    var error = result.error;
-                    if (error) throw error;
-                    if (data && data.length > 0) {
-                        var record = data[0];
-                        var newData = {
-                            sender: record.sender,
-                            recipient: record.recipient,
-                            amount: record.amount,
-                            currency: record.currency,
-                            date: record.date_time,
-                            method: record.payment_method,
-                            reference: record.reference,
-                            status: record.status,
-                            txId: record.transaction_id,
-                            statusTitle: record.status_title,
-                            statusSubtitle: record.status_subtitle
-                        };
-                        displayPaymentData(newData);
-                        console.log('📂 Data loaded from Supabase');
-                    } else {
-                        var defaultData = {
-                            sender: 'John Doe',
-                            recipient: 'Jane Smith',
-                            amount: '1,245.50',
-                            currency: 'USDT',
-                            date: '2026-08-17 14:30:45 UTC',
-                            method: 'Bank Transfer - Chase',
-                            reference: 'PAY-2026-08-17-0042',
-                            status: 'Awaiting Funds',
-                            txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
-                            statusTitle: 'Awaiting Funds',
-                            statusSubtitle: 'Payment is being processed, please wait'
-                        };
-                        displayPaymentData(defaultData);
-                        console.log('📂 No data found, using defaults');
-                    }
-                })
-                .catch(function(error) {
-                    console.warn('⚠️ Supabase load failed:', error);
-                });
-        }
-
-        // ============================================
-        // LISTEN FOR STORAGE EVENTS (INSTANT UPDATES)
-        // ============================================
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'paymentData' && e.newValue) {
-                try {
-                    var data = JSON.parse(e.newValue);
-                    if (data.sender && data.recipient) {
-                        displayPaymentData(data);
-                        console.log('📂 localStorage updated from another tab');
-                        showToast('🔄 Payment details updated!', 'success');
-                    }
-                } catch (e) {}
-            }
+        themeToggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+            var isDark = this.classList.contains('active');
+            themeThumb.textContent = isDark ? '☀️' : '🌙';
+            document.documentElement.setAttribute('data-mantine-color-scheme', isDark ? 'dark' : 'light');
+            localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
         });
-
-        // ============================================
-        // REALTIME SUBSCRIPTION (FALLBACK)
-        // ============================================
-        function setupRealtimeSubscription() {
-            var channel = supabaseClient
-                .channel('payment_changes')
-                .on(
-                    'postgres_changes', {
-                        event: 'UPDATE',
-                        schema: 'public',
-                        table: 'payment_details'
-                    },
-                    function(payload) {
-                        console.log('📡 Real-time update received!', payload);
-                        var record = payload.new;
-                        var newData = {
-                            sender: record.sender,
-                            recipient: record.recipient,
-                            amount: record.amount,
-                            currency: record.currency,
-                            date: record.date_time,
-                            method: record.payment_method,
-                            reference: record.reference,
-                            status: record.status,
-                            txId: record.transaction_id,
-                            statusTitle: record.status_title,
-                            statusSubtitle: record.status_subtitle
-                        };
-                        displayPaymentData(newData);
-                        localStorage.setItem('paymentData', JSON.stringify(newData));
-                        showToast('🔄 Payment details updated in real-time!', 'success');
-                    }
-                )
-                .subscribe(function(status) {
-                    console.log('📡 Realtime subscription status:', status);
-                });
-        }
 
         // ============================================
         // COPY TO CLIPBOARD
@@ -1149,22 +1079,6 @@
         });
 
         // ============================================
-        // KEYBOARD SHORTCUTS
-        // ============================================
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.key === 'c') {
-                var activeElement = document.activeElement;
-                if (activeElement && activeElement.closest('.detail-item')) {
-                    var copyBtn = activeElement.closest('.detail-item').querySelector('.copy-btn');
-                    if (copyBtn) {
-                        e.preventDefault();
-                        copyBtn.click();
-                    }
-                }
-            }
-        });
-
-        // ============================================
         // CHECK CONNECTION
         // ============================================
         function checkConnection() {
@@ -1175,10 +1089,10 @@
                 .then(function(result) {
                     var error = result.error;
                     if (error) throw error;
-                    console.log('✅ Supabase connected');
+                    console.log('✅ Supabase connected successfully!');
                 })
                 .catch(function(error) {
-                    console.warn('⚠️ Supabase connection error:', error);
+                    console.warn('⚠️ Supabase connection warning:', error);
                 });
         }
 
@@ -1186,32 +1100,17 @@
         // INITIALIZE
         // ============================================
         function init() {
+            console.log('🚀 Initializing Landing Page (reads from Supabase)');
+            console.log('📡 Using Supabase URL:', SUPABASE_URL);
+            
             checkConnection();
-            loadPaymentData();
+            loadData();
             setupRealtimeSubscription();
-
-            var lastData = localStorage.getItem('paymentData');
-            setInterval(function() {
-                var currentData = localStorage.getItem('paymentData');
-                if (currentData !== lastData) {
-                    lastData = currentData;
-                    if (currentData) {
-                        try {
-                            var data = JSON.parse(currentData);
-                            if (data.sender && data.recipient) {
-                                displayPaymentData(data);
-                                console.log('📂 localStorage updated (polling)');
-                                showToast('🔄 Payment details updated!', 'success');
-                            }
-                        } catch (e) {}
-                    }
-                }
-            }, 1000);
 
             console.log('%c 💰 NoOnes Payment Confirmation ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
             console.log('%c 🔒 Protected by NoOnes ', 'color: #07B979; font-size: 12px; font-weight: bold;');
-            console.log('%c 💾 Changes persist until you edit again in admin ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
-            console.log('%c 📡 Checks localStorage every 1 second for instant updates ', 'color: #6B7A75; font-size: 12px;');
+            console.log('%c 🌍 Updates work on ALL devices and browsers! ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
+            console.log('%c 📡 Real-time updates via Supabase ', 'color: #6B7A75; font-size: 12px;');
         }
 
         document.addEventListener('DOMContentLoaded', init);
