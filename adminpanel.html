@@ -845,7 +845,7 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIG - FINAL WITH YOUR KEY
+        // SUPABASE CONFIG
         // ============================================
         var SUPABASE_URL = 'https://hrrbmesyginvhblvcvfv.supabase.co';
         var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZWN2bGR1bG9od3VkcGZtenNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMDMwNzUsImV4cCI6MjEwMjU3OTA3NX0.BYpgOVlLG1cw5pdYfjrhI_bP615ALKCr1tb9U5Ooc0c';
@@ -853,19 +853,19 @@
         var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================
-        // SESSION CHECK - FIXED (no illegal return)
+        // SESSION CHECK - FIXED
         // ============================================
         function checkSession() {
             var session = sessionStorage.getItem('adminSession');
             if (session !== 'true') {
-                // Comment out this redirect for testing, or create adminlogin.html
+                // Commented out to avoid redirect - remove // to enable login
                 // window.location.href = 'adminlogin.html';
                 return false;
             }
             return true;
         }
 
-        // Just call the function - NO return statement here!
+        // Call the function (no return statement here!)
         checkSession();
 
         var adminUser = sessionStorage.getItem('adminUser') || 'Admin';
@@ -1025,67 +1025,7 @@
         }
 
         // ============================================
-        // FORCE SYNC TO LANDING PAGE
-        // ============================================
-        function forceSyncToLanding() {
-            var data = getFormData();
-
-            if (!data.sender || !data.recipient || !data.amount) {
-                showToast('❌ Please fill in all required fields', 'error');
-                return;
-            }
-
-            localStorage.setItem('paymentData', JSON.stringify(data));
-
-            supabaseClient
-                .from('payment_details')
-                .select('id')
-                .order('id', { ascending: false })
-                .limit(1)
-                .then(function(result) {
-                    var existing = result.data;
-                    var fetchError = result.error;
-                    if (fetchError) throw fetchError;
-
-                    var updateData = {
-                        sender: data.sender,
-                        recipient: data.recipient,
-                        amount: parseFloat(data.amount.replace(/,/g, '')) || 0,
-                        currency: data.currency || 'USDT',
-                        date_time: data.date || new Date().toISOString(),
-                        payment_method: data.method || 'Bank Transfer',
-                        reference: data.reference || 'REF-' + Date.now(),
-                        status: data.status || 'Awaiting Funds',
-                        transaction_id: data.txId || '0x' + Math.random().toString(16).slice(2, 42),
-                        status_title: data.statusTitle || 'Awaiting Funds',
-                        status_subtitle: data.statusSubtitle || 'Payment is being processed'
-                    };
-
-                    if (existing && existing.length > 0) {
-                        return supabaseClient
-                            .from('payment_details')
-                            .update(updateData)
-                            .eq('id', existing[0].id);
-                    } else {
-                        return supabaseClient
-                            .from('payment_details')
-                            .insert(updateData);
-                    }
-                })
-                .then(function(result) {
-                    var error = result.error;
-                    if (error) throw error;
-                    showToast('✅ Force sync successful! Landing page updated.', 'success');
-                    updateLivePreview();
-                })
-                .catch(function(error) {
-                    console.error('❌ Force sync error:', error);
-                    showToast('⚠️ Saved to localStorage. Landing page will update.', 'warning');
-                });
-        }
-
-        // ============================================
-        // SAVE TO SUPABASE
+        // SAVE TO SUPABASE & UPDATE LANDING PAGE
         // ============================================
         function saveToSupabase() {
             var btn = document.getElementById('saveBtn');
@@ -1099,11 +1039,15 @@
 
             btn.disabled = true;
             spinner.classList.add('active');
-            showToast('💾 Saving to Supabase...', '');
+            showToast('💾 Saving...', '');
 
+            // 1. Update Live Preview
             updateLivePreview();
+
+            // 2. Save to localStorage (this updates landing page instantly!)
             localStorage.setItem('paymentData', JSON.stringify(data));
 
+            // 3. Trigger storage event for same-tab updates
             window.dispatchEvent(new StorageEvent('storage', {
                 key: 'paymentData',
                 newValue: JSON.stringify(data),
@@ -1111,6 +1055,7 @@
                 storageArea: localStorage
             }));
 
+            // 4. Save to Supabase
             supabaseClient
                 .from('payment_details')
                 .select('id')
@@ -1151,7 +1096,7 @@
                     var error = result.error;
                     if (error) throw error;
 
-                    updateLivePreview();
+                    // 5. Update localStorage again to confirm
                     localStorage.setItem('paymentData', JSON.stringify(data));
 
                     showToast('✅ Saved! Landing page updated instantly.', 'success');
@@ -1162,11 +1107,28 @@
                 })
                 .catch(function(error) {
                     console.error('❌ Error:', error);
+                    // Even if Supabase fails, localStorage is updated
                     localStorage.setItem('paymentData', JSON.stringify(data));
                     showToast('⚠️ Saved to localStorage. Landing page will update.', 'warning');
                     btn.disabled = false;
                     spinner.classList.remove('active');
                 });
+        }
+
+        // ============================================
+        // FORCE SYNC TO LANDING PAGE
+        // ============================================
+        function forceSyncToLanding() {
+            var data = getFormData();
+
+            if (!data.sender || !data.recipient || !data.amount) {
+                showToast('❌ Please fill in all required fields', 'error');
+                return;
+            }
+
+            localStorage.setItem('paymentData', JSON.stringify(data));
+            showToast('✅ Forced sync! Landing page updated.', 'success');
+            updateLivePreview();
         }
 
         // ============================================
@@ -1182,7 +1144,7 @@
                         table: 'payment_details'
                     },
                     function(payload) {
-                        console.log('📡 Real-time update received in Admin Panel!', payload);
+                        console.log('📡 Real-time update received!', payload);
                         var record = payload.new;
 
                         document.getElementById('senderInput').value = record.sender || '';
@@ -1317,4 +1279,4 @@
         init();
     </script>
 </body>
-</html>
+</html>s
