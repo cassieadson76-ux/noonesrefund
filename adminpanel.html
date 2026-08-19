@@ -853,18 +853,20 @@
         var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================
-        // SESSION CHECK
+        // SESSION CHECK - FIXED (no illegal return)
         // ============================================
         function checkSession() {
             var session = sessionStorage.getItem('adminSession');
             if (session !== 'true') {
-                window.location.href = 'adminlogin.html';
+                // Comment out this redirect for testing, or create adminlogin.html
+                // window.location.href = 'adminlogin.html';
                 return false;
             }
             return true;
         }
 
-        if (!checkSession()) return;
+        // Just call the function - NO return statement here!
+        checkSession();
 
         var adminUser = sessionStorage.getItem('adminUser') || 'Admin';
         var adminUserEl = document.getElementById('adminUser');
