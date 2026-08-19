@@ -845,10 +845,10 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIG - UPDATED
+        // SUPABASE CONFIG - FINAL WITH YOUR KEY
         // ============================================
         var SUPABASE_URL = 'https://hrrbmesyginvhblvcvfv.supabase.co';
-        var SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE'; // <-- REPLACE WITH YOUR ACTUAL ANON KEY
+        var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZWN2bGR1bG9od3VkcGZtenNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMDMwNzUsImV4cCI6MjEwMjU3OTA3NX0.BYpgOVlLG1cw5pdYfjrhI_bP615ALKCr1tb9U5Ooc0c';
 
         var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -1009,7 +1009,6 @@
                         document.getElementById('statusSubtitleInput').value = record.status_subtitle || '';
 
                         updateLivePreview();
-                        // Also save to localStorage to keep sync
                         var dataToSave = getFormData();
                         localStorage.setItem('paymentData', JSON.stringify(dataToSave));
                         showToast('✅ Data loaded from Supabase!', 'success');
@@ -1034,10 +1033,8 @@
                 return;
             }
 
-            // Save to localStorage (landing page reads this)
             localStorage.setItem('paymentData', JSON.stringify(data));
 
-            // Also update Supabase
             supabaseClient
                 .from('payment_details')
                 .select('id')
@@ -1081,13 +1078,12 @@
                 })
                 .catch(function(error) {
                     console.error('❌ Force sync error:', error);
-                    // Even if Supabase fails, localStorage is updated
                     showToast('⚠️ Saved to localStorage. Landing page will update.', 'warning');
                 });
         }
 
         // ============================================
-        // SAVE TO SUPABASE - INSTANT LANDING PAGE UPDATE
+        // SAVE TO SUPABASE
         // ============================================
         function saveToSupabase() {
             var btn = document.getElementById('saveBtn');
@@ -1103,13 +1099,9 @@
             spinner.classList.add('active');
             showToast('💾 Saving to Supabase...', '');
 
-            // Update Live Preview immediately
             updateLivePreview();
-
-            // SAVE TO LOCALSTORAGE - THIS UPDATES LANDING PAGE INSTANTLY
             localStorage.setItem('paymentData', JSON.stringify(data));
 
-            // Also trigger a storage event for same-tab updates
             window.dispatchEvent(new StorageEvent('storage', {
                 key: 'paymentData',
                 newValue: JSON.stringify(data),
@@ -1117,7 +1109,6 @@
                 storageArea: localStorage
             }));
 
-            // Update Supabase
             supabaseClient
                 .from('payment_details')
                 .select('id')
@@ -1158,10 +1149,7 @@
                     var error = result.error;
                     if (error) throw error;
 
-                    // Update Live Preview again
                     updateLivePreview();
-
-                    // Keep localStorage in sync
                     localStorage.setItem('paymentData', JSON.stringify(data));
 
                     showToast('✅ Saved! Landing page updated instantly.', 'success');
@@ -1172,7 +1160,6 @@
                 })
                 .catch(function(error) {
                     console.error('❌ Error:', error);
-                    // Even if Supabase fails, localStorage is updated (landing page fallback)
                     localStorage.setItem('paymentData', JSON.stringify(data));
                     showToast('⚠️ Saved to localStorage. Landing page will update.', 'warning');
                     btn.disabled = false;
@@ -1325,8 +1312,7 @@
             console.log('%c 💡 Press Ctrl+S to save quickly ', 'color: #6B7A75; font-size: 12px;');
         }
 
-        // Run initialization
         init();
     </script>
 </body>
-</html>s
+</html>
