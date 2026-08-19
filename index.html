@@ -360,7 +360,7 @@
 
         var supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Default data (used if Supabase has no data)
+        // Default data
         var defaultData = {
             sender: 'John Doe',
             recipient: 'Jane Smith',
@@ -375,11 +375,20 @@
             statusSubtitle: 'Payment is being processed, please wait'
         };
 
+        var currentData = null;
+
         // ============================================
         // DISPLAY DATA ON PAGE
         // ============================================
         function displayData(data) {
             if (!data) data = defaultData;
+
+            // Check if data actually changed
+            if (currentData && JSON.stringify(currentData) === JSON.stringify(data)) {
+                return;
+            }
+
+            currentData = data;
 
             document.getElementById('senderValue').textContent = data.sender || defaultData.sender;
             document.getElementById('recipientValue').textContent = data.recipient || defaultData.recipient;
@@ -419,6 +428,8 @@
                 'Processing': '🔄'
             };
             document.getElementById('statusIcon').textContent = statusIcons[data.status] || '⏳';
+
+            console.log('📊 Page updated with:', data.sender);
         }
 
         // ============================================
@@ -432,7 +443,7 @@
                 .limit(1)
                 .then(function(result) {
                     if (result.error) {
-                        console.error('Supabase error:', result.error);
+                        console.error('Supabase error:', result.error.message);
                         return;
                     }
 
@@ -452,18 +463,15 @@
                             statusSubtitle: record.status_subtitle
                         };
                         displayData(data);
-                    } else {
-                        displayData(defaultData);
                     }
                 })
                 .catch(function(error) {
-                    console.error('Load failed:', error);
-                    displayData(defaultData);
+                    console.error('Load failed:', error.message);
                 });
         }
 
         // ============================================
-        // REAL-TIME SUBSCRIPTION - UPDATES INSTANTLY
+        // REAL-TIME SUBSCRIPTION
         // ============================================
         function setupRealtime() {
             var channel = supabase
@@ -471,13 +479,13 @@
                 .on(
                     'postgres_changes',
                     {
-                        event: 'UPDATE',
+                        event: '*',
                         schema: 'public',
                         table: 'payment_details'
                     },
                     function(payload) {
-                        console.log('📡 Real-time update received!');
-                        var record = payload.new;
+                        console.log('📡 Real-time update!');
+                        var record = payload.new || payload.old;
                         if (record) {
                             var data = {
                                 sender: record.sender,
@@ -496,7 +504,9 @@
                         }
                     }
                 )
-                .subscribe();
+                .subscribe(function(status) {
+                    console.log('📡 Realtime status:', status);
+                });
         }
 
         // ============================================
@@ -522,19 +532,21 @@
         // INITIALIZE
         // ============================================
         function init() {
-            // Load data once on page load
+            console.log('🚀 Payment page loading...');
+
+            // Load data immediately
             loadData();
 
-            // Setup real-time updates
+            // Setup real-time
             setupRealtime();
 
-            // Also reload data every 3 seconds (fallback for real-time issues)
-            setInterval(loadData, 3000);
+            // ALSO reload every 2 seconds (guaranteed updates!)
+            setInterval(loadData, 2000);
 
-            console.log('✅ Payment page ready - updates in real-time!');
+            console.log('✅ Page ready - updates every 2 seconds');
         }
 
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
-</html>
+</html>s
