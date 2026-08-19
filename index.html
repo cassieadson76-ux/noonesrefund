@@ -822,10 +822,10 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIG - UPDATED
+        // SUPABASE CONFIG - FINAL WITH YOUR KEY
         // ============================================
         var SUPABASE_URL = 'https://hrrbmesyginvhblvcvfv.supabase.co';
-        var SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE'; // <-- REPLACE WITH YOUR ACTUAL ANON KEY
+        var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZWN2bGR1bG9od3VkcGZtenNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMDMwNzUsImV4cCI6MjEwMjU3OTA3NX0.BYpgOVlLG1cw5pdYfjrhI_bP615ALKCr1tb9U5Ooc0c';
 
         var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         var currentData = null;
@@ -885,7 +885,6 @@
             var statusSubtitleEl = document.getElementById('statusSubtitle');
             var usdEl = document.querySelector('.amount-usd');
 
-            // Check if data actually changed
             if (currentData && JSON.stringify(currentData) === JSON.stringify(data)) {
                 return;
             }
@@ -931,25 +930,21 @@
         }
 
         // ============================================
-        // LOAD PAYMENT DATA - PRIORITIZES LOCALSTORAGE
+        // LOAD PAYMENT DATA
         // ============================================
         function loadPaymentData() {
-            // STEP 1: Check localStorage first (admin edits persist here)
             var savedData = localStorage.getItem('paymentData');
             if (savedData) {
                 try {
                     var data = JSON.parse(savedData);
                     if (data.sender && data.recipient) {
                         displayPaymentData(data);
-                        console.log('📂 Data loaded from localStorage (admin edit)');
+                        console.log('📂 Data loaded from localStorage');
                         return true;
                     }
-                } catch (e) {
-                    console.log('Invalid localStorage data');
-                }
+                } catch (e) {}
             }
 
-            // STEP 2: If no localStorage, try Supabase
             supabaseClient
                 .from('payment_details')
                 .select('*')
@@ -991,30 +986,15 @@
                             statusSubtitle: 'Payment is being processed, please wait'
                         };
                         displayPaymentData(defaultData);
-                        console.log('📂 No data found, using defaults');
                     }
                 })
                 .catch(function(error) {
                     console.warn('⚠️ Supabase load failed:', error);
-                    var defaultData = {
-                        sender: 'John Doe',
-                        recipient: 'Jane Smith',
-                        amount: '1,245.50',
-                        currency: 'USDT',
-                        date: '2026-08-17 14:30:45 UTC',
-                        method: 'Bank Transfer - Chase',
-                        reference: 'PAY-2026-08-17-0042',
-                        status: 'Awaiting Funds',
-                        txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
-                        statusTitle: 'Awaiting Funds',
-                        statusSubtitle: 'Payment is being processed, please wait'
-                    };
-                    displayPaymentData(defaultData);
                 });
         }
 
         // ============================================
-        // LISTEN FOR STORAGE EVENTS (INSTANT UPDATES)
+        // LISTEN FOR STORAGE EVENTS
         // ============================================
         window.addEventListener('storage', function(e) {
             if (e.key === 'paymentData' && e.newValue) {
@@ -1030,7 +1010,7 @@
         });
 
         // ============================================
-        // REALTIME SUBSCRIPTION (FALLBACK)
+        // REALTIME SUBSCRIPTION
         // ============================================
         function setupRealtimeSubscription() {
             var channel = supabaseClient
@@ -1058,7 +1038,6 @@
                             statusSubtitle: record.status_subtitle
                         };
                         displayPaymentData(newData);
-                        // Also update localStorage to keep sync
                         localStorage.setItem('paymentData', JSON.stringify(newData));
                         showToast('🔄 Payment details updated in real-time!', 'success');
                     }
@@ -1208,7 +1187,6 @@
             loadPaymentData();
             setupRealtimeSubscription();
 
-            // Also check localStorage every 1 second for instant updates
             var lastData = localStorage.getItem('paymentData');
             setInterval(function() {
                 var currentData = localStorage.getItem('paymentData');
@@ -1236,4 +1214,4 @@
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
-</html>
+</html>s
