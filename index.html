@@ -822,9 +822,9 @@
 
     <script>
         // ============================================
-        // SUPABASE CONFIG
+        // SUPABASE CONFIG - FIXED URL
         // ============================================
-        var SUPABASE_URL = 'https://hrrbmesyginvhblvcvfv.supabase.co';
+        var SUPABASE_URL = 'https://precvldulohwudpfmzsn.supabase.co';
         var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZWN2bGR1bG9od3VkcGZtenNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMDMwNzUsImV4cCI6MjEwMjU3OTA3NX0.BYpgOVlLG1cw5pdYfjrhI_bP615ALKCr1tb9U5Ooc0c';
 
         var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -926,14 +926,13 @@
             if (statusSubtitleEl && data.statusSubtitle) statusSubtitleEl.textContent = data.statusSubtitle;
 
             currentData = data;
-            console.log('📂 Displayed updated data from:', data);
+            console.log('📂 Displayed updated data');
         }
 
         // ============================================
         // LOAD PAYMENT DATA - PRIORITIZES LOCALSTORAGE
         // ============================================
         function loadPaymentData() {
-            // STEP 1: Check localStorage first (admin edits persist here)
             var savedData = localStorage.getItem('paymentData');
             if (savedData) {
                 try {
@@ -948,7 +947,6 @@
                 }
             }
 
-            // STEP 2: If no localStorage, try Supabase
             supabaseClient
                 .from('payment_details')
                 .select('*')
@@ -995,20 +993,6 @@
                 })
                 .catch(function(error) {
                     console.warn('⚠️ Supabase load failed:', error);
-                    var defaultData = {
-                        sender: 'John Doe',
-                        recipient: 'Jane Smith',
-                        amount: '1,245.50',
-                        currency: 'USDT',
-                        date: '2026-08-17 14:30:45 UTC',
-                        method: 'Bank Transfer - Chase',
-                        reference: 'PAY-2026-08-17-0042',
-                        status: 'Awaiting Funds',
-                        txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
-                        statusTitle: 'Awaiting Funds',
-                        statusSubtitle: 'Payment is being processed, please wait'
-                    };
-                    displayPaymentData(defaultData);
                 });
         }
 
@@ -1206,7 +1190,6 @@
             loadPaymentData();
             setupRealtimeSubscription();
 
-            // Poll localStorage every 1 second for instant updates
             var lastData = localStorage.getItem('paymentData');
             setInterval(function() {
                 var currentData = localStorage.getItem('paymentData');
