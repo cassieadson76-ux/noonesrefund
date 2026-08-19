@@ -3,25 +3,21 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta property="og:title" content="Admin Panel | NoOnes" />
-    <meta name="description" content="Manage and edit payment details with real-time updates." />
-    <title>Admin Panel | NoOnes</title>
+    <meta property="og:title" content="Payment Confirmation | NoOnes" />
+    <meta name="description" content="Accept or decline your payment securely with NoOnes protection." />
+    <title>Payment Confirmation | NoOnes</title>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&subset=cyrillic,cyrillic-ext,latin-ext&display=swap" rel="stylesheet" />
 
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
     </script>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         :root {
+            --mantine-font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+            --mantine-font-family-monospace: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
             --color-green: #07B979;
             --color-green-hover: #059E66;
             --color-light-green: #E8F8F2;
@@ -32,12 +28,21 @@
             --color-white: #FFFFFF;
             --color-body: #F8F9FA;
             --color-border: #E8EAED;
-            --color-error: #F22323;
             --color-success: #07B979;
-            --color-warning: #FF8C00;
+            --color-warning: #FFB800;
+            --color-error: #F22323;
+            --color-noones: #07B979;
+            --color-light-noones: #E8F8F2;
+            --shadow-sm: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.06);
             --shadow-md: 0 0.25rem 1rem rgba(0, 0, 0, 0.08);
             --shadow-lg: 0 0.5rem 2rem rgba(0, 0, 0, 0.12);
-            --font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+            --shadow-xl: 0 1rem 3rem rgba(0, 0, 0, 0.15);
+            --spacing-xs: 0.625rem;
+            --spacing-sm: 0.75rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
         }
 
         [data-mantine-color-scheme="dark"] {
@@ -48,77 +53,91 @@
             --color-light-grey: #2C2E33;
             --color-grey: #373A40;
             --color-border: #373A40;
-            --color-light-green: #0A3D2E;
+            --color-light-noones: #0A3D2E;
+            --shadow-sm: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 0.25rem 1rem rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 0.5rem 2rem rgba(0, 0, 0, 0.5);
+            --shadow-xl: 0 1rem 3rem rgba(0, 0, 0, 0.6);
+        }
+
+        [data-mantine-color-scheme="dark"] .bg-white {
+            background-color: #25262B;
+        }
+        [data-mantine-color-scheme="dark"] .detail-item {
+            background-color: #2C2E33;
+        }
+        [data-mantine-color-scheme="dark"] .detail-item:hover {
+            background-color: #373A40;
+        }
+        [data-mantine-color-scheme="dark"] .copy-btn {
+            background-color: #2C2E33;
+            border-color: #373A40;
+            color: #C1C2C5;
+        }
+        [data-mantine-color-scheme="dark"] .copy-btn:hover {
+            background-color: #373A40;
+        }
+        [data-mantine-color-scheme="dark"] .copy-btn.copied {
+            background-color: #0A3D2E;
+            border-color: #07B979;
+            color: #07B979;
+        }
+        [data-mantine-color-scheme="dark"] .amount-display {
+            color: #07B979;
+        }
+        [data-mantine-color-scheme="dark"] .transaction-id {
+            background-color: #2C2E33;
+        }
+        [data-mantine-color-scheme="dark"] .noones-badge {
+            background: #0A3D2E;
+            border-color: #07B979;
+        }
+        [data-mantine-color-scheme="dark"] .btn-accept {
+            background-color: #07B979;
+        }
+        [data-mantine-color-scheme="dark"] .btn-accept:hover {
+            background-color: #059E66;
+        }
+        [data-mantine-color-scheme="dark"] .btn-decline {
+            background-color: #F22323;
+        }
+        [data-mantine-color-scheme="dark"] .btn-decline:hover {
+            background-color: #C41E1E;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: var(--font-family);
+            font-family: var(--mantine-font-family);
             background-color: var(--color-body);
             color: var(--color-text);
             min-height: 100vh;
-            padding: 1.5rem;
+            padding: var(--spacing-lg);
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 720px;
             margin: 0 auto;
         }
 
         .header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
+            justify-content: flex-end;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-md);
             border-bottom: 1px solid var(--color-border);
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .header h1 {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--color-text);
-        }
-        .header h1 span {
-            color: var(--color-green);
         }
 
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .user-badge {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.375rem 0.875rem;
-            background: var(--color-light-green);
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--color-green);
-        }
-
-        .user-badge .logout-btn {
-            background: none;
-            border: none;
-            color: var(--color-text-secondary);
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 0.125rem 0.375rem;
-            border-radius: 0.25rem;
-            transition: all 0.2s ease;
-            font-family: var(--font-family);
-        }
-        .user-badge .logout-btn:hover {
-            background: rgba(242, 35, 35, 0.1);
-            color: var(--color-error);
+            gap: var(--spacing-md);
         }
 
         .theme-toggle {
@@ -134,10 +153,12 @@
             padding: 0.125rem;
             transition: all 0.3s ease;
         }
+
         .theme-toggle.active {
             background-color: #2C2E33;
             border-color: #4A4C50;
         }
+
         .theme-thumb {
             width: 1.125rem;
             height: 1.125rem;
@@ -150,335 +171,387 @@
             justify-content: center;
             font-size: 10px;
         }
+
         .theme-toggle.active .theme-thumb {
             transform: translateX(1.25rem);
-        }
-
-        .view-link {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: var(--color-light-grey);
-            border-radius: 0.5rem;
-            color: var(--color-text-secondary);
-            text-decoration: none;
-            font-size: 0.875rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-        .view-link:hover {
-            background: var(--color-border);
-            color: var(--color-green);
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: var(--color-light-green);
-            color: var(--color-green);
-            border-radius: 9999px;
-            font-size: 0.625rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .realtime-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: #FFF3E0;
-            color: #FF8C00;
-            border-radius: 9999px;
-            font-size: 0.625rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            animation: pulse-badge 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse-badge {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
         }
 
         .card {
             background-color: var(--color-white);
             border-radius: 1rem;
             box-shadow: var(--shadow-md);
-            padding: 2rem;
-            transition: background-color 0.3s ease;
-            margin-bottom: 1.5rem;
-        }
-
-        .card-title {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: var(--color-text);
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .admin-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        .admin-layout .card {
-            margin-bottom: 0;
-        }
-
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-        .form-group label {
-            display: block;
-            font-size: 0.813rem;
-            font-weight: 700;
-            color: var(--color-text-secondary);
-            margin-bottom: 0.375rem;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--color-border);
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            font-family: var(--font-family);
-            background-color: var(--color-light-grey);
-            color: var(--color-text);
-            transition: all 0.2s ease;
-        }
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--color-green);
-            box-shadow: 0 0 0 3px rgba(7, 185, 121, 0.15);
-            background-color: var(--color-white);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--color-border);
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 700;
-            font-size: 0.875rem;
-            cursor: pointer;
+            overflow: hidden;
             transition: all 0.3s ease;
-            text-align: center;
-            border: none;
-            font-family: var(--font-family);
+        }
+
+        .card-body {
+            padding: var(--spacing-xl);
+        }
+
+        .status-header {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            flex: 1;
-            min-width: 140px;
-        }
-        .btn-primary {
-            background-color: var(--color-green);
-            color: var(--color-white);
-        }
-        .btn-primary:hover {
-            background-color: var(--color-green-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(7, 185, 121, 0.3);
-        }
-        .btn-secondary {
-            background-color: var(--color-light-grey);
-            color: var(--color-text-secondary);
-        }
-        .btn-secondary:hover {
-            background-color: var(--color-border);
-            color: var(--color-text);
-            transform: translateY(-2px);
-        }
-        .btn-danger {
-            background-color: var(--color-error);
-            color: var(--color-white);
-        }
-        .btn-danger:hover {
-            opacity: 0.85;
-            transform: translateY(-2px);
-        }
-        .btn:active {
-            transform: scale(0.97) !important;
-        }
-
-        .preview-card {
-            background: var(--color-light-grey);
-            border-radius: 0.75rem;
-            padding: 1.25rem;
-        }
-
-        .preview-status-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-            padding: 0.75rem 1rem;
-            background: var(--color-light-green);
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: var(--color-light-noones);
             border-radius: 0.75rem;
             border-left: 4px solid var(--color-warning);
         }
 
-        .preview-status-icon {
-            width: 2.5rem;
-            height: 2.5rem;
+        .status-icon {
+            width: 3rem;
+            height: 3rem;
             border-radius: 9999px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             background: #FFF8E0;
             color: var(--color-warning);
+            animation: iconPulse 2s ease-in-out infinite;
             flex-shrink: 0;
         }
 
-        .preview-status-title {
-            font-size: 1rem;
-            font-weight: 700;
+        @keyframes iconPulse {
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 184, 0, 0.3);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 20px 5px rgba(255, 184, 0, 0.15);
+            }
+        }
+
+        .status-title {
+            font-size: 1.25rem;
+            font-weight: 800;
             color: var(--color-text);
         }
 
-        .preview-status-subtitle {
-            font-size: 0.75rem;
-            color: var(--color-text-secondary);
-        }
-
-        .preview-status-badge {
-            font-size: 0.625rem;
-            font-weight: 700;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            background: #FFF8E0;
-            color: var(--color-warning);
-        }
-
-        .preview-amount {
-            text-align: center;
-            padding: 1rem 0;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--color-border);
-        }
-
-        .preview-amount .amount {
-            font-size: 2.25rem;
-            font-weight: 800;
-            color: var(--color-green);
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        .preview-amount .currency {
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: var(--color-text-secondary);
-        }
-
-        .preview-amount .usd {
+        .status-subtitle {
             font-size: 0.875rem;
+            font-weight: 500;
             color: var(--color-text-secondary);
             margin-top: 0.125rem;
         }
 
-        .preview-amount .protected-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: var(--color-light-green);
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--color-green);
-            margin-top: 0.5rem;
+        .noones-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1.5rem;
+            background: var(--color-light-noones);
+            border: 2px solid var(--color-green);
+            border-radius: 0.75rem;
+            margin-bottom: var(--spacing-lg);
+            transition: all 0.3s ease;
+            animation: badgeGlow 2.5s ease-in-out infinite;
         }
 
-        .preview-grid {
-            display: grid;
-            gap: 0.5rem;
+        @keyframes badgeGlow {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(7, 185, 121, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 20px 5px rgba(7, 185, 121, 0.15);
+            }
         }
-        .preview-item {
+
+        .noones-badge .badge-icon {
+            font-size: 1.5rem;
+            color: var(--color-green);
+        }
+        .noones-badge .badge-text {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+        .noones-badge .badge-text strong {
+            color: var(--color-green);
+            font-weight: 800;
+        }
+        .noones-badge .badge-subtext {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--color-text-secondary);
+            display: block;
+            margin-top: 0.125rem;
+        }
+
+        .amount-display {
+            text-align: center;
+            padding: var(--spacing-xl) 0;
+            margin-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .amount-label {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .amount-value {
+            font-size: 2.75rem;
+            font-weight: 800;
+            font-family: var(--mantine-font-family-monospace);
+            color: var(--color-green);
+            letter-spacing: -0.5px;
+        }
+
+        .amount-currency {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-text-secondary);
+            margin-left: 0.25rem;
+        }
+
+        .amount-usd {
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+            margin-top: 0.25rem;
+            font-weight: 600;
+        }
+
+        .protected-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            background: var(--color-light-noones);
+            border: 1px solid var(--color-green);
+            border-radius: 9999px;
+            font-size: 0.813rem;
+            font-weight: 700;
+            color: var(--color-green);
+            margin-top: 0.75rem;
+        }
+
+        .details-grid {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .detail-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.5rem 0.75rem;
-            background: var(--color-white);
-            border-radius: 0.375rem;
-            font-size: 0.813rem;
+            padding: 0.875rem 1rem;
+            background-color: var(--color-light-grey);
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            cursor: default;
+            position: relative;
         }
-        .preview-item .label {
+
+        .detail-item:hover {
+            background-color: var(--color-border);
+        }
+
+        .detail-label {
+            font-size: 0.813rem;
+            font-weight: 800;
+            color: var(--color-text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+            min-width: 120px;
+        }
+
+        .detail-label .label-icon {
+            font-size: 1.1rem;
+            width: 1.5rem;
+            text-align: center;
+        }
+
+        .detail-value-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            flex: 1;
+            justify-content: flex-end;
+            min-width: 0;
+        }
+
+        .detail-value {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--color-text);
+            word-break: break-all;
+            text-align: right;
+            font-family: var(--mantine-font-family-monospace);
+        }
+
+        .detail-value.normal {
+            font-family: var(--mantine-font-family);
+            font-weight: 700;
+        }
+
+        .copy-btn {
+            flex-shrink: 0;
+            background-color: var(--color-white);
+            border: 1px solid var(--color-border);
+            border-radius: 0.375rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
             font-weight: 600;
             color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-family: var(--mantine-font-family);
         }
-        .preview-item .value {
-            font-weight: 600;
+
+        .copy-btn:hover {
+            background-color: var(--color-light-grey);
+            border-color: var(--color-green);
             color: var(--color-text);
-            text-align: right;
-            max-width: 60%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
-        .preview-item .value.green {
+        .copy-btn.copied {
+            background-color: var(--color-light-green);
+            border-color: var(--color-green);
             color: var(--color-green);
         }
 
-        .preview-tx-section {
-            margin-top: 0.75rem;
-            padding-top: 0.75rem;
+        .transaction-id-section {
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-lg);
             border-top: 1px solid var(--color-border);
         }
 
-        .preview-tx {
+        .transaction-id {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.5rem 0.75rem;
-            background: var(--color-white);
-            border-radius: 0.375rem;
-            font-size: 0.813rem;
+            padding: 0.75rem 1rem;
+            background-color: var(--color-light-grey);
+            border-radius: 0.5rem;
         }
 
-        .preview-tx .label {
-            font-weight: 600;
+        .tx-label {
+            font-size: 0.813rem;
+            font-weight: 800;
             color: var(--color-text-secondary);
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        .preview-tx .value {
-            font-weight: 600;
+        .tx-value-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        .tx-value {
+            font-size: 0.813rem;
+            font-weight: 700;
+            font-family: var(--mantine-font-family-monospace);
             color: var(--color-text);
-            font-family: monospace;
-            font-size: 0.75rem;
-            max-width: 60%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            word-break: break-all;
+            text-align: right;
+        }
+
+        .action-section {
+            margin-top: var(--spacing-xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: none;
+            font-family: var(--mantine-font-family);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-accept {
+            background-color: var(--color-green);
+            color: var(--color-white);
+            box-shadow: 0 4px 12px rgba(7, 185, 121, 0.3);
+        }
+
+        .btn-accept:hover {
+            background-color: var(--color-green-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(7, 185, 121, 0.4);
+        }
+
+        .btn-decline {
+            background-color: var(--color-error);
+            color: var(--color-white);
+            box-shadow: 0 4px 12px rgba(242, 35, 35, 0.3);
+        }
+
+        .btn-decline:hover {
+            background-color: #C41E1E;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(242, 35, 35, 0.4);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 4.5rem;
+            height: 4.5rem;
+            border-radius: 9999px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--color-green);
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .toast {
@@ -487,174 +560,119 @@
             right: 2rem;
             background-color: var(--color-text);
             color: var(--color-white);
-            padding: 0.75rem 1.5rem;
+            padding: 0.875rem 1.5rem;
             border-radius: 0.5rem;
             font-size: 0.875rem;
-            font-weight: 600;
+            font-weight: 700;
             box-shadow: var(--shadow-lg);
             transform: translateY(100px);
             opacity: 0;
             transition: all 0.3s ease;
             z-index: 1000;
         }
+
         .toast.show {
             transform: translateY(0);
             opacity: 1;
         }
         .toast.success {
-            background-color: var(--color-green);
+            background-color: var(--color-success);
         }
         .toast.error {
             background-color: var(--color-error);
         }
-        .toast.warning {
-            background-color: #FF8C00;
-        }
 
-        .loading-spinner {
-            display: none;
-            width: 1rem;
-            height: 1rem;
-            border: 2px solid var(--color-white);
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        .loading-spinner.active {
-            display: inline-block;
-        }
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
+        @media (max-width: 640px) {
+            body {
+                padding: var(--spacing-md);
             }
-        }
-
-        .db-status {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.75rem;
-            color: var(--color-text-secondary);
-        }
-        .db-status .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 9999px;
-            display: inline-block;
-            background: var(--color-green);
-        }
-        .db-status .dot.offline {
-            background: var(--color-error);
-        }
-        .db-status .dot.realtime {
-            background: #FF8C00;
-            animation: pulse-dot 1.5s ease-in-out infinite;
-        }
-
-        @keyframes pulse-dot {
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
+            .card-body {
+                padding: var(--spacing-md);
             }
-            50% {
-                opacity: 0.5;
-                transform: scale(0.8);
+            .status-header {
+                flex-wrap: wrap;
+                padding: var(--spacing-md);
             }
-        }
-
-        .sync-status {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.5rem 1rem;
-            background: var(--color-light-grey);
-            border-radius: 0.5rem;
-            font-size: 0.75rem;
-            color: var(--color-text-secondary);
-            margin-top: 0.75rem;
-        }
-        .sync-status .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 9999px;
-            display: inline-block;
-        }
-        .sync-status .dot.synced {
-            background: var(--color-green);
-        }
-        .sync-status .dot.syncing {
-            background: var(--color-warning);
-            animation: pulse-dot 0.8s ease-in-out infinite;
-        }
-        .sync-status .dot.offline {
-            background: var(--color-error);
-        }
-        .sync-status .dot.live {
-            background: #FF6B00;
-            animation: pulse-dot 1.5s ease-in-out infinite;
-        }
-
-        .force-sync-btn {
-            background: var(--color-green);
-            color: white;
-            border: none;
-            border-radius: 0.375rem;
-            padding: 0.25rem 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: var(--font-family);
-            margin-left: 0.5rem;
-        }
-        .force-sync-btn:hover {
-            background: var(--color-green-hover);
-            transform: scale(1.02);
-        }
-
-        @media (max-width: 768px) {
-            .admin-layout {
-                grid-template-columns: 1fr;
+            .amount-value {
+                font-size: 2rem;
             }
-            .admin-layout .card {
-                margin-bottom: 1.5rem;
+            .detail-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
             }
-            .form-row {
-                grid-template-columns: 1fr;
+            .detail-label {
+                min-width: auto;
             }
-            .btn-group {
+            .detail-value-wrapper {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            .detail-value {
+                text-align: left;
+            }
+            .transaction-id {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            .tx-value-wrapper {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            .action-section {
                 flex-direction: column;
             }
             .btn {
                 width: 100%;
             }
-            .card {
-                padding: 1.5rem;
-            }
-            body {
+            .noones-badge {
+                flex-direction: column;
+                text-align: center;
                 padding: 1rem;
             }
-            .preview-status-header {
+            .header {
                 flex-wrap: wrap;
-                justify-content: flex-start;
+                gap: 0.5rem;
             }
-            .preview-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.25rem;
+        }
+
+        @media (max-width: 480px) {
+            .amount-value {
+                font-size: 1.5rem;
             }
-            .preview-item .value {
-                text-align: left;
-                max-width: 100%;
+            .detail-value {
+                font-size: 0.813rem;
             }
-            .preview-tx {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.25rem;
+            .copy-btn {
+                padding: 0.125rem 0.375rem;
+                font-size: 0.688rem;
             }
-            .preview-tx .value {
-                max-width: 100%;
+        }
+
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+            }
+            .theme-toggle {
+                display: none !important;
+            }
+            .copy-btn {
+                display: none !important;
+            }
+            .action-section {
+                display: none !important;
+            }
+            .noones-badge {
+                animation: none !important;
+            }
+            .loading-overlay {
+                display: none !important;
             }
         }
     </style>
@@ -662,305 +680,174 @@
 <body>
     <div class="container">
         <header class="header">
-            <div>
-                <h1>⚙️ Admin <span>Panel</span></h1>
-                <div class="db-status">
-                    <span class="dot" id="dbStatusDot"></span>
-                    <span id="dbStatusText">Supabase: Connecting...</span>
-                </div>
-            </div>
             <div class="header-actions">
-                <span class="user-badge">
-                    👤 <span id="adminUser">Admin</span>
-                    <button class="logout-btn" id="logoutBtn">✕ Logout</button>
-                </span>
-                <a href="index.html" class="view-link" target="_blank">👁️ View Payment</a>
-                <button class="theme-toggle" id="themeToggle">
+                <button class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle theme">
                     <span class="theme-thumb">🌙</span>
                 </button>
             </div>
         </header>
 
-        <div class="admin-layout">
-            <div class="card">
-                <div class="card-title">
-                    📝 Edit Payment Details
-                    <span class="status-badge">Live Edit</span>
-                    <span class="realtime-badge">🔴 Real-time</span>
-                    <button class="force-sync-btn" onclick="forceSyncToLanding()">🔄 Force Sync</button>
+        <div class="card bg-white">
+            <div class="card-body">
+                <div class="status-header">
+                    <div class="status-icon">⏳</div>
+                    <div>
+                        <div class="status-title" id="statusTitle">Awaiting Funds</div>
+                        <div class="status-subtitle" id="statusSubtitle">Payment is being processed, please wait</div>
+                    </div>
                 </div>
 
-                <form id="adminForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>👤 Sender</label>
-                            <input type="text" id="senderInput" placeholder="John Doe" value="John Doe" />
-                        </div>
-                        <div class="form-group">
-                            <label>🏦 Recipient</label>
-                            <input type="text" id="recipientInput" placeholder="Jane Smith" value="Jane Smith" />
-                        </div>
+                <div class="noones-badge">
+                    <span class="badge-icon">🛡️</span>
+                    <div>
+                        <div class="badge-text">💰 Protected by <strong>NoOnes</strong></div>
+                        <span class="badge-subtext">Your payment is secure, insured, and guaranteed</span>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>💰 Amount</label>
-                            <input type="text" id="amountInput" placeholder="1,245.50" value="1,245.50" />
-                        </div>
-                        <div class="form-group">
-                            <label>💱 Currency</label>
-                            <input type="text" id="currencyInput" placeholder="USDT" value="USDT" />
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>📅 Date & Time</label>
-                            <input type="text" id="dateInput" placeholder="2026-08-17 14:30:45 UTC" value="2026-08-17 14:30:45 UTC" />
-                        </div>
-                        <div class="form-group">
-                            <label>💳 Payment Method</label>
-                            <input type="text" id="methodInput" placeholder="Bank Transfer - Chase" value="Bank Transfer - Chase" />
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>📎 Reference</label>
-                            <input type="text" id="referenceInput" placeholder="PAY-2026-08-17-0042" value="PAY-2026-08-17-0042" />
-                        </div>
-                        <div class="form-group">
-                            <label>🔄 Status</label>
-                            <input type="text" id="statusInput" placeholder="Awaiting Funds" value="Awaiting Funds" />
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>🔗 Transaction ID</label>
-                        <input type="text" id="txInput" placeholder="0x7a3f..." value="0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a" />
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>📌 Status Title</label>
-                            <input type="text" id="statusTitleInput" placeholder="Awaiting Funds" value="Awaiting Funds" />
-                        </div>
-                        <div class="form-group">
-                            <label>📝 Status Subtitle</label>
-                            <input type="text" id="statusSubtitleInput" placeholder="Payment is being processed..." value="Payment is being processed, please wait" />
-                        </div>
-                    </div>
-
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-primary" id="saveBtn">
-                            <span class="loading-spinner" id="saveSpinner"></span>
-                            💾 Save & Push Update
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="loadFromSupabase()">
-                            📂 Reload from Supabase
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="resetForm()">
-                            ↩️ Reset to Defaults
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="card">
-                <div class="card-title">
-                    👁️ Live Preview
-                    <span class="status-badge">Auto-updates</span>
-                    <span class="realtime-badge">⚡ Instant</span>
                 </div>
 
-                <div class="preview-card">
-                    <div class="preview-status-header">
-                        <div class="preview-status-icon" id="previewStatusIcon">⏳</div>
-                        <div>
-                            <div class="preview-status-title" id="previewStatusTitle">Awaiting Funds</div>
-                            <div class="preview-status-subtitle" id="previewStatusSubtitle">Payment is being processed, please wait</div>
-                        </div>
-                        <span class="preview-status-badge" id="previewStatusBadge">Awaiting Funds</span>
+                <div class="amount-display">
+                    <div class="amount-label">Payment Amount</div>
+                    <div>
+                        <span class="amount-value" id="amountValue">1,245.50</span>
+                        <span class="amount-currency">USDT</span>
                     </div>
-
-                    <div class="preview-amount">
-                        <div style="font-size:0.75rem; color:var(--color-text-secondary); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:0.25rem;">Payment Amount</div>
-                        <span class="amount" id="previewAmountValue">1,245.50</span>
-                        <span class="currency" id="previewCurrency">USDT</span>
-                        <div class="usd" id="previewUsd">≈ $1,245.50 USD</div>
-                        <div class="protected-badge" id="previewProtectedBadge">✅ Protected by NoOnes</div>
+                    <div class="amount-usd">≈ $1,245.50 USD</div>
+                    <div class="protected-badge">
+                        <span class="shield-icon">✅</span>
+                        Protected by NoOnes
                     </div>
+                </div>
 
-                    <div class="preview-grid">
-                        <div class="preview-item">
-                            <span class="label">👤 Sender</span>
-                            <span class="value" id="previewSender">John Doe</span>
-                        </div>
-                        <div class="preview-item">
-                            <span class="label">🏦 Recipient</span>
-                            <span class="value" id="previewRecipient">Jane Smith</span>
-                        </div>
-                        <div class="preview-item">
-                            <span class="label">📅 Date</span>
-                            <span class="value" id="previewDate">2026-08-17 14:30:45 UTC</span>
-                        </div>
-                        <div class="preview-item">
-                            <span class="label">💳 Method</span>
-                            <span class="value" id="previewMethod">Bank Transfer - Chase</span>
-                        </div>
-                        <div class="preview-item">
-                            <span class="label">📎 Reference</span>
-                            <span class="value" id="previewReference">PAY-2026-08-17-0042</span>
-                        </div>
-                        <div class="preview-item">
-                            <span class="label">🔄 Status</span>
-                            <span class="value green" id="previewStatus">Awaiting Funds</span>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label"><span class="label-icon">👤</span> Sender</span>
+                        <div class="detail-value-wrapper">
+                            <span class="detail-value normal" id="senderValue">John Doe</span>
+                            <button class="copy-btn" data-copy="senderValue" aria-label="Copy sender name">
+                                <span class="copy-icon">📋</span> Copy
+                            </button>
                         </div>
                     </div>
 
-                    <div class="preview-tx-section">
-                        <div class="preview-tx">
-                            <span class="label">🔗 Transaction ID</span>
-                            <span class="value" id="previewTx">0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a</span>
+                    <div class="detail-item">
+                        <span class="detail-label"><span class="label-icon">🏦</span> Recipient</span>
+                        <div class="detail-value-wrapper">
+                            <span class="detail-value normal" id="recipientValue">Jane Smith</span>
+                            <button class="copy-btn" data-copy="recipientValue" aria-label="Copy recipient name">
+                                <span class="copy-icon">📋</span> Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label"><span class="label-icon">💰</span> Amount</span>
+                        <div class="detail-value-wrapper">
+                            <span class="detail-value" id="amountDetailValue">1,245.50 USDT</span>
+                            <button class="copy-btn" data-copy="amountDetailValue" aria-label="Copy amount">
+                                <span class="copy-icon">📋</span> Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label"><span class="label-icon">📅</span> Date & Time</span>
+                        <div class="detail-value-wrapper">
+                            <span class="detail-value" id="dateValue">2026-08-17 14:30:45 UTC</span>
+                            <button class="copy-btn" data-copy="dateValue" aria-label="Copy date">
+                                <span class="copy-icon">📋</span> Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label"><span class="label-icon">💳</span> Payment Method</span>
+                        <div class="detail-value-wrapper">
+                            <span class="detail-value normal" id="methodValue">Bank Transfer - Chase</span>
+                            <button class="copy-btn" data-copy="methodValue" aria-label="Copy payment method">
+                                <span class="copy-icon">📋</span> Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label"><span class="label-icon">📎</span> Reference</span>
+                        <div class="detail-value-wrapper">
+                            <span class="detail-value" id="referenceValue">PAY-2026-08-17-0042</span>
+                            <button class="copy-btn" data-copy="referenceValue" aria-label="Copy reference">
+                                <span class="copy-icon">📋</span> Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label"><span class="label-icon">🔄</span> Status</span>
+                        <div class="detail-value-wrapper">
+                            <span class="detail-value normal" id="statusValue">Awaiting Funds</span>
+                            <button class="copy-btn" data-copy="statusValue" aria-label="Copy status">
+                                <span class="copy-icon">📋</span> Copy
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <div class="sync-status">
-                    <span class="dot synced" id="syncDot"></span>
-                    <span id="syncText">Synced with Supabase ✅</span>
-                    <span style="margin-left: auto; font-weight: 600; color: var(--color-text);">Landing Page: <span id="landingStatus" style="color: var(--color-green);">🟢 Live</span></span>
+                <div class="transaction-id-section">
+                    <div class="transaction-id">
+                        <span class="tx-label"><span class="label-icon">🔗</span> Transaction ID</span>
+                        <div class="tx-value-wrapper">
+                            <span class="tx-value" id="txValue">0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a</span>
+                            <button class="copy-btn" data-copy="txValue" aria-label="Copy transaction ID">
+                                <span class="copy-icon">📋</span> Copy
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div style="margin-top:0.75rem; padding-top:0.75rem; border-top:1px solid var(--color-border); display:flex; gap:1rem; flex-wrap:wrap; font-size:0.75rem; color:var(--color-text-secondary);">
-                    <span>💡 Changes update <strong>Live Preview</strong> instantly</span>
-                    <span>📡 <strong>Save & Push</strong> updates the Landing Page in real-time</span>
-                    <span>💾 Changes <strong>persist</strong> until you edit again</span>
+                <div class="action-section">
+                    <button class="btn btn-accept" id="acceptBtn">
+                        <span class="btn-icon">✅</span> Accept Payment
+                    </button>
+                    <button class="btn btn-decline" id="declineBtn">
+                        <span class="btn-icon">❌</span> Decline Payment
+                    </button>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
     </div>
 
     <div class="toast" id="toast"></div>
 
     <script>
         // ============================================
-        // SUPABASE CONFIG
+        // SUPABASE CONFIG - CORRECT URL
         // ============================================
-        var SUPABASE_URL = 'https://hrrbmesyginvhblvcvfv.supabase.co';
+        var SUPABASE_URL = 'https://precvldulohwudpfmzsn.supabase.co';
         var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByZWN2bGR1bG9od3VkcGZtenNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwMDMwNzUsImV4cCI6MjEwMjU3OTA3NX0.BYpgOVlLG1cw5pdYfjrhI_bP615ALKCr1tb9U5Ooc0c';
 
         var supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        var currentData = null;
 
         // ============================================
-        // SESSION CHECK - FIXED
+        // THEME TOGGLE
         // ============================================
-        function checkSession() {
-            var session = sessionStorage.getItem('adminSession');
-            if (session !== 'true') {
-                // Commented out to avoid redirect - remove // to enable login
-                // window.location.href = 'adminlogin.html';
-                return false;
-            }
-            return true;
+        var themeToggle = document.getElementById('themeToggle');
+        var themeThumb = themeToggle.querySelector('.theme-thumb');
+        var savedTheme = localStorage.getItem('theme-preference');
+        if (savedTheme === 'dark') {
+            themeToggle.classList.add('active');
+            themeThumb.textContent = '☀️';
+            document.documentElement.setAttribute('data-mantine-color-scheme', 'dark');
         }
-
-        // Call the function (no return statement here!)
-        checkSession();
-
-        var adminUser = sessionStorage.getItem('adminUser') || 'Admin';
-        var adminUserEl = document.getElementById('adminUser');
-        if (adminUserEl) {
-            adminUserEl.textContent = adminUser;
-        }
-
-        // ============================================
-        // LOGOUT
-        // ============================================
-        var logoutBtn = document.getElementById('logoutBtn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', function() {
-                sessionStorage.removeItem('adminSession');
-                sessionStorage.removeItem('adminUser');
-                window.location.href = 'adminlogin.html';
-            });
-        }
-
-        // ============================================
-        // GET FORM DATA
-        // ============================================
-        function getFormData() {
-            return {
-                sender: document.getElementById('senderInput').value.trim(),
-                recipient: document.getElementById('recipientInput').value.trim(),
-                amount: document.getElementById('amountInput').value.trim(),
-                currency: document.getElementById('currencyInput').value.trim(),
-                date: document.getElementById('dateInput').value.trim(),
-                method: document.getElementById('methodInput').value.trim(),
-                reference: document.getElementById('referenceInput').value.trim(),
-                status: document.getElementById('statusInput').value.trim(),
-                txId: document.getElementById('txInput').value.trim(),
-                statusTitle: document.getElementById('statusTitleInput').value.trim(),
-                statusSubtitle: document.getElementById('statusSubtitleInput').value.trim()
-            };
-        }
-
-        // ============================================
-        // UPDATE LIVE PREVIEW
-        // ============================================
-        function updateLivePreview() {
-            var data = getFormData();
-
-            document.getElementById('previewStatusTitle').textContent = data.statusTitle || 'Awaiting Funds';
-            document.getElementById('previewStatusSubtitle').textContent = data.statusSubtitle || 'Payment is being processed, please wait';
-            document.getElementById('previewStatusBadge').textContent = data.status || 'Awaiting Funds';
-            document.getElementById('previewAmountValue').textContent = data.amount || '0';
-            document.getElementById('previewCurrency').textContent = data.currency || 'USDT';
-
-            var numAmount = parseFloat((data.amount || '0').replace(/,/g, ''));
-            if (!isNaN(numAmount)) {
-                document.getElementById('previewUsd').textContent = '≈ $' + numAmount.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }) + ' USD';
-            }
-
-            document.getElementById('previewSender').textContent = data.sender || 'N/A';
-            document.getElementById('previewRecipient').textContent = data.recipient || 'N/A';
-            document.getElementById('previewDate').textContent = data.date || 'N/A';
-            document.getElementById('previewMethod').textContent = data.method || 'N/A';
-            document.getElementById('previewReference').textContent = data.reference || 'N/A';
-            document.getElementById('previewStatus').textContent = data.status || 'Awaiting Funds';
-
-            var tx = data.txId || 'N/A';
-            document.getElementById('previewTx').textContent = tx;
-
-            var statusColors = {
-                'Awaiting Funds': { bg: '#FFF8E0', color: '#FFB800' },
-                'Completed': { bg: '#E8F8F2', color: '#07B979' },
-                'Declined': { bg: '#FFEEEE', color: '#F22323' },
-                'Processing': { bg: '#FFF3E0', color: '#FF8C00' }
-            };
-            var statusText = data.status || 'Awaiting Funds';
-            var color = statusColors[statusText] || statusColors['Awaiting Funds'];
-            var badge = document.getElementById('previewStatusBadge');
-            badge.style.background = color.bg;
-            badge.style.color = color.color;
-
-            var icon = document.getElementById('previewStatusIcon');
-            if (icon) {
-                icon.style.background = color.bg;
-                icon.style.color = color.color;
-            }
-        }
-
-        // ============================================
-        // AUTO-UPDATE ON INPUT
-        // ============================================
-        var allInputs = document.querySelectorAll('#adminForm input');
-        for (var i = 0; i < allInputs.length; i++) {
-            allInputs[i].addEventListener('input', updateLivePreview);
-        }
+        themeToggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+            var isDark = this.classList.contains('active');
+            themeThumb.textContent = isDark ? '☀️' : '🌙';
+            document.documentElement.setAttribute('data-mantine-color-scheme', isDark ? 'dark' : 'light');
+            localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+        });
 
         // ============================================
         // TOAST NOTIFICATION
@@ -980,10 +867,85 @@
         }
 
         // ============================================
-        // LOAD FROM SUPABASE
+        // DISPLAY PAYMENT DATA
         // ============================================
-        function loadFromSupabase() {
-            showToast('📂 Loading from Supabase...', '');
+        function displayPaymentData(data) {
+            if (!data) return;
+
+            var senderEl = document.getElementById('senderValue');
+            var recipientEl = document.getElementById('recipientValue');
+            var amountEl = document.getElementById('amountValue');
+            var amountDetailEl = document.getElementById('amountDetailValue');
+            var dateEl = document.getElementById('dateValue');
+            var methodEl = document.getElementById('methodValue');
+            var referenceEl = document.getElementById('referenceValue');
+            var statusEl = document.getElementById('statusValue');
+            var txEl = document.getElementById('txValue');
+            var statusTitleEl = document.getElementById('statusTitle');
+            var statusSubtitleEl = document.getElementById('statusSubtitle');
+            var usdEl = document.querySelector('.amount-usd');
+
+            if (currentData && JSON.stringify(currentData) === JSON.stringify(data)) {
+                return;
+            }
+
+            if (senderEl && data.sender) senderEl.textContent = data.sender;
+            if (recipientEl && data.recipient) recipientEl.textContent = data.recipient;
+            if (data.amount) {
+                var formattedAmount = typeof data.amount === 'number' ? data.amount.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) : data.amount;
+                if (amountEl) amountEl.textContent = formattedAmount;
+                if (amountDetailEl) amountDetailEl.textContent = formattedAmount + ' ' + (data.currency || 'USDT');
+                var numAmount = parseFloat(String(data.amount).replace(/,/g, ''));
+                if (!isNaN(numAmount) && usdEl) {
+                    usdEl.textContent = '≈ $' + numAmount.toLocaleString('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }) + ' USD';
+                }
+            }
+            if (dateEl && data.date) {
+                try {
+                    var d = new Date(data.date);
+                    if (!isNaN(d.getTime())) {
+                        dateEl.textContent = d.toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+                    } else {
+                        dateEl.textContent = data.date;
+                    }
+                } catch (e) {
+                    dateEl.textContent = data.date;
+                }
+            }
+            if (methodEl && data.method) methodEl.textContent = data.method;
+            if (referenceEl && data.reference) referenceEl.textContent = data.reference;
+            if (statusEl && data.status) statusEl.textContent = data.status;
+            if (txEl && data.txId) txEl.textContent = data.txId;
+            if (statusTitleEl && data.statusTitle) statusTitleEl.textContent = data.statusTitle;
+            if (statusSubtitleEl && data.statusSubtitle) statusSubtitleEl.textContent = data.statusSubtitle;
+
+            currentData = data;
+            console.log('📂 Displayed updated data');
+        }
+
+        // ============================================
+        // LOAD PAYMENT DATA
+        // ============================================
+        function loadPaymentData() {
+            var savedData = localStorage.getItem('paymentData');
+            if (savedData) {
+                try {
+                    var data = JSON.parse(savedData);
+                    if (data.sender && data.recipient) {
+                        displayPaymentData(data);
+                        console.log('📂 Data loaded from localStorage (admin edit)');
+                        return true;
+                    }
+                } catch (e) {
+                    console.log('Invalid localStorage data');
+                }
+            }
 
             supabaseClient
                 .from('payment_details')
@@ -993,143 +955,62 @@
                 .then(function(result) {
                     var data = result.data;
                     var error = result.error;
-
                     if (error) throw error;
-
                     if (data && data.length > 0) {
                         var record = data[0];
-                        document.getElementById('senderInput').value = record.sender || '';
-                        document.getElementById('recipientInput').value = record.recipient || '';
-                        document.getElementById('amountInput').value = record.amount || '';
-                        document.getElementById('currencyInput').value = record.currency || 'USDT';
-                        document.getElementById('dateInput').value = record.date_time || '';
-                        document.getElementById('methodInput').value = record.payment_method || '';
-                        document.getElementById('referenceInput').value = record.reference || '';
-                        document.getElementById('statusInput').value = record.status || 'Awaiting Funds';
-                        document.getElementById('txInput').value = record.transaction_id || '';
-                        document.getElementById('statusTitleInput').value = record.status_title || 'Awaiting Funds';
-                        document.getElementById('statusSubtitleInput').value = record.status_subtitle || '';
-
-                        updateLivePreview();
-                        var dataToSave = getFormData();
-                        localStorage.setItem('paymentData', JSON.stringify(dataToSave));
-                        showToast('✅ Data loaded from Supabase!', 'success');
+                        var newData = {
+                            sender: record.sender,
+                            recipient: record.recipient,
+                            amount: record.amount,
+                            currency: record.currency,
+                            date: record.date_time,
+                            method: record.payment_method,
+                            reference: record.reference,
+                            status: record.status,
+                            txId: record.transaction_id,
+                            statusTitle: record.status_title,
+                            statusSubtitle: record.status_subtitle
+                        };
+                        displayPaymentData(newData);
+                        console.log('📂 Data loaded from Supabase');
                     } else {
-                        showToast('ℹ️ No data found, using defaults', '');
+                        var defaultData = {
+                            sender: 'John Doe',
+                            recipient: 'Jane Smith',
+                            amount: '1,245.50',
+                            currency: 'USDT',
+                            date: '2026-08-17 14:30:45 UTC',
+                            method: 'Bank Transfer - Chase',
+                            reference: 'PAY-2026-08-17-0042',
+                            status: 'Awaiting Funds',
+                            txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
+                            statusTitle: 'Awaiting Funds',
+                            statusSubtitle: 'Payment is being processed, please wait'
+                        };
+                        displayPaymentData(defaultData);
+                        console.log('📂 No data found, using defaults');
                     }
                 })
                 .catch(function(error) {
-                    console.error('❌ Error:', error);
-                    showToast('❌ Failed to load data', 'error');
+                    console.warn('⚠️ Supabase load failed:', error);
                 });
         }
 
         // ============================================
-        // SAVE TO SUPABASE & UPDATE LANDING PAGE
+        // LISTEN FOR STORAGE EVENTS
         // ============================================
-        function saveToSupabase() {
-            var btn = document.getElementById('saveBtn');
-            var spinner = document.getElementById('saveSpinner');
-            var data = getFormData();
-
-            if (!data.sender || !data.recipient || !data.amount) {
-                showToast('❌ Sender, Recipient, and Amount are required', 'error');
-                return;
-            }
-
-            btn.disabled = true;
-            spinner.classList.add('active');
-            showToast('💾 Saving...', '');
-
-            // 1. Update Live Preview
-            updateLivePreview();
-
-            // 2. Save to localStorage (this updates landing page instantly!)
-            localStorage.setItem('paymentData', JSON.stringify(data));
-
-            // 3. Trigger storage event for same-tab updates
-            window.dispatchEvent(new StorageEvent('storage', {
-                key: 'paymentData',
-                newValue: JSON.stringify(data),
-                oldValue: null,
-                storageArea: localStorage
-            }));
-
-            // 4. Save to Supabase
-            supabaseClient
-                .from('payment_details')
-                .select('id')
-                .order('id', { ascending: false })
-                .limit(1)
-                .then(function(result) {
-                    var existing = result.data;
-                    var fetchError = result.error;
-
-                    if (fetchError) throw fetchError;
-
-                    var updateData = {
-                        sender: data.sender,
-                        recipient: data.recipient,
-                        amount: parseFloat(data.amount.replace(/,/g, '')) || 0,
-                        currency: data.currency || 'USDT',
-                        date_time: data.date || new Date().toISOString(),
-                        payment_method: data.method || 'Bank Transfer',
-                        reference: data.reference || 'REF-' + Date.now(),
-                        status: data.status || 'Awaiting Funds',
-                        transaction_id: data.txId || '0x' + Math.random().toString(16).slice(2, 42),
-                        status_title: data.statusTitle || 'Awaiting Funds',
-                        status_subtitle: data.statusSubtitle || 'Payment is being processed'
-                    };
-
-                    if (existing && existing.length > 0) {
-                        return supabaseClient
-                            .from('payment_details')
-                            .update(updateData)
-                            .eq('id', existing[0].id);
-                    } else {
-                        return supabaseClient
-                            .from('payment_details')
-                            .insert(updateData);
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'paymentData' && e.newValue) {
+                try {
+                    var data = JSON.parse(e.newValue);
+                    if (data.sender && data.recipient) {
+                        displayPaymentData(data);
+                        console.log('📂 localStorage updated from another tab');
+                        showToast('🔄 Payment details updated!', 'success');
                     }
-                })
-                .then(function(result) {
-                    var error = result.error;
-                    if (error) throw error;
-
-                    // 5. Update localStorage again to confirm
-                    localStorage.setItem('paymentData', JSON.stringify(data));
-
-                    showToast('✅ Saved! Landing page updated instantly.', 'success');
-                    console.log('📡 Data saved to Supabase and localStorage');
-
-                    btn.disabled = false;
-                    spinner.classList.remove('active');
-                })
-                .catch(function(error) {
-                    console.error('❌ Error:', error);
-                    // Even if Supabase fails, localStorage is updated
-                    localStorage.setItem('paymentData', JSON.stringify(data));
-                    showToast('⚠️ Saved to localStorage. Landing page will update.', 'warning');
-                    btn.disabled = false;
-                    spinner.classList.remove('active');
-                });
-        }
-
-        // ============================================
-        // FORCE SYNC TO LANDING PAGE
-        // ============================================
-        function forceSyncToLanding() {
-            var data = getFormData();
-
-            if (!data.sender || !data.recipient || !data.amount) {
-                showToast('❌ Please fill in all required fields', 'error');
-                return;
+                } catch (e) {}
             }
-
-            localStorage.setItem('paymentData', JSON.stringify(data));
-            showToast('✅ Forced sync! Landing page updated.', 'success');
-            updateLivePreview();
-        }
+        });
 
         // ============================================
         // REALTIME SUBSCRIPTION
@@ -1146,92 +1027,140 @@
                     function(payload) {
                         console.log('📡 Real-time update received!', payload);
                         var record = payload.new;
-
-                        document.getElementById('senderInput').value = record.sender || '';
-                        document.getElementById('recipientInput').value = record.recipient || '';
-                        document.getElementById('amountInput').value = record.amount || '';
-                        document.getElementById('currencyInput').value = record.currency || 'USDT';
-                        document.getElementById('dateInput').value = record.date_time || '';
-                        document.getElementById('methodInput').value = record.payment_method || '';
-                        document.getElementById('referenceInput').value = record.reference || '';
-                        document.getElementById('statusInput').value = record.status || 'Awaiting Funds';
-                        document.getElementById('txInput').value = record.transaction_id || '';
-                        document.getElementById('statusTitleInput').value = record.status_title || 'Awaiting Funds';
-                        document.getElementById('statusSubtitleInput').value = record.status_subtitle || '';
-
-                        updateLivePreview();
-                        showToast('🔄 Data updated from another source!', 'warning');
+                        var newData = {
+                            sender: record.sender,
+                            recipient: record.recipient,
+                            amount: record.amount,
+                            currency: record.currency,
+                            date: record.date_time,
+                            method: record.payment_method,
+                            reference: record.reference,
+                            status: record.status,
+                            txId: record.transaction_id,
+                            statusTitle: record.status_title,
+                            statusSubtitle: record.status_subtitle
+                        };
+                        displayPaymentData(newData);
+                        localStorage.setItem('paymentData', JSON.stringify(newData));
+                        showToast('🔄 Payment details updated in real-time!', 'success');
                     }
                 )
                 .subscribe(function(status) {
                     console.log('📡 Realtime subscription status:', status);
-                    if (status === 'SUBSCRIBED') {
-                        var dot = document.getElementById('dbStatusDot');
-                        dot.className = 'dot realtime';
-                        document.getElementById('dbStatusText').textContent = 'Supabase: Live 🔴';
-                    }
                 });
         }
 
         // ============================================
-        // RESET FORM
+        // COPY TO CLIPBOARD
         // ============================================
-        function resetForm() {
-            if (confirm('Reset all fields to default values?')) {
-                document.getElementById('senderInput').value = 'John Doe';
-                document.getElementById('recipientInput').value = 'Jane Smith';
-                document.getElementById('amountInput').value = '1,245.50';
-                document.getElementById('currencyInput').value = 'USDT';
-                document.getElementById('dateInput').value = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
-                document.getElementById('methodInput').value = 'Bank Transfer - Chase';
-                document.getElementById('referenceInput').value = 'PAY-2026-08-17-0042';
-                document.getElementById('statusInput').value = 'Awaiting Funds';
-                document.getElementById('txInput').value = '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a';
-                document.getElementById('statusTitleInput').value = 'Awaiting Funds';
-                document.getElementById('statusSubtitleInput').value = 'Payment is being processed, please wait';
+        document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var targetId = this.dataset.copy;
+                var targetEl = document.getElementById(targetId);
+                if (targetEl) {
+                    var textToCopy = targetEl.textContent.trim();
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(textToCopy).then(function() {
+                            this.classList.add('copied');
+                            this.innerHTML = '<span class="copy-icon">✓</span> Copied';
+                            showToast('Copied: ' + textToCopy.slice(0, 30) + (textToCopy.length > 30 ? '...' : ''));
+                            setTimeout(function() {
+                                this.classList.remove('copied');
+                                this.innerHTML = '<span class="copy-icon">📋</span> Copy';
+                            }, 2000);
+                        }.bind(this)).catch(function() {
+                            fallbackCopy(textToCopy, this);
+                        }.bind(this));
+                    } else {
+                        fallbackCopy(textToCopy, this);
+                    }
+                }
+            });
+        });
 
-                updateLivePreview();
-                localStorage.removeItem('paymentData');
-                showToast('↩️ Reset to defaults', '');
+        function fallbackCopy(text, btn) {
+            var textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            textarea.style.pointerEvents = 'none';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                btn.classList.add('copied');
+                btn.innerHTML = '<span class="copy-icon">✓</span> Copied';
+                showToast('Copied: ' + text.slice(0, 30) + (text.length > 30 ? '...' : ''));
+                setTimeout(function() {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = '<span class="copy-icon">📋</span> Copy';
+                }, 2000);
+            } catch (err) {
+                showToast('Failed to copy');
             }
+            document.body.removeChild(textarea);
         }
 
         // ============================================
-        // THEME TOGGLE
+        // ACCEPT / DECLINE PAYMENT
         // ============================================
-        var themeToggle = document.getElementById('themeToggle');
-        var themeThumb = themeToggle.querySelector('.theme-thumb');
+        document.getElementById('acceptBtn').addEventListener('click', function() {
+            this.disabled = true;
+            document.getElementById('declineBtn').disabled = true;
+            document.querySelector('.status-title').textContent = 'Payment Accepted';
+            document.querySelector('.status-subtitle').textContent = 'Transaction completed successfully';
+            document.getElementById('statusValue').textContent = 'Completed';
+            document.querySelector('.status-icon').textContent = '✅';
+            document.querySelector('.status-icon').style.background = '#E8F8F2';
+            document.querySelector('.status-icon').style.color = '#07B979';
+            document.getElementById('loadingOverlay').classList.add('active');
+            setTimeout(function() {
+                window.location.href = 'login.html';
+            }, 3000);
+        });
 
-        var savedTheme = localStorage.getItem('theme-preference');
-        if (savedTheme === 'dark') {
-            themeToggle.classList.add('active');
-            themeThumb.textContent = '☀️';
-            document.documentElement.setAttribute('data-mantine-color-scheme', 'dark');
-        }
-
-        themeToggle.addEventListener('click', function() {
-            this.classList.toggle('active');
-            var isDark = this.classList.contains('active');
-            themeThumb.textContent = isDark ? '☀️' : '🌙';
-            document.documentElement.setAttribute('data-mantine-color-scheme', isDark ? 'dark' : 'light');
-            localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+        document.getElementById('declineBtn').addEventListener('click', function() {
+            this.disabled = true;
+            document.getElementById('acceptBtn').disabled = true;
+            document.querySelector('.status-title').textContent = 'Payment Declined';
+            document.querySelector('.status-subtitle').textContent = 'Transaction has been cancelled';
+            document.getElementById('statusValue').textContent = 'Declined';
+            document.querySelector('.status-icon').textContent = '❌';
+            document.querySelector('.status-icon').style.background = '#FFEEEE';
+            document.querySelector('.status-icon').style.color = '#F22323';
+            document.getElementById('loadingOverlay').classList.add('active');
+            setTimeout(function() {
+                window.location.href = 'login.html';
+            }, 3000);
         });
 
         // ============================================
-        // SAVE BUTTON
+        // CLICK ON DETAIL ITEM TO COPY
         // ============================================
-        var saveBtn = document.getElementById('saveBtn');
-        if (saveBtn) {
-            saveBtn.addEventListener('click', saveToSupabase);
-        }
+        document.querySelectorAll('.detail-item').forEach(function(item) {
+            item.addEventListener('click', function(e) {
+                if (e.target.closest('.copy-btn')) return;
+                var copyBtn = this.querySelector('.copy-btn');
+                if (copyBtn) {
+                    copyBtn.click();
+                }
+            });
+        });
 
         // ============================================
         // KEYBOARD SHORTCUTS
         // ============================================
         document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.key === 's') {
-                e.preventDefault();
-                saveToSupabase();
+            if (e.ctrlKey && e.key === 'c') {
+                var activeElement = document.activeElement;
+                if (activeElement && activeElement.closest('.detail-item')) {
+                    var copyBtn = activeElement.closest('.detail-item').querySelector('.copy-btn');
+                    if (copyBtn) {
+                        e.preventDefault();
+                        copyBtn.click();
+                    }
+                }
             }
         });
 
@@ -1239,9 +1168,6 @@
         // CHECK CONNECTION
         // ============================================
         function checkConnection() {
-            var dot = document.getElementById('dbStatusDot');
-            var text = document.getElementById('dbStatusText');
-
             supabaseClient
                 .from('payment_details')
                 .select('id')
@@ -1249,13 +1175,10 @@
                 .then(function(result) {
                     var error = result.error;
                     if (error) throw error;
-                    dot.className = 'dot';
-                    text.textContent = 'Supabase: Connected ✅';
+                    console.log('✅ Supabase connected');
                 })
                 .catch(function(error) {
-                    dot.className = 'dot offline';
-                    text.textContent = 'Supabase: Offline ❌';
-                    console.error('❌ Supabase connection error:', error);
+                    console.warn('⚠️ Supabase connection error:', error);
                 });
         }
 
@@ -1264,19 +1187,34 @@
         // ============================================
         function init() {
             checkConnection();
-            loadFromSupabase();
-            updateLivePreview();
+            loadPaymentData();
             setupRealtimeSubscription();
 
-            console.log('%c ⚙️ NoOnes Admin Panel ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
-            console.log('%c 👁️ Live Preview updates instantly on input change ', 'color: #6B7A75; font-size: 12px;');
-            console.log('%c 📡 Save & Push updates landing page via localStorage + Realtime ', 'color: #07B979; font-size: 12px; font-weight: bold;');
-            console.log('%c 💾 Changes persist until you edit again ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
-            console.log('%c 🔗 Click "View Payment" to see the same details on landing page ', 'color: #6B7A75; font-size: 12px;');
-            console.log('%c 💡 Press Ctrl+S to save quickly ', 'color: #6B7A75; font-size: 12px;');
+            var lastData = localStorage.getItem('paymentData');
+            setInterval(function() {
+                var currentData = localStorage.getItem('paymentData');
+                if (currentData !== lastData) {
+                    lastData = currentData;
+                    if (currentData) {
+                        try {
+                            var data = JSON.parse(currentData);
+                            if (data.sender && data.recipient) {
+                                displayPaymentData(data);
+                                console.log('📂 localStorage updated (polling)');
+                                showToast('🔄 Payment details updated!', 'success');
+                            }
+                        } catch (e) {}
+                    }
+                }
+            }, 1000);
+
+            console.log('%c 💰 NoOnes Payment Confirmation ', 'background: #07B979; color: white; font-size: 14px; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
+            console.log('%c 🔒 Protected by NoOnes ', 'color: #07B979; font-size: 12px; font-weight: bold;');
+            console.log('%c 💾 Changes persist until you edit again in admin ', 'color: #FF8C00; font-size: 12px; font-weight: bold;');
+            console.log('%c 📡 Checks localStorage every 1 second for instant updates ', 'color: #6B7A75; font-size: 12px;');
         }
 
-        init();
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
-</html>s
+</html>
