@@ -375,7 +375,7 @@
             statusSubtitle: 'Payment is being processed, please wait'
         };
 
-        var currentData = null;
+        var currentSender = '';
 
         // ============================================
         // DISPLAY DATA ON PAGE
@@ -383,12 +383,12 @@
         function displayData(data) {
             if (!data) data = defaultData;
 
-            // Check if data actually changed
-            if (currentData && JSON.stringify(currentData) === JSON.stringify(data)) {
+            // Only update if sender changed (prevents flickering)
+            if (data.sender === currentSender && data.recipient === document.getElementById('recipientValue').textContent) {
                 return;
             }
 
-            currentData = data;
+            currentSender = data.sender;
 
             document.getElementById('senderValue').textContent = data.sender || defaultData.sender;
             document.getElementById('recipientValue').textContent = data.recipient || defaultData.recipient;
@@ -429,7 +429,7 @@
             };
             document.getElementById('statusIcon').textContent = statusIcons[data.status] || '⏳';
 
-            console.log('📊 Page updated with:', data.sender);
+            console.log('📊 Page updated - Sender:', data.sender);
         }
 
         // ============================================
@@ -471,45 +471,6 @@
         }
 
         // ============================================
-        // REAL-TIME SUBSCRIPTION
-        // ============================================
-        function setupRealtime() {
-            var channel = supabase
-                .channel('payment-changes')
-                .on(
-                    'postgres_changes',
-                    {
-                        event: '*',
-                        schema: 'public',
-                        table: 'payment_details'
-                    },
-                    function(payload) {
-                        console.log('📡 Real-time update!');
-                        var record = payload.new || payload.old;
-                        if (record) {
-                            var data = {
-                                sender: record.sender,
-                                recipient: record.recipient,
-                                amount: record.amount,
-                                currency: record.currency,
-                                date: record.date_time,
-                                method: record.payment_method,
-                                reference: record.reference,
-                                status: record.status,
-                                txId: record.transaction_id,
-                                statusTitle: record.status_title,
-                                statusSubtitle: record.status_subtitle
-                            };
-                            displayData(data);
-                        }
-                    }
-                )
-                .subscribe(function(status) {
-                    console.log('📡 Realtime status:', status);
-                });
-        }
-
-        // ============================================
         // ACCEPT / DECLINE
         // ============================================
         document.getElementById('acceptBtn').addEventListener('click', function() {
@@ -529,7 +490,7 @@
         });
 
         // ============================================
-        // INITIALIZE
+        // INITIALIZE - POLLING (Guaranteed Updates)
         // ============================================
         function init() {
             console.log('🚀 Payment page loading...');
@@ -537,16 +498,14 @@
             // Load data immediately
             loadData();
 
-            // Setup real-time
-            setupRealtime();
+            // Check for updates every 1.5 seconds (guaranteed!)
+            setInterval(loadData, 1500);
 
-            // ALSO reload every 2 seconds (guaranteed updates!)
-            setInterval(loadData, 2000);
-
-            console.log('✅ Page ready - updates every 2 seconds');
+            console.log('✅ Page ready - checking for updates every 1.5 seconds');
+            console.log('✅ Edit in admin panel and watch the page update!');
         }
 
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
-</html>s
+</html>
