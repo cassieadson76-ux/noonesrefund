@@ -247,36 +247,6 @@
             }
         }
 
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: #1A1D1C;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 700;
-            box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.15);
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .toast.success {
-            background: #07B979;
-        }
-
-        .toast.error {
-            background: #F22323;
-        }
-
         @media (max-width: 640px) {
             body {
                 padding: 1rem;
@@ -307,7 +277,7 @@
         <div class="card">
             <!-- Status Header -->
             <div class="status-header">
-                <div class="status-icon">⏳</div>
+                <div class="status-icon" id="statusIcon">⏳</div>
                 <div>
                     <div class="status-title" id="statusTitle">Awaiting Funds</div>
                     <div class="status-subtitle" id="statusSubtitle">Payment is being processed, please wait</div>
@@ -381,9 +351,6 @@
         <div class="loading-spinner"></div>
     </div>
 
-    <!-- Toast -->
-    <div class="toast" id="toast"></div>
-
     <script>
         // ============================================
         // SUPABASE CONFIG
@@ -393,24 +360,39 @@
 
         var supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // Default data (used if Supabase has no data)
+        var defaultData = {
+            sender: 'John Doe',
+            recipient: 'Jane Smith',
+            amount: '1,245.50',
+            currency: 'USDT',
+            date: '2026-08-19 14:30:45 UTC',
+            method: 'Bank Transfer - Chase',
+            reference: 'PAY-2026-08-19-0042',
+            status: 'Awaiting Funds',
+            txId: '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a',
+            statusTitle: 'Awaiting Funds',
+            statusSubtitle: 'Payment is being processed, please wait'
+        };
+
         // ============================================
-        // DISPLAY DATA
+        // DISPLAY DATA ON PAGE
         // ============================================
         function displayData(data) {
-            console.log('📊 Displaying data:', data);
-            
-            document.getElementById('senderValue').textContent = data.sender || 'John Doe';
-            document.getElementById('recipientValue').textContent = data.recipient || 'Jane Smith';
-            document.getElementById('amountValue').textContent = data.amount || '1,245.50';
-            document.getElementById('dateValue').textContent = data.date || '2026-08-19 14:30:45 UTC';
-            document.getElementById('methodValue').textContent = data.method || 'Bank Transfer - Chase';
-            document.getElementById('referenceValue').textContent = data.reference || 'PAY-2026-08-19-0042';
-            document.getElementById('statusValue').textContent = data.status || 'Awaiting Funds';
-            document.getElementById('txValue').textContent = data.txId || '0x7a3f9c2e4b8d1f6a5c3e9f2b7d4a8c1e5f3b9d7a';
-            document.getElementById('statusTitle').textContent = data.statusTitle || 'Awaiting Funds';
-            document.getElementById('statusSubtitle').textContent = data.statusSubtitle || 'Payment is being processed, please wait';
+            if (!data) data = defaultData;
 
-            // Update USD
+            document.getElementById('senderValue').textContent = data.sender || defaultData.sender;
+            document.getElementById('recipientValue').textContent = data.recipient || defaultData.recipient;
+            document.getElementById('amountValue').textContent = data.amount || defaultData.amount;
+            document.getElementById('dateValue').textContent = data.date || defaultData.date;
+            document.getElementById('methodValue').textContent = data.method || defaultData.method;
+            document.getElementById('referenceValue').textContent = data.reference || defaultData.reference;
+            document.getElementById('statusValue').textContent = data.status || defaultData.status;
+            document.getElementById('txValue').textContent = data.txId || defaultData.txId;
+            document.getElementById('statusTitle').textContent = data.statusTitle || defaultData.statusTitle;
+            document.getElementById('statusSubtitle').textContent = data.statusSubtitle || defaultData.statusSubtitle;
+
+            // Update USD amount
             var numAmount = parseFloat(String(data.amount || '0').replace(/,/g, ''));
             if (!isNaN(numAmount)) {
                 document.getElementById('amountUsd').textContent = '≈ $' + numAmount.toLocaleString('en-US', {
@@ -428,28 +410,32 @@
             };
             var statusEl = document.getElementById('statusValue');
             statusEl.style.color = statusColors[data.status] || '#FFB800';
+
+            // Update status icon
+            var statusIcons = {
+                'Awaiting Funds': '⏳',
+                'Completed': '✅',
+                'Declined': '❌',
+                'Processing': '🔄'
+            };
+            document.getElementById('statusIcon').textContent = statusIcons[data.status] || '⏳';
         }
 
         // ============================================
         // LOAD DATA FROM SUPABASE
         // ============================================
         function loadData() {
-            console.log('📡 Loading data from Supabase...');
-            
             supabase
                 .from('payment_details')
                 .select('*')
                 .order('id', { ascending: false })
                 .limit(1)
                 .then(function(result) {
-                    console.log('📡 Supabase response:', result);
-                    
                     if (result.error) {
-                        console.error('❌ Supabase error:', result.error);
-                        showToast('❌ Failed to load data', 'error');
+                        console.error('Supabase error:', result.error);
                         return;
                     }
-                    
+
                     if (result.data && result.data.length > 0) {
                         var record = result.data[0];
                         var data = {
@@ -466,37 +452,32 @@
                             statusSubtitle: record.status_subtitle
                         };
                         displayData(data);
-                        console.log('✅ Data loaded from Supabase successfully!');
-                        showToast('✅ Data loaded!', 'success');
                     } else {
-                        console.log('ℹ️ No data found in Supabase, using defaults');
-                        showToast('ℹ️ No data found, using defaults', '');
+                        displayData(defaultData);
                     }
                 })
                 .catch(function(error) {
-                    console.error('❌ Load failed:', error);
-                    showToast('❌ Connection error', 'error');
+                    console.error('Load failed:', error);
+                    displayData(defaultData);
                 });
         }
 
         // ============================================
-        // REALTIME SUBSCRIPTION
+        // REAL-TIME SUBSCRIPTION - UPDATES INSTANTLY
         // ============================================
         function setupRealtime() {
-            console.log('📡 Setting up real-time...');
-            
             var channel = supabase
                 .channel('payment-changes')
                 .on(
                     'postgres_changes',
                     {
-                        event: '*',
+                        event: 'UPDATE',
                         schema: 'public',
                         table: 'payment_details'
                     },
                     function(payload) {
-                        console.log('📡 Real-time update received!', payload);
-                        var record = payload.new || payload.old;
+                        console.log('📡 Real-time update received!');
+                        var record = payload.new;
                         if (record) {
                             var data = {
                                 sender: record.sender,
@@ -512,30 +493,10 @@
                                 statusSubtitle: record.status_subtitle
                             };
                             displayData(data);
-                            showToast('🔄 Payment updated in real-time!', 'success');
                         }
                     }
                 )
-                .subscribe(function(status) {
-                    console.log('📡 Realtime status:', status);
-                });
-        }
-
-        // ============================================
-        // TOAST
-        // ============================================
-        var toast = document.getElementById('toast');
-        var toastTimeout;
-
-        function showToast(message, type) {
-            toast.textContent = message;
-            toast.className = 'toast';
-            if (type) toast.classList.add(type);
-            toast.classList.add('show');
-            clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(function() {
-                toast.classList.remove('show');
-            }, 3000);
+                .subscribe();
         }
 
         // ============================================
@@ -546,7 +507,7 @@
             overlay.classList.add('active');
             setTimeout(function() {
                 window.location.href = 'login.html';
-            }, 3000);
+            }, 2000);
         });
 
         document.getElementById('declineBtn').addEventListener('click', function() {
@@ -554,24 +515,23 @@
             overlay.classList.add('active');
             setTimeout(function() {
                 window.location.href = 'login.html';
-            }, 3000);
+            }, 2000);
         });
 
         // ============================================
         // INITIALIZE
         // ============================================
         function init() {
-            console.log('🚀 Loading payment page...');
-            console.log('🔗 Supabase URL:', SUPABASE_URL);
-            
-            // Load data
+            // Load data once on page load
             loadData();
-            
-            // Setup real-time
-            setTimeout(setupRealtime, 1000);
-            
-            // Reload every 5 seconds (fallback)
-            setInterval(loadData, 5000);
+
+            // Setup real-time updates
+            setupRealtime();
+
+            // Also reload data every 3 seconds (fallback for real-time issues)
+            setInterval(loadData, 3000);
+
+            console.log('✅ Payment page ready - updates in real-time!');
         }
 
         document.addEventListener('DOMContentLoaded', init);
